@@ -1,1 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Blk Shelf</title>
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --bg-soft: #171310;
+      --panel: #1d1814;
+      --panel-2: #241d17;
+      --text: #f4eee8;
+      --muted: #c0b3a6;
+      --soft: #8d7f72;
+      --accent: #d8a35d;
+      --accent-2: #8a4f1d;
+      --line: rgba(255,255,255,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius: 22px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top, rgba(138,79,29,0.28), transparent 28%),
+        linear-gradient(180deg, #16110d 0%, #0f0c0a 55%, #120f0c 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(216,163,93,0.25);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2c994;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    header.hero {
+      padding: 3rem 0 4rem;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 0.96;
+      margin: 1rem 0 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .accent { color: var(--accent); }
+
+    .hero p.lead {
+      font-size: 1.15rem;
+      max-width: 45rem;
+      color: var(--muted);
+      margin: 0 0 1.2rem;
+    }
+
+    .hero p.support {
+      max-width: 42rem;
+      color: var(--soft);
+      margin-bottom: 2rem;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.95rem 1.35rem;
+      border-radius: 14px;
+      font-weight: bold;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1a130d;
+    }
+
+    .btn-primary:hover {
+      background: #e6b06a;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      border-color: var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(216,163,93,0.35);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 42rem;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(36,29,23,0.96), rgba(22,17,13,0.96));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card h2 {
+      margin: 0.2rem 0 1rem;
+      font-size: 1.7rem;
+    }
+
+    .section-label {
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.76rem;
+    }
+
+    .trend-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 0.95rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .rank {
+      min-width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: rgba(216,163,93,0.14);
+      color: #f3c78e;
+      font-weight: bold;
+    }
+
+    .trend-item span {
+      display: block;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    section {
+      padding: 4rem 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-head h2 {
+      margin: 0.4rem 0 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .section-head p {
+      max-width: 30rem;
+      color: var(--soft);
+      margin: 0;
+    }
+
+    .vibe-grid,
+    .author-grid,
+    .benefit-grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .vibe-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .author-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .benefit-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(29,24,20,0.96), rgba(22,17,13,0.96));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      padding: 1.3rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .card:hover {
+      border-color: rgba(216,163,93,0.22);
+      transform: translateY(-2px);
+      transition: 0.2s ease;
+    }
+
+    .thumb {
+      height: 120px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(216,163,93,0.24), rgba(36,29,23,0.8), rgba(138,79,29,0.24));
+      margin-bottom: 1rem;
+    }
+
+    .author-cover {
+      height: 210px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(216,163,93,0.20), rgba(30,24,18,0.9));
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      margin: 0.4rem 0;
+      font-size: 1.25rem;
+    }
+
+    .meta {
+      color: var(--soft);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card p {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .callout {
+      background: linear-gradient(180deg, rgba(216,163,93,0.10), rgba(24,19,14,0.96));
+      border: 1px solid rgba(216,163,93,0.12);
+      border-radius: 28px;
+      padding: 2rem;
+    }
+
+    .callout h2, .wide-panel h2 {
+      margin-top: 0.5rem;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.06;
+    }
+
+    .wide-panel {
+      background: linear-gradient(180deg, rgba(29,24,20,0.96), rgba(22,17,13,0.96));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      padding: 2rem;
+    }
+
+    .callout p, .wide-panel p {
+      color: var(--muted);
+      max-width: 48rem;
+    }
+
+    form {
+      display: grid;
+      gap: 0.9rem;
+      margin-top: 1.3rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,10,9,0.66);
+      color: var(--text);
+      font: inherit;
+    }
+
+    input::placeholder { color: #9f907f; }
+
+    .note {
+      color: var(--soft);
+      font-size: 0.88rem;
+      margin-top: 0.8rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 3rem;
+      color: var(--soft);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .split,
+      .vibe-grid,
+      .author-grid,
+      .benefit-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-grid,
+      .split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      nav,
+      .section-head,
+      .button-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .stats,
+      .vibe-grid,
+      .author-grid,
+      .benefit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header.hero {
+        padding-top: 1.6rem;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <h1>The Blk Shelf</h1>
+          <small>Powered by Melanated Literary Rotations</small>          
+        </div>
+        <div class="nav-links">
+          <a href="library.html">Library</a>
+          <a href="featured-authors.html">Featured Authors</a>
+          <a href="#readers">Readers</a>
+          <a href="#submit">Submit</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Built to grow into a Black indie reading ecosystem</span>
+          <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
+          <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
+          <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered without fighting for scraps in overcrowded marketplaces.</p>
+
+          <div class="button-row">
+            <a class="btn btn-primary" href="#library">Explore the Library</a>
+            <a class="btn btn-secondary" href="#readers">Join the Reader List</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>200+</strong>
+              Black indie books
+            </div>
+            <div class="stat">
+              <strong>50+</strong>
+              featured authors
+            </div>
+            <div class="stat">
+              <strong>Weekly</strong>
+              rankings + updates
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-card">
+          <div class="section-label">Trending this week</div>
+          <h2>Readers are finding...</h2>
+
+          <div class="trend-item">
+            <div class="rank">1</div>
+            <div>
+              <strong>Crowned in Flames</strong>
+              <span>High engagement • indie fantasy romance</span>
+            </div>
+          </div>
+          <div class="trend-item">
+            <div class="rank">2</div>
+            <div>
+              <strong>Bound by Lightning</strong>
+              <span>Dark fantasy • rising fast</span>
+            </div>
+          </div>
+          <div class="trend-item">
+            <div class="rank">3</div>
+            <div>
+              <strong>The Pull of the Storm</strong>
+              <span>Paranormal romance • reader watchlist</span>
+            </div>
+          </div>
+          <div class="trend-item">
+            <div class="rank">4</div>
+            <div>
+              <strong>Shift of the Solstice</strong>
+              <span>Fantasy romance • buzz building</span>
+            </div>
+          </div>
+          <div class="trend-item">
+            <div class="rank">5</div>
+            <div>
+              <strong>Velvet & Vengeance</strong>
+              <span>Dark romance • top saves this week</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="library">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Browse by vibe</div>
+          <h2>Because readers search for a feeling, not just a genre.</h2>
+        </div>
+        <p>Don’t build this like a dead bookstore directory. Build it like a discovery engine people actually want to come back to.</p>
+      </div>
+
+      <div class="vibe-grid">
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Soft Black Romance</h3>
+          <p>Tender, character-rich love stories with chemistry, depth, and emotional payoff.</p>
+        </article>
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Spicy Paranormal</h3>
+          <p>Magic, danger, heat, and Black love threaded through the supernatural.</p>
+        </article>
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Dark & Twisted</h3>
+          <p>Morally messy, emotionally intense, and made for readers who like edge.</p>
+        </article>
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Hood Fantasy</h3>
+          <p>Streetwise storytelling with fantasy, horror, or paranormal bite.</p>
+        </article>
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Black Women Who Don’t Play</h3>
+          <p>Commanding heroines, high stakes, and women with presence and teeth.</p>
+        </article>
+        <article class="card">
+          <div class="thumb"></div>
+          <div class="meta">Curated lane</div>
+          <h3>Healing & Self-Discovery</h3>
+          <p>Stories of growth, reclamation, softness, survival, and becoming.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Featured authors</div>
+          <h2>Meet the writers behind the stories.</h2>
+        </div>
+        <p>This is where real authors get surfaced. Not buried behind a marketplace built to favor scale over connection.</p>
+      </div>
+
+      <div class="author-grid">
+        <article class="card">
+          <div class="author-cover"></div>
+          <div class="meta">Spicy paranormal</div>
+          <h3>Aaliyah Brooks</h3>
+          <p>Featured title: <em>Stormbound Hearts</em></p>
+        </article>
+        <article class="card">
+          <div class="author-cover"></div>
+          <div class="meta">Soft black romance</div>
+          <h3>Nia Carter</h3>
+          <p>Featured title: <em>Before Morning Comes</em></p>
+        </article>
+        <article class="card">
+          <div class="author-cover"></div>
+          <div class="meta">Dark fantasy</div>
+          <h3>J. Elise Monroe</h3>
+          <p>Featured title: <em>House of Ash & Gold</em></p>
+        </article>
+        <article class="card">
+          <div class="author-cover"></div>
+          <div class="meta">Urban fantasy</div>
+          <h3>Tariq Bennett</h3>
+          <p>Featured title: <em>Blood in the Quarter</em></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container split">
+      <div class="wide-panel">
+        <div class="section-label">Why this matters</div>
+        <h2>The algorithm is not a community.</h2>
+        <p>The Blk Shelf is built to help readers find Black indie stories without digging through clutter, and to help Black indie authors get discovered without begging a platform to notice them. Today it works as a discovery hub. Tomorrow it becomes the front door to a much larger reading ecosystem.</p>
+
+        <div class="benefit-grid">
+          <article class="card">
+            <h3>Curated discovery</h3>
+            <p>Readers find books by vibe, voice, genre, and what’s actually resonating.</p>
+          </article>
+          <article class="card">
+            <h3>Author visibility</h3>
+            <p>Featured placement, category momentum, and a direct path to interested readers.</p>
+          </article>
+          <article class="card">
+            <h3>Scalable future</h3>
+            <p>Start as a site. Grow into the ecosystem. Don’t wait to build the perfect machine before testing demand.</p>
+          </article>
+        </div>
+      </div>
+
+      <aside class="callout" id="readers">
+        <div class="section-label">Join the list</div>
+        <h2>Get Black indie reads in your inbox.</h2>
+        <p>Weekly featured books, new additions, trending titles, and author spotlights for readers who are tired of hunting for them one post at a time.</p>
+
+        <form>
+          <input type="text" placeholder="Your first name" />
+          <input type="email" placeholder="Your email address" />
+          <button class="btn btn-primary" type="button">Subscribe Now</button>
+        </form>
+        <div class="note">No spam. Just books worth your time.</div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="submit" style="padding-top: 0;">
+    <div class="container">
+      <div class="callout">
+        <div class="section-label">For authors</div>
+        <h2>Want your book featured on The Blk Shelf?</h2>
+        <div class="button-row" style="margin-top: 1.4rem; margin-bottom: 0;">
+          <a class="btn btn-primary" href="https://forms.gle/sfoy41AxfsZj17Yx9">Submit Author Info</a>
+          <a class="btn btn-secondary" href="https://forms.gle/Kuei1dWKap7ud5Ax5">Submit Your Book</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      The Blk Shelf • Powered by Melanated Literary Rotations • Discover your next Black indie read.
+    </div>
+  </footer>
+</body>
+</html>
 
