@@ -1,1 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Blk Shelf – Library</title>
+  <style>
+    :root {
+      --bg: #120e0b;
+      --bg-soft: #19120e;
+      --panel: #1c1511;
+      --panel-2: #241a14;
+      --wood: #6b4427;
+      --wood-dark: #4c301a;
+      --wood-light: #9b6b43;
+      --text: #f5eee6;
+      --muted: #c9b7a5;
+      --soft: #9c8775;
+      --accent: #d8a35d;
+      --accent-soft: rgba(216,163,93,0.14);
+      --line: rgba(255,255,255,0.08);
+      --shadow: 0 24px 70px rgba(0,0,0,0.35);
+      --radius: 22px;
+      --max: 1380px;
+    }
 
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(155,107,67,0.18), transparent 20%),
+        linear-gradient(180deg, #17110d 0%, #120e0b 60%, #140f0c 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.4rem 0.85rem;
+      border: 1px solid rgba(216,163,93,0.25);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    header {
+      padding: 2rem 0 2.5rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .brand {
+      font-size: 1.15rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0.8rem 0 0.6rem;
+      font-size: clamp(2.3rem, 5vw, 4.3rem);
+      line-height: 0.97;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 48rem;
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 1.25rem;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      font-weight: bold;
+      transition: 0.2s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1a130d;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .library-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+      padding: 3rem 0;
+    }
+
+    /* FILTERS SIDEBAR */
+    .filters {
+      align-self: start;
+      background: linear-gradient(180deg, rgba(28,21,17,0.98), rgba(20,15,12,0.98));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .filters h2 { margin: 0.2rem 0 0.4rem; font-size: 1.6rem; }
+    .filters .desc { margin: 0 0 1rem; color: var(--soft); font-size: 0.95rem; }
+
+.filter-group {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 1.2rem 0 0;
+  margin-top: 1.2rem;
+}
+
+.filter-group:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.filter-group summary {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.02rem;
+  user-select: none;
+}
+
+.filter-group summary::after {
+  content: '→';
+  font-size: 0.8rem;
+  color: var(--accent);
+  transition: transform 0.3s ease;
+}
+
+.filter-group[open] summary::after {
+  transform: rotate(90deg);
+}
+
+.filter-content {
+  padding-top: 1rem;
+}
+
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
+    .chip {
+      padding: 0.45rem 0.7rem;
+      border: 1px solid rgba(216,163,93,0.18);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.07);
+      color: var(--muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .chip.active {
+  background: var(--accent);
+  color: #1a130d;
+  border-color: var(--accent);
+  font-weight: bold;
+}
+
+.book.hidden {
+  display: none;
+}
+
+    .field {
+      width: 100%;
+      background: rgba(7,7,7,0.28);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 0.8rem 0.9rem;
+      font: inherit;
+      margin-bottom: 0.7rem;
+    }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+    /* BOOKCASE RESULTS */
+    .results-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      color: var(--muted);
+    }
+
+    .bookshelf {
+      background: #1c1511;
+      border: 10px solid #2b1d13;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    .shelf-row {
+      display: flex;
+      justify-content: center;
+      align-items: end;
+      gap: 1rem;
+      padding: 2.5rem 1.5rem 0.5rem;
+      border-bottom: 18px solid var(--wood-dark);
+      box-shadow: inset 0 -12px 20px rgba(0,0,0,0.5);
+      min-height: 340px;
+      flex-wrap: wrap;
+    }
+
+    .book {
+      position: relative;
+      width: 180px;
+      flex: 0 0 180px;
+      height: 270px;
+      border-radius: 4px 4px 2px 2px;
+      padding: 1.2rem 1rem;
+      color: white;
+      box-shadow: 5px 0 15px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .book:hover {
+      transform: translateY(-15px) rotate(-1deg);
+      box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
+      z-index: 10;
+    }
+
+    /* Book Visual Variations */
+    .book-1 { background: linear-gradient(to right, #7b2f2a, #9e3d37); border-left: 5px solid #4e1f1a; }
+    .book-2 { background: linear-gradient(to right, #34556f, #457296); border-left: 5px solid #1f3444; }
+    .book-3 { background: linear-gradient(to right, #75501e, #966627); border-left: 5px solid #4d3211; }
+    .book-4 { background: linear-gradient(to right, #4d375f, #66497d); border-left: 5px solid #2d1f38; }
+    .book-5 { background: linear-gradient(to right, #2f6248, #3f8360); border-left: 5px solid #1d3f2f; }
+    .book-6 { background: linear-gradient(to right, #8a4f1d, #b36626); border-left: 5px solid #5d3310; }
+
+    .book h3 { font-size: 0.95rem; margin: 0; line-height: 1.2; font-weight: bold; }
+    .book p { font-size: 0.75rem; opacity: 0.85; margin: 0.4rem 0; font-style: italic; }
+    .book .mini { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; }
+    .book .bottom { font-size: 0.68rem; opacity: 0.6; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem; }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .btn-nav {
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      color: white;
+      min-width: 200px;
+    }
+
+    @media (max-width: 1150px) {
+      .library-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <nav>
+        <div class="brand">
+          <h1>The Blk Shelf</h1>
+          <small>Powered by Melanated Literary Rotations</small>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="library.html">Library</a>
+          <a href="featured-authors.html">Featured Authors</a>
+          <a href="index.html#readers">Join the List</a>
+        </div>
+      </nav>
+      <div class="hero">
+        <div>
+          <span class="eyebrow">The Digital Library</span>
+          <h1>Explore the Stacks.</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container library-layout" id="library-anchor">
+<aside class="filters">
+  <span class="eyebrow">Filter library</span>
+  <h2>Find your next read.</h2>
+<p> </p>
+  <details class="filter-group">
+    <summary>Author</summary>
+    <div class="filter-content">
+      <input class="field" id="author-search" type="text" placeholder="Search author..." />
+    </div>
+  </details>
+
+  <details class="filter-group">
+    <summary>Genre</summary>
+    <div class="filter-content">
+      <div class="chip-row" id="genre-filters"></div>
+    </div>
+  </details>
+
+  <details class="filter-group">
+  <summary>Sub-Genre</summary>
+  <div class="filter-content">
+    <div class="chip-row" id="subgenre-filters"></div>
+  </div>
+</details>
+
+  <details class="filter-group">
+    <summary>Vibe</summary>
+    <div class="filter-content">
+      <div class="chip-row" id="vibe-filters"></div>
+    </div>
+  </details>
+
+  <details class="filter-group">
+    <summary>Age Range</summary>
+    <div class="filter-content">
+      <div class="chip-row" id="age-filters"></div>
+    </div>
+  </details>
+
+  <details class="filter-group">
+    <summary>Spice Level</summary>
+    <div class="filter-content">
+      <div class="chip-row" id="spice-filters"></div>
+    </div>
+  </details>
+
+  <details class="filter-group">
+    <summary>Representation</summary>
+    <div class="filter-content">
+      <div class="chip-row" id="representation-filters"></div>
+    </div>
+  </details>
+
+  <details class="filter-group">
+  <summary>Ranking</summary>
+  <div class="filter-content">
+    <div class="chip-row">
+      <span class="chip ranking-filter-chip" data-ranking-filter="trending">Trending</span>
+      <span class="chip ranking-filter-chip" data-ranking-filter="new-releases">New Releases</span>
+      <span class="chip ranking-filter-chip" data-ranking-filter="featured-authors">Featured Authors</span>
+    </div>
+  </div>
+</details>
+
+  <button class="btn btn-primary" id="apply-filters-btn">Apply Filters</button>
+  <button class="btn btn-secondary" id="clear-filters-btn" style="width:100%; margin-top:0.75rem;">Clear Filters</button>
+</aside>
+
+    <section>
+      <div class="results-top">
+        <p>Bookcase <span id="current-page">1</span> (Displaying Books <span id="range">1-100</span>)</p>
+        <div style="font-size: 0.9rem;">
+          Sort:
+          <select id="sort-select" class="field" style="display:inline-block; width:auto; margin:0 0 0 0.5rem; padding:0.45rem 0.7rem;">
+            <option value="default">Default</option>
+            <option value="title-asc">Title A–Z</option>
+            <option value="title-desc">Title Z–A</option>
+            <option value="newest">Newest Release</option>
+            <option value="oldest">Oldest Release</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bookshelf" id="bookshelf-inject">
+        </div>
+
+      <div class="pagination">
+        <button class="btn btn-nav" onclick="navigate(-1)">← Previous Case</button>
+        <button class="btn btn-nav" onclick="navigate(1)" style="background: var(--accent); color: black; border: none;">Next Case (Next 100 Books) →</button>
+      </div>
+    </section>
+  </main>
+
+<script>
+  const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+
+  let page = 1;
+  const booksPerShelf = 5;
+  const shelvesPerCase = 20;
+  const booksPerCase = booksPerShelf * shelvesPerCase;
+
+  let allBooks = [];
+  let filteredBooks = [];
+  let trendingBookIds = new Set();
+  let featuredAuthorIds = new Set();
+
+
+  const state = {
+    authorQuery: "",
+    genres: new Set(),
+    subGenres: new Set(),
+    vibes: new Set(),
+    ageRanges: new Set(),
+    spiceLevels: new Set(),
+    representations: new Set(),
+    rankingFilter: new Set(),
+    sortBy: "default"
+  };
+
+  async function loadLibrary() {
+  try {
+    const [libraryRes, rankingRes, featuredRes] = await Promise.all([
+      fetch(`${API_BASE}?type=library`),
+      fetch(`${API_BASE}?type=weekly-ranking`),
+      fetch(`${API_BASE}?type=featured`)
+    ]);
+
+    const libraryData = await libraryRes.json();
+    const rankingData = await rankingRes.json();
+    const featuredData = await featuredRes.json();
+
+    if (!libraryData.success || !Array.isArray(libraryData.books)) {
+      throw new Error("Library data did not load correctly.");
+    }
+
+    allBooks = libraryData.books;
+    filteredBooks = [...allBooks];
+
+    trendingBookIds = new Set(
+      (rankingData.rankings || []).map(item => item.bookId)
+    );
+
+    featuredAuthorIds = new Set(
+      (featuredData.authors || []).map(item => item.authorId)
+    );
+
+    buildDynamicFilterChips();
+    attachFilterEvents();
+    applyFilters();
+  } catch (error) {
+    console.error("Library load failed:", error);
+    document.getElementById("bookshelf-inject").innerHTML = `
+      <div style="padding:2rem; color:#f5eee6;">
+        Could not load books right now.
+      </div>
+    `;
+  }
+}
+
+  function buildDynamicFilterChips() {
+    buildChipGroup("genre-filters", getUniqueValues(allBooks, "genre"), "genre");
+    buildChipGroup("subgenre-filters", getUniqueFlattenedValues(allBooks, "subGenres"), "subgenre");
+    buildChipGroup("vibe-filters", getUniqueFlattenedValues(allBooks, "vibes"), "vibe");
+    buildChipGroup("age-filters", getUniqueValues(allBooks, "ageRange"), "age");
+    buildChipGroup("spice-filters", getUniqueValues(allBooks, "spiceLevel"), "spice");
+    buildChipGroup("representation-filters", getUniqueValues(allBooks, "representation"), "representation");
+  }
+
+  function buildChipGroup(containerId, values, type) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    values.forEach(value => {
+      const chip = document.createElement("span");
+      chip.className = "chip filter-chip";
+      chip.dataset.type = type;
+      chip.dataset.value = value;
+      chip.textContent = value;
+      container.appendChild(chip);
+    });
+  }
+
+  function getUniqueValues(items, field) {
+    return [...new Set(
+      items
+        .map(item => normalizeText(item[field]))
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b));
+  }
+
+  function getUniqueFlattenedValues(items, field) {
+    return [...new Set(
+      items.flatMap(item => Array.isArray(item[field]) ? item[field] : [])
+        .map(value => normalizeText(value))
+        .filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b));
+  }
+
+  function normalizeText(value) {
+    return String(value || "").trim();
+  }
+
+  function attachFilterEvents() {
+  document.getElementById("apply-filters-btn").addEventListener("click", applyFilters);
+
+  document.getElementById("clear-filters-btn").addEventListener("click", clearFilters);
+
+  document.getElementById("author-search").addEventListener("input", (e) => {
+    state.authorQuery = e.target.value.trim().toLowerCase();
+  });
+
+  document.getElementById("sort-select").addEventListener("change", (e) => {
+    state.sortBy = e.target.value;
+    applyFilters();
+  });
+
+  document.addEventListener("click", (e) => {
+    const chip = e.target.closest(".filter-chip");
+    if (chip) {
+      chip.classList.toggle("active");
+
+      const { type, value } = chip.dataset;
+
+      if (type === "genre") toggleSetValue(state.genres, value);
+      if (type === "subgenre") toggleSetValue(state.subGenres, value);
+      if (type === "vibe") toggleSetValue(state.vibes, value);
+      if (type === "age") toggleSetValue(state.ageRanges, value);
+      if (type === "spice") toggleSetValue(state.spiceLevels, value);
+      if (type === "representation") toggleSetValue(state.representations, value);
+    }
+
+    const rankingFilterChip = e.target.closest(".ranking-filter-chip");
+    if (rankingFilterChip) {
+      rankingFilterChip.classList.toggle("active");
+      toggleSetValue(state.rankingFilter, rankingFilterChip.dataset.rankingFilter);
+    }
+  });
+}
+
+  function toggleSetValue(setObj, value) {
+    if (setObj.has(value)) {
+      setObj.delete(value);
+    } else {
+      setObj.add(value);
+    }
+  }
+
+  function clearFilters() {
+    state.authorQuery = "";
+state.genres.clear();
+state.subGenres.clear();
+state.vibes.clear();
+state.ageRanges.clear();
+state.spiceLevels.clear();
+state.representations.clear();
+state.rankingFilter.clear();
+state.sortBy = "default";
+
+document.getElementById("author-search").value = "";
+document.getElementById("sort-select").value = "default";
+document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
+
+page = 1;
+applyFilters();
+  }
+
+  function applyFilters() {
+  filteredBooks = allBooks.filter(book => {
+    const authorName = normalizeText(book.authorName).toLowerCase();
+    const genre = normalizeText(book.genre);
+    const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
+    const ageRange = normalizeText(book.ageRange);
+    const spiceLevel = normalizeText(book.spiceLevel);
+    const representation = normalizeText(book.representation);
+    const vibes = Array.isArray(book.vibes) ? book.vibes.map(normalizeText) : [];
+
+    const matchesAuthor =
+      !state.authorQuery || authorName.includes(state.authorQuery);
+
+    const matchesGenre =
+      state.genres.size === 0 || state.genres.has(genre);
+
+    const matchesSubGenre =
+      state.subGenres.size === 0 || subGenres.some(sub => state.subGenres.has(sub));
+
+    const matchesVibe =
+      state.vibes.size === 0 || vibes.some(vibe => state.vibes.has(vibe));
+
+    const matchesAge =
+      state.ageRanges.size === 0 || state.ageRanges.has(ageRange);
+
+    const matchesSpice =
+      state.spiceLevels.size === 0 || state.spiceLevels.has(spiceLevel);
+
+    const matchesRepresentation =
+      state.representations.size === 0 || state.representations.has(representation);
+
+    const isTrending = trendingBookIds.has(book.bookId);
+
+    const isNewRelease = (() => {
+      const releaseTime = new Date(book.releaseDate).getTime();
+      if (Number.isNaN(releaseTime)) return false;
+      const ninetyDaysAgo = new Date();
+      ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+      return releaseTime >= ninetyDaysAgo.getTime();
+    })();
+
+    const isFeaturedAuthor = featuredAuthorIds.has(book.authorId);
+
+    const matchesRankingFilter =
+      state.rankingFilter.size === 0 ||
+      (state.rankingFilter.has("trending") && isTrending) ||
+      (state.rankingFilter.has("new-releases") && isNewRelease) ||
+      (state.rankingFilter.has("featured-authors") && isFeaturedAuthor);
+
+    return matchesAuthor &&
+      matchesGenre &&
+      matchesSubGenre &&
+      matchesVibe &&
+      matchesAge &&
+      matchesSpice &&
+      matchesRepresentation &&
+      matchesRankingFilter;
+  });
+
+  sortFilteredBooks();
+
+  page = 1;
+  renderCase();
+  updateResultsTop();
+}
+
+       
+
+  function sortFilteredBooks() {
+  if (state.sortBy === "title-asc") {
+    filteredBooks.sort((a, b) => normalizeText(a.title).localeCompare(normalizeText(b.title)));
+    return;
+  }
+
+  if (state.sortBy === "title-desc") {
+    filteredBooks.sort((a, b) => normalizeText(b.title).localeCompare(normalizeText(a.title)));
+    return;
+  }
+
+  if (state.sortBy === "newest") {
+    filteredBooks.sort((a, b) => parseDateSafe(b.releaseDate) - parseDateSafe(a.releaseDate));
+    return;
+  }
+
+  if (state.sortBy === "oldest") {
+    filteredBooks.sort((a, b) => parseDateSafe(a.releaseDate) - parseDateSafe(b.releaseDate));
+    return;
+  }
+}
+
+  function parseDateSafe(value) {
+    const time = new Date(value).getTime();
+    return Number.isNaN(time) ? 0 : time;
+  }
+
+  function renderCase() {
+    const container = document.getElementById("bookshelf-inject");
+    container.innerHTML = "";
+
+    const startIndex = (page - 1) * booksPerCase;
+    const endIndex = startIndex + booksPerCase;
+    const caseBooks = filteredBooks.slice(startIndex, endIndex);
+
+    if (!caseBooks.length) {
+      container.innerHTML = `
+        <div style="padding:2rem; color:#f5eee6;">
+          No books matched these filters.
+        </div>
+      `;
+      document.getElementById("current-page").innerText = page;
+      document.getElementById("range").innerText = "0-0";
+      return;
+    }
+
+    for (let s = 0; s < shelvesPerCase; s++) {
+      const shelfBooks = caseBooks.slice(s * booksPerShelf, (s + 1) * booksPerShelf);
+      if (!shelfBooks.length) break;
+
+      const shelf = document.createElement("div");
+      shelf.className = "shelf-row";
+
+      shelfBooks.forEach((book, index) => {
+        const styleNum = ((s * booksPerShelf + index) % 6) + 1;
+
+        const article = document.createElement("article");
+        article.className = `book book-${styleNum}`;
+        article.innerHTML = `
+          <div>
+            <div class="mini">${escapeHtml(book.genre || "Uncategorized")}</div>
+            <h3>${escapeHtml(book.title || "Untitled")}</h3>
+            <p>${escapeHtml(book.authorName || "Unknown Author")}</p>
+          </div>
+          <div class="bottom">
+            ${escapeHtml(book.ageRange || "Unrated")} • ${escapeHtml(book.spiceLevel || "No spice rating")}
+          </div>
+        `;
+
+        article.addEventListener("click", () => {
+          window.location.href = `book.html?id=${encodeURIComponent(book.bookId)}`;
+        });
+
+        shelf.appendChild(article);
+      });
+
+      container.appendChild(shelf);
+    }
+
+    const displayStart = filteredBooks.length ? startIndex + 1 : 0;
+    const displayEnd = Math.min(endIndex, filteredBooks.length);
+
+    document.getElementById("current-page").innerText = page;
+    document.getElementById("range").innerText = `${displayStart}-${displayEnd}`;
+  }
+
+  function updateResultsTop() {
+  const resultsTop = document.querySelector(".results-top");
+  const p = resultsTop.querySelector("p");
+
+  const start = filteredBooks.length === 0 ? 0 : ((page - 1) * booksPerCase) + 1;
+  const end = Math.min(page * booksPerCase, filteredBooks.length);
+
+  p.innerHTML = `Bookcase <span id="current-page">${page}</span> (Displaying Books <span id="range">${start}-${end}</span> of ${filteredBooks.length})`;
+}
+
+  function navigate(direction) {
+    const maxPage = Math.max(1, Math.ceil(filteredBooks.length / booksPerCase));
+    const nextPage = page + direction;
+
+    if (nextPage < 1 || nextPage > maxPage) return;
+
+    page = nextPage;
+    renderCase();
+    updateResultsTop();
+    document.getElementById("library-anchor").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+
+    function setupAccordionFilters() {
+    const filterGroups = document.querySelectorAll(".filter-group");
+
+    filterGroups.forEach(group => {
+      group.addEventListener("toggle", () => {
+        if (group.open) {
+          filterGroups.forEach(otherGroup => {
+            if (otherGroup !== group) {
+              otherGroup.removeAttribute("open");
+            }
+          });
+        }
+      });
+    });
+  }
+
+  setupAccordionFilters();
+  loadLibrary();
+</script>
+</body>
+</html>
