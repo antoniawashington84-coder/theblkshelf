@@ -62,35 +62,57 @@
     }
 
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 3rem;
-    }
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2.25rem;
+}
 
     .brand {
-      font-size: 1.2rem;
-      font-weight: bold;
-      letter-spacing: 0.04em;
-    }
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
 
-    .brand small {
-      display: block;
-      color: var(--soft);
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 0.2rem;
-    }
+.brand-title {
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  line-height: 0.95;
+}
+
+.brand small {
+  display: block;
+  color: var(--soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.1rem;
+}
 
     .nav-links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.nav-links a {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: var(--text);
+  border-bottom-color: rgba(216,163,93,0.45);
+  outline: none;
+}
 
     .hero-grid {
       display: grid;
@@ -158,6 +180,18 @@
       background: rgba(255,255,255,0.05);
     }
 
+.btn-full {
+  width: 100%;
+  text-align: center;
+  display: block;
+}
+
+.btn.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -180,12 +214,14 @@
     }
 
     .hero-card {
-      background: linear-gradient(180deg, rgba(36,29,23,0.96), rgba(22,17,13,0.96));
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 28px;
-      padding: 1.4rem;
-      box-shadow: var(--shadow);
-    }
+  background: linear-gradient(180deg, rgba(36,29,23,0.96), rgba(22,17,13,0.96));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+  max-height: 780px;
+  overflow: auto;
+}
 
     .hero-card h2 {
       margin: 0.2rem 0 1rem;
@@ -200,26 +236,73 @@
     }
 
     .trend-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      padding: 0.95rem;
-      margin-bottom: 0.8rem;
-    }
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 18px;
+  padding: 0.7rem;
+  margin-bottom: 0.65rem;
+}
+
+.trend-cover {
+  width: 42px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+}
+
+.trend-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.trend-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.trend-text strong {
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.trend-text span {
+  font-size: 0.8rem;
+  color: var(--soft);
+}
 
     .rank {
-      min-width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: rgba(216,163,93,0.14);
-      color: #f3c78e;
-      font-weight: bold;
-    }
+  min-width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(216,163,93,0.14);
+  color: #f3c78e;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.trending-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.trending-discussion {
+  display: flex;
+}
+
+.trending-discussion .btn {
+  width: 100%;
+}
 
     .trend-item span {
       display: block;
@@ -315,6 +398,174 @@
       margin-bottom: 0;
     }
 
+    .card-link,
+.trend-link {
+  display: block;
+}
+
+.card-link .card,
+.trend-link .trend-item {
+  transition: 0.2s ease;
+}
+
+.card-link:hover .card,
+.trend-link:hover .trend-item {
+  border-color: rgba(216,163,93,0.28);
+  transform: translateY(-2px);
+}
+
+.cover-frame,
+.author-photo {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(216,163,93,0.14), rgba(30,24,18,0.92));
+  margin-bottom: 1rem;
+}
+
+.cover-frame {
+  aspect-ratio: 2 / 3;
+}
+
+.author-photo {
+  aspect-ratio: 4 / 5;
+}
+
+.cover-frame img,
+.author-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.release-carousel-shell {
+  overflow: hidden;
+  border-radius: 24px;
+  position: relative;
+}
+
+.release-carousel {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: scrollReleases 40s linear infinite;
+  padding: 0.25rem 0;
+}
+
+.release-carousel:hover {
+  animation-play-state: paused;
+}
+
+.release-card {
+  width: 240px;
+  flex: 0 0 240px;
+}
+
+.release-card .card {
+  height: 100%;
+}
+
+.release-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.release-badge {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(216,163,93,0.2);
+  background: rgba(216,163,93,0.08);
+  color: var(--muted);
+}
+
+.release-cover-wrap {
+  position: relative;
+  width: 180px;
+  aspect-ratio: 2 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.35),
+    0 2px 0 rgba(255,255,255,0.03) inset;
+  transition: transform 0.25s ease;
+}
+
+.release-card:hover .release-cover-wrap {
+  transform: translateY(-6px);
+}
+
+.release-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.release-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.6rem;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.35),
+    transparent
+  );
+}
+
+.release-date {
+  color: var(--soft);
+  font-size: 0.9rem;
+  margin-top: 0.45rem;
+}
+
+@keyframes scrollReleases {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.inline-link {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.inline-link:hover {
+  color: #f2c994;
+}
+
+.section-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.section-cta:hover {
+  color: #f2c994;
+}
+
+.empty-state,
+.loading-state {
+  color: var(--soft);
+  padding: 1rem 0;
+}
+
     .split {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
@@ -347,28 +598,113 @@
       max-width: 48rem;
     }
 
-    form {
-      display: grid;
-      gap: 0.9rem;
-      margin-top: 1.3rem;
+        #readers .reader-signup-intro {
+      margin-bottom: 1rem;
     }
 
-    input {
+    #readers .reader-signup-perks {
+      display: grid;
+      gap: 0.7rem;
+      margin: 1.2rem 0 1.35rem;
+    }
+
+    #readers .reader-signup-perk {
+      padding: 0.85rem 0.95rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    #readers .reader-signup-perk strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    #readers .reader-signup-perk span {
+      color: var(--soft);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    #readers .reader-signup-perks-inline {
+  color: var(--soft);
+  font-size: 0.9rem;
+  margin: 0.6rem 0 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+    #readerSignupForm {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+    .signup-label {
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: -0.35rem;
+    }
+
+    #readerSignupForm input {
       width: 100%;
       padding: 1rem 1rem;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(11,10,9,0.66);
+      background: rgba(11,10,9,0.72);
       color: var(--text);
       font: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    input::placeholder { color: #9f907f; }
+    #readerSignupForm input::placeholder {
+      color: #9f907f;
+    }
+
+    #readerSignupForm input:focus {
+      outline: none;
+      border-color: rgba(216,163,93,0.5);
+      box-shadow: 0 0 0 3px rgba(216,163,93,0.12);
+      background: rgba(11,10,9,0.82);
+    }
+
+    #readerSignupButton {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.2rem;
+    }
+
+    #readerSignupButton[disabled] {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .signup-hp {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px !important;
+      height: 1px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
 
     .note {
       color: var(--soft);
       font-size: 0.88rem;
-      margin-top: 0.8rem;
+      margin-top: 0.9rem;
+      min-height: 1.4em;
+    }
+
+    .note.is-success {
+      color: #f2c994;
+    }
+
+    .note.is-error {
+      color: #e7b0a2;
     }
 
     footer {
@@ -394,117 +730,132 @@
     }
 
     @media (max-width: 720px) {
-      nav,
-      .section-head,
-      .button-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  nav,
+  .section-head,
+  .button-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-      .stats,
-      .vibe-grid,
-      .author-grid,
-      .benefit-grid {
-        grid-template-columns: 1fr;
-      }
+  nav {
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
 
-      header.hero {
-        padding-top: 1.6rem;
-      }
+  .brand-title {
+    font-size: 1.7rem;
+  }
 
-      h1 {
-        font-size: 2.8rem;
-      }
-    }
+  .brand small {
+    font-size: 0.62rem;
+  }
+
+  .nav-links {
+    gap: 0.85rem;
+  }
+
+  .stats,
+  .vibe-grid,
+  .author-grid,
+  .benefit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  header.hero {
+    padding-top: 1.6rem;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+  }
+}
   </style>
 </head>
 <body>
   <header class="hero">
     <div class="container">
       <nav>
-        <div class="brand">
-          <h1>The Blk Shelf</h1>
-          <small>Powered by Melanated Literary Rotations</small>          
-        </div>
-        <div class="nav-links">
-          <a href="library.html">Library</a>
-          <a href="featured-authors.html">Featured Authors</a>
-          <a href="#readers">Readers</a>
-          <a href="#submit">Submit</a>
-        </div>
-      </nav>
+  <a class="brand" href="index.html" aria-label="The Blk Shelf home">
+  <span class="brand-title">The Blk Shelf</span>
+  <small>Powered by Melanated Literary Rotations</small>
+</a>
+  <div class="nav-links">
+    <a href="library.html">Library</a>
+    <a href="featured-authors.html">Featured Authors</a>
+    <a href="#readers">Join the List</a>
+    <a href="#submit">Submit a Book</a>
+  </div>
+</nav>
 
-      <div class="hero-grid">
-        <div>
-          <span class="eyebrow">Built to grow into a Black indie reading ecosystem</span>
-          <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
-          <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
-          <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered without fighting for scraps in overcrowded marketplaces.</p>
+<div class="hero-grid">
+  <div>
+    <span class="eyebrow">Built to grow into a Black indie reading ecosystem</span>
+    <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
+    <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
+    <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered without fighting for scraps in overcrowded marketplaces.</p>
 
-          <div class="button-row">
-            <a class="btn btn-primary" href="#library">Explore the Library</a>
-            <a class="btn btn-secondary" href="#readers">Join the Reader List</a>
-          </div>
+    <div class="button-row">
+      <a class="btn btn-primary" href="library.html">Explore the Library</a>
+      <a class="btn btn-secondary" href="featured-authors.html">Meet Featured Authors</a>
+    </div>
 
           <div class="stats">
-            <div class="stat">
-              <strong>200+</strong>
-              Black indie books
-            </div>
-            <div class="stat">
-              <strong>50+</strong>
-              featured authors
-            </div>
-            <div class="stat">
-              <strong>Weekly</strong>
-              rankings + updates
-            </div>
-          </div>
+  <div class="stat">
+    <strong id="booksStatValue">—</strong>
+    <span id="booksStatLabel">Black indie books</span>
+  </div>
+  <div class="stat">
+    <strong id="authorsStatValue">—</strong>
+    <span id="authorsStatLabel">Black indie authors</span>
+  </div>
+  <div class="stat">
+    <strong>Weekly</strong>
+    rankings + updates
+  </div>
+</div>
         </div>
 
-        <aside class="hero-card">
-          <div class="section-label">Trending this week</div>
-          <h2>Readers are finding...</h2>
+        <div class="trending-wrapper">
+  <aside class="hero-card">
+    <div class="section-label" id="trendingLabel">Loading shelf data</div>
+    <h2 id="trendingHeading">Loading books...</h2>
+    <div id="trendingBooks" class="loading-state">Loading books...</div>
+  </aside>
 
-          <div class="trend-item">
-            <div class="rank">1</div>
-            <div>
-              <strong>Crowned in Flames</strong>
-              <span>High engagement • indie fantasy romance</span>
-            </div>
-          </div>
-          <div class="trend-item">
-            <div class="rank">2</div>
-            <div>
-              <strong>Bound by Lightning</strong>
-              <span>Dark fantasy • rising fast</span>
-            </div>
-          </div>
-          <div class="trend-item">
-            <div class="rank">3</div>
-            <div>
-              <strong>The Pull of the Storm</strong>
-              <span>Paranormal romance • reader watchlist</span>
-            </div>
-          </div>
-          <div class="trend-item">
-            <div class="rank">4</div>
-            <div>
-              <strong>Shift of the Solstice</strong>
-              <span>Fantasy romance • buzz building</span>
-            </div>
-          </div>
-          <div class="trend-item">
-            <div class="rank">5</div>
-            <div>
-              <strong>Velvet & Vengeance</strong>
-              <span>Dark romance • top saves this week</span>
-            </div>
-          </div>
-        </aside>
+  <div class="trending-discussion">
+    <a
+      id="discordButton"
+      class="btn btn-secondary btn-full disabled"
+      href="#"
+      aria-disabled="true"
+    >
+      (Coming Soon) Discuss What's Trending on Discord
+    </a>
+  </div>
+</div>
       </div>
     </div>
   </header>
+
+  <section id="authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Featured authors</div>
+        <h2>Meet the writers behind the stories.</h2>
+      </div>
+      <p>This is where real authors get surfaced. Not buried behind a marketplace built to favor scale over connection.</p>
+    </div>
+
+    <div id="featuredAuthorsGrid" class="author-grid">
+      <div class="loading-state">Loading featured authors...</div>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <a class="section-cta" href="featured-authors.html">View all featured authors →</a>
+    </div>
+  </div>
+</section>
 
   <section id="library">
     <div class="container">
@@ -516,142 +867,663 @@
         <p>Don’t build this like a dead bookstore directory. Build it like a discovery engine people actually want to come back to.</p>
       </div>
 
-      <div class="vibe-grid">
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Soft Black Romance</h3>
-          <p>Tender, character-rich love stories with chemistry, depth, and emotional payoff.</p>
-        </article>
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Spicy Paranormal</h3>
-          <p>Magic, danger, heat, and Black love threaded through the supernatural.</p>
-        </article>
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Dark & Twisted</h3>
-          <p>Morally messy, emotionally intense, and made for readers who like edge.</p>
-        </article>
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Hood Fantasy</h3>
-          <p>Streetwise storytelling with fantasy, horror, or paranormal bite.</p>
-        </article>
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Black Women Who Don’t Play</h3>
-          <p>Commanding heroines, high stakes, and women with presence and teeth.</p>
-        </article>
-        <article class="card">
-          <div class="thumb"></div>
-          <div class="meta">Curated lane</div>
-          <h3>Healing & Self-Discovery</h3>
-          <p>Stories of growth, reclamation, softness, survival, and becoming.</p>
-        </article>
-      </div>
+      <div class="vibe-grid" id="vibeGrid">
+  <div class="loading-state">Loading vibes...</div>
+</div>
     </div>
   </section>
 
-  <section id="authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <div class="section-label">Featured authors</div>
-          <h2>Meet the writers behind the stories.</h2>
-        </div>
-        <p>This is where real authors get surfaced. Not buried behind a marketplace built to favor scale over connection.</p>
+<section id="fresh-books">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-label">New & upcoming</div>
+        <h2>Fresh from the shelf.</h2>
       </div>
-
-      <div class="author-grid">
-        <article class="card">
-          <div class="author-cover"></div>
-          <div class="meta">Spicy paranormal</div>
-          <h3>Aaliyah Brooks</h3>
-          <p>Featured title: <em>Stormbound Hearts</em></p>
-        </article>
-        <article class="card">
-          <div class="author-cover"></div>
-          <div class="meta">Soft black romance</div>
-          <h3>Nia Carter</h3>
-          <p>Featured title: <em>Before Morning Comes</em></p>
-        </article>
-        <article class="card">
-          <div class="author-cover"></div>
-          <div class="meta">Dark fantasy</div>
-          <h3>J. Elise Monroe</h3>
-          <p>Featured title: <em>House of Ash & Gold</em></p>
-        </article>
-        <article class="card">
-          <div class="author-cover"></div>
-          <div class="meta">Urban fantasy</div>
-          <h3>Tariq Bennett</h3>
-          <p>Featured title: <em>Blood in the Quarter</em></p>
-        </article>
-      </div>
+      <p>New heat and upcoming drops.</p>
     </div>
-  </section>
+
+    <div class="release-carousel-shell">
+      <div id="freshBooksCarousel" class="release-carousel loading-state">Loading books...</div>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <a class="section-cta" href="library.html">Browse the full library →</a>
+    </div>
+  </div>
+</section>
 
   <section>
-    <div class="container split">
-      <div class="wide-panel">
-        <div class="section-label">Why this matters</div>
-        <h2>The algorithm is not a community.</h2>
-        <p>The Blk Shelf is built to help readers find Black indie stories without digging through clutter, and to help Black indie authors get discovered without begging a platform to notice them. Today it works as a discovery hub. Tomorrow it becomes the front door to a much larger reading ecosystem.</p>
+  <div class="container split">
+    <div class="wide-panel">
+      <div class="section-label">Built to connect Black Indie authors to readers</div>
+      <h2>Find stories that feel like they were meant for you.</h2>
+      <p>Finding a good book shouldn’t feel like digging through noise. The Blk Shelf keeps the focus where it belongs—on stories that hit, voices that stand out, and books that actually match your mood.</p>
 
-        <div class="benefit-grid">
-          <article class="card">
-            <h3>Curated discovery</h3>
-            <p>Readers find books by vibe, voice, genre, and what’s actually resonating.</p>
-          </article>
-          <article class="card">
-            <h3>Author visibility</h3>
-            <p>Featured placement, category momentum, and a direct path to interested readers.</p>
-          </article>
-          <article class="card">
-            <h3>Scalable future</h3>
-            <p>Start as a site. Grow into the ecosystem. Don’t wait to build the perfect machine before testing demand.</p>
-          </article>
-        </div>
+      <div class="benefit-grid">
+        <article class="card">
+          <h3>Curated discovery</h3>
+          <p>Find books by vibe, voice, and what’s actually resonating—not whatever an algorithm decides to push.</p>
+        </article>
+        <article class="card">
+          <h3>Stories that hit</h3>
+          <p>From soft and cozy to dark and chaotic, the range is real. Pick your lane and find something worth your time.</p>
+        </article>
+        <article class="card">
+          <h3>No more digging</h3>
+          <p>You shouldn’t have to scroll forever to find something good. We already did that part.</p>
+        </article>
       </div>
+    </div>
 
-      <aside class="callout" id="readers">
+            <aside class="callout" id="readers">
         <div class="section-label">Join the list</div>
-        <h2>Get Black indie reads in your inbox.</h2>
-        <p>Weekly featured books, new additions, trending titles, and author spotlights for readers who are tired of hunting for them one post at a time.</p>
+        <h2>Stay close to the books that matter.</h2>
+        <p class="reader-signup-intro">
+  Stay tapped in without chasing posts, pages, or algorithms.
+</p>
 
-        <form>
-          <input type="text" placeholder="Your first name" />
-          <input type="email" placeholder="Your email address" />
-          <button class="btn btn-primary" type="button">Subscribe Now</button>
+        <p class="reader-signup-perks-inline">
+  New releases • Featured authors • Shelf updates
+</p>
+
+        <form id="readerSignupForm" novalidate>
+          <label class="signup-label" for="readerFirstName">First name</label>
+          <input
+            id="readerFirstName"
+            type="text"
+            name="firstName"
+            placeholder="Enter your first name"
+            autocomplete="given-name"
+            required
+          />
+
+          <label class="signup-label" for="readerEmail">Email address</label>
+          <input
+            id="readerEmail"
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            inputmode="email"
+            required
+          />
+
+          <input
+            type="text"
+            name="company"
+            id="readerCompany"
+            class="signup-hp"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+
+          <button class="btn btn-primary" id="readerSignupButton" type="submit">
+            Join the Reader List
+          </button>
         </form>
-        <div class="note">No spam. Just books worth your time.</div>
+
+        <div class="note" id="readerSignupNote" aria-live="polite">
+          No clutter. Just Black indie books, featured authors, and updates worth opening.
+        </div>
       </aside>
     </div>
   </section>
 
-  <section id="submit" style="padding-top: 0;">
+    <section id="submit" style="padding-top: 0;">
     <div class="container">
       <div class="callout">
         <div class="section-label">For authors</div>
         <h2>Want your book featured on The Blk Shelf?</h2>
         <div class="button-row" style="margin-top: 1.4rem; margin-bottom: 0;">
-          <a class="btn btn-primary" href="https://forms.gle/sfoy41AxfsZj17Yx9">Submit Author Info</a>
-          <a class="btn btn-secondary" href="https://forms.gle/Kuei1dWKap7ud5Ax5">Submit Your Book</a>
+          <a
+            class="btn btn-primary"
+            href="https://forms.gle/sfoy41AxfsZj17Yx9"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Submit Author Info
+          </a>
+
+          <a
+            class="btn btn-secondary"
+            href="https://forms.gle/Kuei1dWKap7ud5Ax5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Submit Your Book
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <footer>
+    <footer>
     <div class="container">
       The Blk Shelf • Powered by Melanated Literary Rotations • Discover your next Black indie read.
     </div>
   </footer>
+
+  <script>
+    const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+    const DEFAULT_COVER = "https://placehold.co/400x600/1d1814/f4eee8?text=The+Blk+Shelf";
+    const DEFAULT_AUTHOR = "https://placehold.co/500x625/1d1814/f4eee8?text=Author";
+            const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
+
+    function getCurrentMonthKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function pick(obj, keys, fallback = "") {
+      for (const key of keys) {
+        if (obj && obj[key] != null && String(obj[key]).trim() !== "") {
+          return obj[key];
+        }
+      }
+      return fallback;
+    }
+
+    function normalizeArray(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.books)) return data.books;
+  if (Array.isArray(data?.authors)) return data.authors;
+  if (Array.isArray(data?.items)) return data.items;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.rankings)) return data.rankings;
+  return [];
+}
+
+function shuffleArray(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+const VIBE_OPTIONS = [
+  {
+    title: "Hot & Heavy 🌶️",
+    filterValue: "Hot & Heavy 🌶️",
+    description: "For readers who want heat on the page and chemistry that refuses to behave."
+  },
+  {
+    title: "Worth the Wait (Slow Burn)",
+    filterValue: "Worth the Wait (Slow Burn)",
+    description: "Tension, restraint, and payoff that takes its sweet time getting there."
+  },
+  {
+    title: "No Breathers (Fast-Paced)",
+    filterValue: "No Breathers (Fast-Paced)",
+    description: "Quick hooks, high momentum, and stories that do not let up."
+  },
+  {
+    title: "Emotional Damage",
+    filterValue: "Emotional Damage",
+    description: "Messy feelings, deep wounds, and books that drag your heart by the neck."
+  },
+  {
+    title: "Soft Life (Cozy)",
+    filterValue: "Soft Life (Cozy)",
+    description: "Comfort reads, gentler stakes, and stories you want to curl up inside."
+  },
+  {
+    title: "Ain't Nothing Sweet (Gritty)",
+    filterValue: "Ain't Nothing Sweet (Gritty)",
+    description: "Sharp edges, hard truths, and stories that do not clean themselves up for you."
+  },
+  {
+    title: "Dark & Twisted",
+    filterValue: "Dark & Twisted",
+    description: "Morally messy, intense, and made for readers who like their stories with teeth."
+  },
+  {
+    title: "Healing / Redemption",
+    filterValue: "Healing / Redemption",
+    description: "Stories about repair, recovery, second chances, and becoming something new."
+  },
+  {
+    title: "Found Family",
+    filterValue: "Found Family",
+    description: "Ride-or-die bonds, chosen people, and connection built the hard way."
+  },
+  {
+    title: "Everybody Got Issues",
+    filterValue: "Everybody Got Issues",
+    description: "Complicated people, complicated choices, and nobody clean enough to judge."
+  },
+  {
+    title: "Plot gonna Plot",
+    filterValue: "Plot gonna Plot",
+    description: "For readers who want twists, turns, reveals, and strong external momentum."
+  },
+  {
+    title: "Character-Driven",
+    filterValue: "Character-Driven",
+    description: "For readers who stay for voice, interiority, and people who feel real."
+  }
+];
+
+function renderVibeCards() {
+  const target = document.getElementById("vibeGrid");
+  if (!target) return;
+
+  const selectedVibes = shuffleArray(VIBE_OPTIONS).slice(0, 6);
+
+  target.innerHTML = selectedVibes.map((vibe) => `
+    <a class="card-link" href="library.html?vibe=${encodeURIComponent(vibe.filterValue)}">
+      <article class="card">
+        <div class="thumb" style="${vibe.image ? `background-image: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('${escapeHtml(vibe.image)}'); background-size: cover; background-position: center;` : ''}"></div>
+        <div class="meta">Curated lane</div>
+        <h3>${escapeHtml(vibe.title)}</h3>
+        <p>${escapeHtml(vibe.description)}</p>
+      </article>
+    </a>
+  `).join("");
+}
+
+function formatRoundedStat(count) {
+  const safeCount = Number(count) || 0;
+
+  if (safeCount < 50) {
+    return String(safeCount);
+  }
+
+  return `${Math.floor(safeCount / 50) * 50}+`;
+}
+
+function countUniqueLiveAuthors(books) {
+  const uniqueAuthorIds = new Set();
+
+  books.forEach(book => {
+    const authorId = pick(book, ["authorId", "authorID"], "");
+    const authorName = pick(book, ["authorName", "author"], "");
+
+    if (authorId) {
+      uniqueAuthorIds.add(authorId);
+    } else if (authorName) {
+      uniqueAuthorIds.add(`name:${authorName.toLowerCase()}`);
+    }
+  });
+
+  return uniqueAuthorIds.size;
+}
+
+function renderHeroStats(books) {
+  const booksCount = books.length;
+  const authorsCount = countUniqueLiveAuthors(books);
+
+  const booksStatValue = document.getElementById("booksStatValue");
+  const authorsStatValue = document.getElementById("authorsStatValue");
+  const authorsStatLabel = document.getElementById("authorsStatLabel");
+
+  if (booksStatValue) {
+    booksStatValue.textContent = formatRoundedStat(booksCount);
+  }
+
+  if (authorsStatValue) {
+    authorsStatValue.textContent = formatRoundedStat(authorsCount);
+  }
+
+  if (authorsStatLabel) {
+    authorsStatLabel.textContent = authorsCount === 1 ? "Black indie author" : "Black indie authors";
+  }
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return await res.json();
+}
+
+    function renderTrendingBooks(books, mode = "fallback") {
+  const target = document.getElementById("trendingBooks");
+  const label = document.getElementById("trendingLabel");
+  const heading = document.getElementById("trendingHeading");
+
+  if (!books.length) {
+    label.textContent = "From the shelf";
+    heading.textContent = "Books to try";
+    target.innerHTML = '<div class="empty-state">No books available yet.</div>';
+    return;
+  }
+
+  const isTrending = mode === "trending";
+
+  label.textContent = isTrending ? "Trending now" : "From the shelf";
+  heading.textContent = isTrending ? "Top 10 books on the shelf" : "Books to try";
+
+  target.innerHTML = books.slice(0, 10).map((book, index) => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    const title = pick(book, ["title", "bookTitle"], "Untitled");
+    const author = pick(book, ["author", "authorName"], "Author");
+    const genre = pick(book, ["genre", "genres", "category"], "Book");
+    const cover = pick(book, ["cover", "bookCover", "coverImage", "image"], DEFAULT_COVER);
+
+    const clickSource = isTrending ? "landing_trending" : "landing_books_to_try";
+    const rankDisplay = isTrending ? (index + 1) : "•";
+
+    return `
+      <a class="trend-link" href="book.html?id=${encodeURIComponent(id)}&source=${encodeURIComponent(clickSource)}">
+        <div class="trend-item">
+          <div class="rank">${rankDisplay}</div>
+
+          <div class="trend-cover">
+            <img 
+              src="${escapeHtml(cover)}" 
+              alt="${escapeHtml(title)} cover" 
+              loading="lazy"
+              onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+            >
+          </div>
+
+          <div class="trend-text">
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(author)} • ${escapeHtml(genre)}</span>
+          </div>
+        </div>
+      </a>
+    `;
+  }).join("");
+}
+
+function buildRankedBooks(rankings, books) {
+  const bookMap = new Map();
+
+  books.forEach(book => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    if (id) {
+      bookMap.set(id, book);
+    }
+  });
+
+  return rankings
+    .map(rankItem => {
+      const bookId = pick(rankItem, ["bookId", "id", "bookID"]);
+      const matchedBook = bookMap.get(bookId);
+
+      if (!matchedBook) return null;
+
+      return {
+        ...matchedBook,
+        rank: pick(rankItem, ["rank"], null),
+        clickCount: pick(rankItem, ["clickCount"], 0)
+      };
+    })
+    .filter(Boolean);
+}
+
+    function formatReleaseDateLabel(dateValue) {
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function renderFreshBooks(books) {
+  const target = document.getElementById("freshBooksCarousel");
+  if (!target) return;
+
+  if (!books.length) {
+    target.innerHTML = '<div class="empty-state">No books available yet.</div>';
+    return;
+  }
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const datedBooks = books
+    .map((book) => {
+      const rawDate = pick(book, ["releaseDate", "pubDate", "publicationDate"], "");
+      const parsedDate = new Date(rawDate);
+
+      return {
+        ...book,
+        _parsedReleaseDate: parsedDate,
+        _hasValidDate: !Number.isNaN(parsedDate.getTime())
+      };
+    })
+    .filter(book => book._hasValidDate);
+
+  const upcomingBooks = datedBooks
+    .filter(book => book._parsedReleaseDate >= now)
+    .sort((a, b) => a._parsedReleaseDate - b._parsedReleaseDate)
+    .slice(0, 8)
+    .map(book => ({ ...book, _releaseType: "Upcoming Release" }));
+
+  const NEW_RELEASE_WINDOW_DAYS = 60;
+
+const newReleaseCutoff = new Date(now);
+newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
+
+const newReleaseBooks = datedBooks
+  .filter(book =>
+    book._parsedReleaseDate < now &&
+    book._parsedReleaseDate >= newReleaseCutoff
+  )
+  .sort((a, b) => b._parsedReleaseDate - a._parsedReleaseDate)
+  .slice(0, 8)
+  .map(book => ({ ...book, _releaseType: "Available Now" }));
+
+  const selectedBooks = [...upcomingBooks, ...newReleaseBooks];
+
+  if (!selectedBooks.length) {
+    target.innerHTML = '<div class="empty-state">No recent or upcoming releases available yet.</div>';
+    return;
+  }
+
+  const carouselItems = [...selectedBooks, ...selectedBooks];
+
+  target.classList.remove("loading-state");
+
+  target.innerHTML = carouselItems.map((book) => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    const title = pick(book, ["title", "bookTitle"], "Untitled");
+    const author = pick(book, ["author", "authorName"], "Author");
+    const description = pick(book, ["description", "blurb", "summary"], "");
+    const cover = pick(book, ["cover", "bookCover", "coverImage", "image"], DEFAULT_COVER);
+    const genre = pick(book, ["genre", "genres", "category"], "Book");
+    const releaseDateLabel = formatReleaseDateLabel(book._parsedReleaseDate);
+
+    return `
+  <a class="card-link release-card" href="book.html?id=${encodeURIComponent(id)}&source=landing_fresh_books">
+    <div class="release-cover-wrap">
+      <img
+        class="release-cover"
+        src="${escapeHtml(cover)}"
+        alt="${escapeHtml(title)} cover"
+        loading="lazy"
+        onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+      />
+
+      <div class="release-overlay">
+        <span class="release-badge">${escapeHtml(book._releaseType)}</span>
+      </div>
+    </div>
+  </a>
+`;
+  }).join("");
+}
+
+function renderFeaturedAuthors(authors) {
+  const target = document.getElementById("featuredAuthorsGrid");
+  if (!authors.length) {
+    target.innerHTML = '<div class="empty-state">No featured authors available right now.</div>';
+    return;
+  }
+
+  target.innerHTML = authors.slice(0, 4).map((author) => {
+    const id = pick(author, ["id", "authorId", "authorID"]);
+    const name = pick(author, ["name", "authorName"], "Featured Author");
+    const genres = pick(author, ["genres", "genre", "category"], "Featured author");
+    const image = pick(author, ["headshotLogo", "image", "photo", "authorPhoto", "headshot"], DEFAULT_AUTHOR);
+    const featuredTitle = pick(author, ["featuredTitle", "bookTitle", "title"], "");
+
+    const genreText = Array.isArray(genres) ? genres.join(", ") : genres;
+
+    return `
+      <a class="card-link" href="author.html?id=${encodeURIComponent(id)}&source=landing_featured_authors">
+        <article class="card">
+          <div class="author-photo">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_AUTHOR}'">
+          </div>
+          <div class="meta">${escapeHtml(genreText)}</div>
+          <h3>${escapeHtml(name)}</h3>
+          <p>${featuredTitle ? `Featured title: <em>${escapeHtml(featuredTitle)}</em>` : "View author profile"}</p>
+        </article>
+      </a>
+    `;
+  }).join("");
+}
+
+    async function loadLandingData() {
+  try {
+    const monthKey = getCurrentMonthKey();
+
+    const [booksResponse, featuredResponse, rankingsResponse] = await Promise.all([
+      fetchJson(`${API_BASE}?type=library`),
+      fetchJson(`${API_BASE}?type=featured&month=${encodeURIComponent(monthKey)}`),
+      fetchJson(`${API_BASE}?type=weekly-ranking`)
+    ]);
+
+    const books = normalizeArray(booksResponse);
+const featuredAuthors = normalizeArray(featuredResponse);
+const rankings = normalizeArray(rankingsResponse);
+
+renderHeroStats(books);
+
+const rankedBooks = buildRankedBooks(rankings, books);
+
+if (rankedBooks.length > 0) {
+  renderTrendingBooks(rankedBooks, "trending");
+} else {
+  const fallbackBooks = shuffleArray(books).slice(0, 10);
+  renderTrendingBooks(fallbackBooks, "fallback");
+}
+
+renderFreshBooks(books);
+renderFeaturedAuthors(featuredAuthors);
+  } catch (error) {
+    console.error(error);
+    document.getElementById("trendingLabel").textContent = "From the shelf";
+    document.getElementById("trendingHeading").textContent = "Books to try";
+    document.getElementById("trendingBooks").innerHTML = '<div class="empty-state">Unable to load books right now.</div>';
+    document.getElementById("freshBooksCarousel").innerHTML = '<div class="empty-state">Unable to load books right now.</div>';
+    document.getElementById("featuredAuthorsGrid").innerHTML = '<div class="empty-state">Unable to load featured authors right now.</div>';
+  }
+}
+
+            document.getElementById("readerSignupForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const note = document.getElementById("readerSignupNote");
+  const button = document.getElementById("readerSignupButton");
+  const firstNameInput = form.querySelector('input[name="firstName"]');
+  const emailInput = form.querySelector('input[name="email"]');
+  const honeypotInput = form.querySelector('input[name="company"]');
+
+  note.classList.remove("is-success", "is-error");
+
+  const firstName = firstNameInput.value.trim();
+  const email = emailInput.value.trim();
+  const honeypot = honeypotInput.value.trim();
+
+  if (!firstName || !email) {
+    note.textContent = "Please enter your first name and email address.";
+    note.classList.add("is-error");
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    note.textContent = "Please enter a valid email address.";
+    note.classList.add("is-error");
+    return;
+  }
+
+  if (honeypot) {
+    note.textContent = "Thanks for signing up.";
+    note.classList.add("is-success");
+    form.reset();
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Joining...";
+  note.textContent = "Submitting...";
+
+  try {
+    const payload = {
+      firstName,
+      email,
+      source: "landing_join_the_list",
+      page: "index",
+      submittedAt: new Date().toISOString()
+    };
+
+    const response = await fetch(READER_SIGNUP_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || `Signup failed: ${response.status}`);
+    }
+
+    note.textContent = "You’re in. Keep an eye on your inbox for new releases, featured authors, and shelf updates.";
+    note.classList.add("is-success");
+    form.reset();
+  } catch (error) {
+    console.error(error);
+    note.textContent = "Something went wrong. Please try again in a moment.";
+    note.classList.add("is-error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Join the Reader List";
+  }
+});
+
+function initializeDiscordButton() {
+  const discordUrl = ""; // ADD YOUR DISCORD LINK HERE LATER
+  const button = document.getElementById("discordButton");
+
+  if (!button) return;
+
+  if (discordUrl) {
+    button.href = discordUrl;
+    button.classList.remove("disabled");
+    button.removeAttribute("aria-disabled");
+    button.setAttribute("target", "_blank");
+    button.setAttribute("rel", "noopener noreferrer");
+  }
+}
+
+initializeDiscordButton();
+renderVibeCards();
+loadLandingData();
+  </script>
 </body>
 </html>
-
