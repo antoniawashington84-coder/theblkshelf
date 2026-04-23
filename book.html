@@ -68,6 +68,1005 @@
     }
 
     .brand {
+      font-size: 1.15rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.18rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .breadcrumb {
+      color: var(--soft);
+      font-size: 0.92rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .breadcrumb span { opacity: 0.7; }
+
+    .page {
+      padding: 2rem 0 4rem;
+    }
+
+    .book-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .book-cover-panel,
+    .book-main,
+    .book-side,
+    .section-card {
+      background: linear-gradient(180deg, rgba(29,23,19,0.98), rgba(20,15,12,0.98));
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .book-cover-panel {
+      padding: 1.2rem;
+      position: sticky;
+      top: 1rem;
+    }
+
+    .book-cover-frame {
+      aspect-ratio: 2 / 3;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(216,163,93,0.18), rgba(28,21,17,0.88));
+      position: relative;
+    }
+
+    .book-cover-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cover-fallback {
+      width: 100%;
+      height: 100%;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.22)),
+        linear-gradient(180deg, #7b2f2a, #4e1f1a);
+      color: #fff9f2;
+    }
+
+    .cover-fallback .mini {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.82;
+      margin-bottom: 0.6rem;
+    }
+
+    .cover-fallback h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.75rem;
+      line-height: 0.95;
+    }
+
+    .cover-fallback p {
+      margin: 0;
+      font-size: 0.9rem;
+      opacity: 0.88;
+    }
+
+    .cover-actions {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .other-books-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.other-book-item {
+  display: block;
+  padding: 0.65rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  transition: 0.2s ease;
+}
+
+.other-book-item:hover {
+  border-color: rgba(216,163,93,0.24);
+  background: rgba(255,255,255,0.05);
+}
+
+.other-book-cover {
+  width: 50%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+  margin-bottom: 0.6rem;
+  background: rgba(255,255,255,0.04);
+}
+
+.other-book-title {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: bold;
+  line-height: 1.25;
+  margin-bottom: 0.2rem;
+}
+
+.other-book-date {
+  display: block;
+  color: var(--soft);
+  font-size: 0.84rem;
+}
+
+    .btn {
+      display: inline-block;
+      padding: 0.92rem 1.15rem;
+      border-radius: 14px;
+      font-weight: bold;
+      font-size: 1rem;
+      border: 1px solid transparent;
+      transition: 0.2s ease;
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+      
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1a130d;
+    }
+
+    .btn-primary:hover { background: #e2b06d; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(216,163,93,0.24);
+      background: rgba(255,255,255,0.05);
+    }
+
+    #buy-button {
+  width: 100%;
+}
+
+    .book-main {
+      padding: 1.6rem;
+    }
+
+    .book-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .book-head h1 {
+      margin: 0.7rem 0 0.55rem;
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+
+    .author-line {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin: 0.5rem 0 0;
+    }
+
+    .badge-row,
+    .meta-grid,
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .badge,
+    .tag {
+      padding: 0.42rem 0.68rem;
+      border-radius: 999px;
+      border: 1px solid rgba(216,163,93,0.18);
+      background: rgba(216,163,93,0.08);
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 0.8rem;
+      margin: 1.3rem 0 1.5rem;
+    }
+
+    .meta-card {
+      padding: 0.95rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .meta-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+    }
+
+    .meta-card span {
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.2rem;
+    }
+
+    .section-card {
+      padding: 1.25rem;
+    }
+
+    .section-card h2 {
+      margin: 0 0 0.7rem;
+      font-size: 1.45rem;
+    }
+
+    .section-card p {
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .book-side {
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+
+    .book-side h2 {
+      margin: 0 0 0.8rem;
+      font-size: 1.35rem;
+    }
+
+    .side-list {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .side-item {
+      padding: 0.85rem 0.95rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .side-item strong {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .side-item span {
+      color: var(--soft);
+      font-size: 0.92rem;
+    }
+
+    .error-box {
+      display: none;
+      padding: 1.25rem;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 3rem;
+      color: var(--soft);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 1080px) {
+      .book-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .book-cover-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      nav,
+      .book-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #buy-dropdown {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.buy-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: .92em; /* ← change this */
+  font-weight: bold; /* ← add this */
+  color: var(--text);
+  background: rgba(255,255,255,0.02);
+}
+
+.buy-option:last-child {
+  border-bottom: none;
+}
+
+.buy-option:hover {
+  background: rgba(216,163,93,0.12);
+}
+
+.buy-option-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(216,163,93,0.12);
+  border: 1px solid rgba(216,163,93,0.18);
+  color: #f2cb98;
+}
+
+.buy-option-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.buy-option-label {
+  display: block;
+  line-height: 1.2;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="brand">
+          The Blk Shelf
+          <small>Powered by Melanated Literary Rotations</small>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="library.html">Library</a>
+          <a href="featured-authors.html">Featured Authors</a>
+          <a href="index.html#readers">Join the List</a>
+        </div>
+      </nav>
+
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>•</span>
+        <a href="library.html">Library</a>
+        <span>•</span>
+        <span id="breadcrumb-title">Book</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container book-layout">
+      <aside class="book-cover-panel">
+        <div class="book-cover-frame">
+          <img id="book-cover" src="" alt="Book cover" style="display:none;" loading="eager" />
+          <div class="cover-fallback" id="cover-fallback">
+            <div class="mini" id="fallback-genre">Loading</div>
+            <h2 id="fallback-title">Loading...</h2>
+            <p id="fallback-author">Please wait</p>
+          </div>
+        </div>
+
+        <div class="cover-actions" style="position:relative;">
+  <button class="btn btn-primary" id="buy-button">Where to Buy</button>
+  <div id="buy-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; margin-top:0.5rem; z-index:10;"></div>
+
+  <a class="btn btn-secondary" id="author-link" href="#">View Author</a>
+</div>
+      </aside>
+
+      <section class="book-main">
+        <span class="eyebrow">Book Spotlight</span>
+
+        <div class="book-head">
+          <div>
+            <h1 id="book-title">Loading...</h1>
+            <p class="author-line">By <span id="book-author">Loading...</span></p>
+          </div>
+
+          <div class="badge-row" id="badge-row">
+            <span class="badge">Loading</span>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-card">
+            <strong>Genre</strong>
+            <span id="book-genre">—</span>
+          </div>
+          <div class="meta-card">
+            <strong>Vibe</strong>
+            <span id="book-vibe">—</span>
+          </div>
+          <div class="meta-card">
+            <strong>Age Range</strong>
+            <span id="book-age">—</span>
+          </div>
+          <div class="meta-card">
+            <strong>Spice Level</strong>
+            <span id="book-spice">—</span>
+          </div>
+        </div>
+
+        <div class="section-stack">
+          <article class="section-card">
+            <h2>About This Book</h2>
+            <p id="book-description">Loading description...</p>
+          </article>
+
+          <article class="section-card" id="tags-card">
+            <h2>Tropes & Tags</h2>
+            <div class="tag-row" id="tag-row">
+              <span class="tag">Loading</span>
+            </div>
+          </article>
+        </div>
+
+        <aside class="book-side">
+          <h2>Book Details</h2>
+          <div class="side-list">
+            <div class="side-item">
+              <strong>Release Date</strong>
+              <span id="book-release">—</span>
+            </div>
+            <div class="side-item">
+              <strong>Formats</strong>
+              <span id="book-formats">—</span>
+            </div>
+          </div>
+
+          <article class="section-card" id="other-books-card" style="margin-top:1rem; display:none;">
+  <h2>Other Books by This Author</h2>
+  <div class="other-books-grid" id="other-books-list"></div>
+</article>
+        </aside>
+
+        <div class="error-box" id="error-box">
+          We couldn’t load this book. Check the book ID in the URL and make sure the sheet has a matching row.
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      The Blk Shelf • Powered by Melanated Literary Rotations • Discover your next Black indie read.
+    </div>
+  </footer>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+const BOOK_CLICK_COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes
+
+    function getBookId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
+
+function getBookSource() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("source") || "unknown";
+}
+
+function getBookClickStorageKey(bookId) {
+  return `tracked_book_click_${bookId}`;
+}
+
+function shouldTrackBookClick(bookId) {
+  if (!bookId) return false;
+
+  const key = getBookClickStorageKey(bookId);
+  const lastTracked = sessionStorage.getItem(key);
+
+  if (!lastTracked) return true;
+
+  const lastTrackedTime = Number(lastTracked);
+  if (!Number.isFinite(lastTrackedTime)) return true;
+
+  return (Date.now() - lastTrackedTime) > BOOK_CLICK_COOLDOWN_MS;
+}
+
+function markBookClickTracked(bookId) {
+  if (!bookId) return;
+  sessionStorage.setItem(getBookClickStorageKey(bookId), String(Date.now()));
+}
+
+    function textOrFallback(value, fallback = "—") {
+      if (value === null || value === undefined) return fallback;
+      const str = String(value).trim();
+      return str ? str : fallback;
+    }
+
+    function splitToArray(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) {
+        return value.map(v => String(v).trim()).filter(Boolean);
+      }
+      return String(value)
+        .split(",")
+        .map(v => v.trim())
+        .filter(Boolean);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "—";
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return dateString;
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function normalizeUrl(url) {
+  const value = textOrFallback(url, "");
+  if (!value) return "";
+
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+}
+
+    function normalizeBookPayload(payload) {
+  const raw = payload?.book || payload || {};
+
+  const genre = textOrFallback(raw.genre, "");
+  const subgenres = splitToArray(raw.subGenres);
+  const vibes = splitToArray(raw.vibes);
+  const representation = splitToArray(raw.representation);
+  const formats = splitToArray(raw.availableFormats);
+
+  const otherBooksByAuthor = Array.isArray(payload?.otherBooksByAuthor)
+    ? payload.otherBooksByAuthor.map(book => ({
+        id: textOrFallback(book.bookId, ""),
+        title: textOrFallback(book.title, "Untitled Book"),
+        coverUrl: textOrFallback(book.bookCover, ""),
+        releaseDate: formatDate(book.releaseDate)
+      }))
+    : [];
+
+  const externalLinks = {
+  amazon: normalizeUrl(raw.amazonLink),
+  barnesAndNoble: normalizeUrl(raw.bnLink),
+  kobo: normalizeUrl(raw.koboLink),
+  appleBooks: normalizeUrl(raw.applebooksLink),
+  website: normalizeUrl(raw.websiteLink),
+  bookfunnel: normalizeUrl(raw.bookfunnelLink),
+  other: normalizeUrl(raw.otherLink)
+};
+
+  const firstAvailableBuyLink =
+    externalLinks.amazon ||
+    externalLinks.barnesAndNoble ||
+    externalLinks.kobo ||
+    externalLinks.appleBooks ||
+    externalLinks.website ||
+    externalLinks.bookfunnel ||
+    externalLinks.other ||
+    "";
+
+  return {
+    id: textOrFallback(raw.bookId, ""),
+    title: textOrFallback(raw.title, "Untitled Book"),
+    authorName: textOrFallback(raw.authorName, "Unknown Author"),
+    authorId: textOrFallback(raw.authorId, ""),
+    coverUrl: textOrFallback(raw.bookCover, ""),
+    coverAlt: `${textOrFallback(raw.title, "Book")} cover`,
+    description: textOrFallback(raw.description, "Description coming soon."),
+    genre,
+    subgenres,
+    vibes,
+    tags: formats,
+    representation,
+    formats,
+    otherBooksByAuthor,
+    ageRange: textOrFallback(raw.ageRange, "—"),
+    spiceLevel: textOrFallback(raw.spiceLevel, "—"),
+    releaseDate: formatDate(raw.releaseDate),
+    buyLink: firstAvailableBuyLink,
+    externalLinks,
+    badges: [
+      genre,
+      ...subgenres.slice(0, 2),
+      ...vibes.slice(0, 2)
+    ].filter(Boolean)
+  };
+}
+
+    function setText(id, value, fallback = "—") {
+      const el = document.getElementById(id);
+      if (el) el.textContent = textOrFallback(value, fallback);
+    }
+
+    function setHTML(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+    }
+
+    function showOrHide(id, shouldShow) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = shouldShow ? "" : "none";
+    }
+
+    function buildPills(items, className, emptyLabel) {
+      if (!items || !items.length) {
+        return `<span class="${className}">${emptyLabel}</span>`;
+      }
+
+      return items.map(item => `<span class="${className}">${item}</span>`).join("");
+    }
+
+    function loadCover(book) {
+  const img = document.getElementById("book-cover");
+  const fallback = document.getElementById("cover-fallback");
+  const defaultCover = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+
+  document.getElementById("fallback-genre").textContent = book.genre || "Featured Book";
+  document.getElementById("fallback-title").textContent = book.title || "Book Title";
+  document.getElementById("fallback-author").textContent = book.authorName || "Author";
+
+  img.onerror = () => {
+    if (img.dataset.fallbackTried === "true") {
+      img.style.display = "none";
+      fallback.style.display = "flex";
+      return;
+    }
+
+    img.dataset.fallbackTried = "true";
+    img.src = defaultCover;
+  };
+
+  if (book.coverUrl) {
+    img.dataset.fallbackTried = "false";
+    img.src = book.coverUrl;
+    img.alt = book.coverAlt;
+    img.style.display = "block";
+    fallback.style.display = "none";
+  } else {
+    img.dataset.fallbackTried = "true";
+    img.src = defaultCover;
+    img.alt = book.coverAlt;
+    img.style.display = "block";
+    fallback.style.display = "none";
+  }
+}
+
+    function renderOtherBooksByAuthor(otherBooks) {
+  const card = document.getElementById("other-books-card");
+  const list = document.getElementById("other-books-list");
+
+  if (!card || !list) return;
+
+  if (!otherBooks || !otherBooks.length) {
+    card.style.display = "none";
+    return;
+  }
+
+  const defaultCover = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+  const currentSource = getBookSource();
+
+  list.innerHTML = otherBooks.map(book => `
+    <a class="other-book-item" href="book.html?id=${encodeURIComponent(book.id)}&source=${encodeURIComponent(currentSource)}">
+      <img
+        class="other-book-cover"
+        src="${book.coverUrl || defaultCover}"
+        alt="${book.title} cover"
+        onerror="this.onerror=null;this.src='${defaultCover}'"
+      />
+      <span class="other-book-title">${book.title}</span>
+      <span class="other-book-date">${book.releaseDate || "Release date unavailable"}</span>
+    </a>
+  `).join("");
+
+  card.style.display = "";
+}
+
+    async function trackBookClick(bookId) {
+  if (!bookId) return;
+  if (!shouldTrackBookClick(bookId)) return;
+
+  const source = getBookSource();
+
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: "track-click",
+        bookId: bookId,
+        source: source
+      })
+    });
+
+    markBookClickTracked(bookId);
+  } catch (error) {
+    console.error("Click tracking failed:", error);
+  }
+}
+
+    function getRetailerIcon(label) {
+  const icons = {
+    "Amazon": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 16c1.5 1 3.2 1.5 5 1.5 2.4 0 4.5-.7 6.5-2.1"/>
+        <path d="M16.8 15.2h2.7v2.7"/>
+        <path d="M8.5 13.5V8.7c0-1.5 1.2-2.7 2.7-2.7h1.6c1.5 0 2.7 1.2 2.7 2.7v4.8"/>
+        <path d="M8.5 11.5h6.9"/>
+      </svg>
+    `,
+    "Apple Books": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4.5 6.5c2.2 0 3.5.8 4.8 1.8 1.3-1 2.6-1.8 4.8-1.8 2.4 0 4 1.1 5.4 2.5v9.5c-1.4-1.2-3-1.8-5-1.8-2.2 0-3.6.8-5.2 1.9-1.6-1.1-3-1.9-5.2-1.9-2 0-3.6.6-5 1.8V9c1.4-1.4 3-2.5 5.4-2.5z"/>
+        <path d="M9.3 8.3v10.3"/>
+      </svg>
+    `,
+    "Barnes & Noble": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 5.5h5a3 3 0 0 1 0 6H7z"/>
+        <path d="M7 11.5h5.5a3.2 3.2 0 0 1 0 6.5H7z"/>
+        <path d="M17 18l2-12 3 12"/>
+      </svg>
+    `,
+    "Kobo": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 5v14"/>
+        <path d="M6 12l7-7"/>
+        <path d="M6 12l7 7"/>
+        <circle cx="17.5" cy="12" r="3.5"/>
+      </svg>
+    `,
+    "BookFunnel": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6h16l-6 7v4l-4 2v-6z"/>
+      </svg>
+    `,
+    "Website": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="8"/>
+        <path d="M4 12h16"/>
+        <path d="M12 4c2.5 2.5 3.5 5 3.5 8S14.5 17.5 12 20"/>
+        <path d="M12 4c-2.5 2.5-3.5 5-3.5 8S9.5 17.5 12 20"/>
+      </svg>
+    `,
+    "Other Retailer": `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 7h12l-1 12H7z"/>
+        <path d="M9 7a3 3 0 0 1 6 0"/>
+      </svg>
+    `
+  };
+
+  return icons[label] || icons["Other Retailer"];
+}
+
+    function populateBook(payload) {
+      const book = normalizeBookPayload(payload);
+
+      setText("breadcrumb-title", book.title, "Book");
+      setText("book-title", book.title, "Untitled Book");
+      setText("book-author", book.authorName, "Unknown Author");
+      setText("book-genre", book.genre || book.subgenres.join(", "), "—");
+      setText("book-vibe", book.vibes.join(", "), "—");
+      setText("book-age", book.ageRange, "—");
+      setText("book-spice", book.spiceLevel, "—");
+      setText("book-description", book.description, "Description coming soon.");
+      setText("book-release", book.releaseDate, "—");
+      setText("book-formats", book.formats.join(", "), "—");
+
+      setHTML("badge-row", buildPills(book.badges, "badge", "Book Details"));
+
+      const allTags = [
+        ...book.subgenres,
+        ...book.vibes,
+        ...book.tags,
+        ...book.representation
+      ].filter(Boolean);
+
+      setHTML("tag-row", buildPills(allTags, "tag", "No tags listed"));
+      showOrHide("tags-card", allTags.length > 0);
+
+            loadCover(book);
+
+      const buyButton = document.getElementById("buy-button");
+const dropdown = document.getElementById("buy-dropdown");
+
+const options = [
+  { label: "Website", url: book.externalLinks.website },
+  { label: "Amazon", url: book.externalLinks.amazon },
+  { label: "Barnes & Noble", url: book.externalLinks.barnesAndNoble },
+  { label: "Kobo", url: book.externalLinks.kobo },
+  { label: "Apple Books", url: book.externalLinks.appleBooks },
+  { label: "BookFunnel", url: book.externalLinks.bookfunnel },
+  { label: "Other Retailer", url: book.externalLinks.other }
+].filter(opt => opt.url);
+
+if (!options.length) {
+  buyButton.textContent = "Purchase Link Coming Soon";
+  buyButton.disabled = true;
+} 
+else if (options.length === 1) {
+  buyButton.onclick = () => {
+    window.open(options[0].url, "_blank");
+  };
+} 
+else {
+  buyButton.textContent = "Where to Buy ▼";
+
+  buyButton.onclick = (e) => {
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+  };
+
+  dropdown.innerHTML = options.map(opt => `
+  <a class="buy-option" href="${opt.url}" target="_blank" rel="noopener noreferrer">
+    <span class="buy-option-icon">${getRetailerIcon(opt.label)}</span>
+    <span class="buy-option-label">${opt.label}</span>
+  </a>
+`).join("");
+
+  document.addEventListener("click", () => {
+    dropdown.style.display = "none";
+  });
+}
+
+      const authorLink = document.getElementById("author-link");
+if (authorLink && book.authorId) {
+  const source = getBookSource();
+  authorLink.href = `author.html?id=${encodeURIComponent(book.authorId)}&source=${encodeURIComponent(source)}`;
+}
+
+      renderOtherBooksByAuthor(book.otherBooksByAuthor);
+
+      document.title = `${book.title} – The Blk Shelf`;
+    }
+
+    async function loadBook() {
+      const bookId = getBookId();
+      const errorBox = document.getElementById("error-box");
+
+      if (!bookId) {
+        errorBox.style.display = "block";
+        errorBox.textContent = "No book ID was found in the URL. Use a link like book.html?id=BLKB0000000001.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}?type=book&id=${encodeURIComponent(bookId)}`);
+
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        const payload = await response.json();
+
+if (!payload || payload.success === false || payload.error) {
+  throw new Error(payload?.error || "Book not found");
+}
+
+populateBook(payload);
+trackBookClick(bookId);
+      } catch (error) {
+        console.error("Book load error:", error);
+        errorBox.style.display = "block";
+        errorBox.textContent = `We couldn't load this book right now. ${error.message}`;
+      }
+    }
+
+    loadBook();
+  </script>
+</body>
+</html>
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.42rem 0.88rem;
+      border: 1px solid rgba(216,163,93,0.24);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    header {
+      padding: 2rem 0 2.4rem;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
       font-size: 1.16rem;
       font-weight: bold;
       letter-spacing: 0.04em;
