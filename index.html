@@ -1168,7 +1168,8 @@
     const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
     const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
     const DEFAULT_AUTHOR = "https://placehold.co/500x625/1d1814/f4eee8?text=Author";
-            const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
+    const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
+let releaseCarouselAnimationId = null;
 
     function getCurrentMonthKey() {
       const now = new Date();
@@ -1437,6 +1438,38 @@ function buildRankedBooks(rankings, books) {
   });
 }
 
+function startReleaseCarouselAutoScroll() {
+  const shell = document.querySelector(".release-carousel-shell");
+  if (!shell) return;
+
+  if (releaseCarouselAnimationId) {
+    cancelAnimationFrame(releaseCarouselAnimationId);
+  }
+
+  let isPaused = false;
+
+  function step() {
+    const maxScroll = shell.scrollWidth - shell.clientWidth;
+
+    if (!isPaused && maxScroll > 0) {
+      if (shell.scrollLeft >= maxScroll - 1) {
+        shell.scrollLeft = 0;
+      } else {
+        shell.scrollLeft += 0.45;
+      }
+    }
+
+    releaseCarouselAnimationId = requestAnimationFrame(step);
+  }
+
+  shell.addEventListener("mouseenter", () => isPaused = true);
+  shell.addEventListener("mouseleave", () => isPaused = false);
+  shell.addEventListener("touchstart", () => isPaused = true, { passive: true });
+  shell.addEventListener("touchend", () => isPaused = false);
+
+  step();
+}
+
 function renderFreshBooks(books) {
   const target = document.getElementById("freshBooksCarousel");
   if (!target) return;
@@ -1525,6 +1558,8 @@ const newReleaseBooks = datedBooks
   </a>
 `;
   }).join("");
+
+  startReleaseCarouselAutoScroll();
 }
 
 function renderFeaturedAuthors(authors) {
@@ -1585,33 +1620,7 @@ if (rankedBooks.length > 0) {
 
 renderFreshBooks(books);
 renderFeaturedAuthors(featuredAuthors);
-function enableCarouselAutoScroll() {
-  const shell = document.querySelector(".release-carousel-shell");
-  if (!shell) return;
 
-  let isPaused = false;
-
-  function step() {
-    if (!isPaused) {
-      const maxScroll = shell.scrollWidth - shell.clientWidth;
-
-if (shell.scrollLeft >= maxScroll - 1) {
-  shell.scrollLeft = 0;
-} else {
-  shell.scrollLeft += 0.4;
-}
-    }
-    requestAnimationFrame(step);
-  }
-
-  shell.addEventListener("mouseenter", () => isPaused = true);
-  shell.addEventListener("mouseleave", () => isPaused = false);
-
-  shell.addEventListener("touchstart", () => isPaused = true, { passive: true });
-  shell.addEventListener("touchend", () => isPaused = false);
-
-  step();
-}
   } catch (error) {
     console.error(error);
     document.getElementById("trendingLabel").textContent = "From the shelf";
@@ -1716,9 +1725,6 @@ initializeDiscordButton();
 renderVibeCards();
 loadLandingData();
 
-setTimeout(() => {
-  enableCarouselAutoScroll();
-}, 500);
   </script>
 </body>
 </html>
