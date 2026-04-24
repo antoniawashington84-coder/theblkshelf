@@ -494,7 +494,11 @@
   aspect-ratio: 2 / 3;
   border-radius: 18px;
   overflow: hidden;
-  background: rgba(255,255,255,0.04);
+  background:
+    linear-gradient(rgba(29,24,20,0.25), rgba(29,24,20,0.25)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg");
+  background-size: cover;
+  background-position: center;
   box-shadow:
     0 12px 28px rgba(0,0,0,0.35),
     0 2px 0 rgba(255,255,255,0.03) inset;
@@ -510,6 +514,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  background: transparent;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .release-overlay {
@@ -1159,7 +1166,7 @@
 
   <script>
     const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
-    const DEFAULT_COVER = "https://placehold.co/400x600/1d1814/f4eee8?text=The+Blk+Shelf";
+    const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
     const DEFAULT_AUTHOR = "https://placehold.co/500x625/1d1814/f4eee8?text=Author";
             const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
 
@@ -1506,7 +1513,8 @@ const newReleaseBooks = datedBooks
         src="${escapeHtml(cover || DEFAULT_COVER)}"
         alt="${escapeHtml(title)} cover"
         loading="eager"
-        decoding="async"
+        decoding="sync"
+        referrerpolicy="no-referrer"
         onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
       />
 
