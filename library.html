@@ -349,6 +349,7 @@
   display: block;
   background: rgba(255,255,255,0.04);
   transition: transform 0.3s ease, filter 0.3s ease;
+  -webkit-user-drag: none;
 }
 
 .book:hover .book-cover {
@@ -404,8 +405,149 @@
       min-width: 200px;
     }
 
-    @media (max-width: 1150px) {
-      .library-layout { grid-template-columns: 1fr; }
+        @media (max-width: 1150px) {
+      .library-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container {
+        width: min(calc(100% - 1rem), var(--max));
+      }
+
+      header {
+        padding: 1.2rem 0 1.6rem;
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .brand h1 {
+        font-size: 1.8rem;
+        margin: 0;
+      }
+
+      .nav-links {
+        gap: 0.8rem;
+        font-size: 0.88rem;
+      }
+
+      .hero h1 {
+        font-size: 2.35rem;
+      }
+
+      .library-layout {
+        gap: 1.2rem;
+        padding: 1.4rem 0 2rem;
+      }
+
+      .filters {
+        border-radius: 20px;
+        padding: 1rem;
+        box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+      }
+
+      .filters h2 {
+        font-size: 1.25rem;
+      }
+
+      .filter-group {
+        padding: 0.85rem 0 0;
+        margin-top: 0.85rem;
+      }
+
+      .filter-group summary {
+        font-size: 0.95rem;
+      }
+
+      .filter-content {
+        padding-top: 0.75rem;
+      }
+
+      .chip-row {
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .chip {
+        font-size: 0.78rem;
+        padding: 0.38rem 0.58rem;
+      }
+
+      .field {
+        padding: 0.72rem 0.78rem;
+        font-size: 0.9rem;
+      }
+
+      .results-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .results-top p {
+        margin: 0;
+      }
+
+      .results-top select.field {
+        max-width: 100%;
+      }
+
+      .bookshelf {
+        border-width: 7px;
+        border-radius: 12px;
+        padding: 0.25rem 0;
+      }
+
+      .shelf-row {
+        gap: 0.42rem;
+        padding: 1.15rem 0.45rem 0.8rem;
+        min-height: 150px;
+      }
+
+      .shelf-row::before {
+        height: 13px;
+      }
+
+      .shelf-row::after {
+        bottom: 13px;
+        height: 10px;
+      }
+
+      .book {
+        width: 62px;
+        flex: 0 0 62px;
+      }
+
+      .book-card {
+        border-radius: 9px;
+      }
+
+      .book:hover {
+        transform: translateY(-6px);
+      }
+
+      .book-overlay {
+        display: none;
+      }
+
+      .pagination {
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-top: 2rem;
+      }
+
+      .btn-nav {
+        min-width: 0;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -575,11 +717,16 @@ const state = {
 
     let books = libraryData.books;
 
-const alreadyShuffled = sessionStorage.getItem("library_shuffled");
+const savedShuffleOrder = sessionStorage.getItem("library_shuffle_order");
 
-if (state.sortBy === "default" && !alreadyShuffled) {
+if (state.sortBy === "default" && savedShuffleOrder) {
+  books = applySavedShuffleOrder(books, savedShuffleOrder);
+} else if (state.sortBy === "default") {
   books = shuffleArray(books);
-  sessionStorage.setItem("library_shuffled", "true");
+  sessionStorage.setItem(
+    "library_shuffle_order",
+    JSON.stringify(books.map(book => book.bookId).filter(Boolean))
+  );
 }
 
 allBooks = books;
@@ -657,6 +804,33 @@ function shuffleArray(items) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
+}
+
+function applySavedShuffleOrder(items, savedOrder) {
+  let orderedIds = [];
+
+  try {
+    orderedIds = JSON.parse(savedOrder);
+  } catch (_) {
+    sessionStorage.removeItem("library_shuffle_order");
+    return shuffleArray(items);
+  }
+
+  const itemMap = new Map(
+    items
+      .filter(book => book.bookId)
+      .map(book => [book.bookId, book])
+  );
+
+  const orderedItems = orderedIds
+    .map(id => itemMap.get(id))
+    .filter(Boolean);
+
+  const orderedIdSet = new Set(orderedIds);
+
+  const newItems = items.filter(book => !orderedIdSet.has(book.bookId));
+
+  return [...orderedItems, ...newItems];
 }
 
 function getUrlVibeFilter() {
