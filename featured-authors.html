@@ -211,19 +211,19 @@
 }
 
     .author-image::after {
-      content: "Featured Author";
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      padding: 0.42rem 0.68rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      background: rgba(18,14,11,0.72);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #f3c78e;
-    }
+  content: "Featured";
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: rgba(18,14,11,0.7);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #f3c78e;
+}
 
     .author-content {
       padding: 1.2rem;
@@ -434,6 +434,14 @@
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 0.65rem !important;
+  }
+
+    #author-grid .author-image::after {
+    font-size: 0.55rem;
+    padding: 0.25rem 0.45rem;
+    top: 8px;
+    left: 8px;
+    letter-spacing: 0.08em;
   }
 
   #author-grid .author-card {
