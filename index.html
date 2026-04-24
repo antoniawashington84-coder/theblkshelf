@@ -453,7 +453,6 @@
   width: max-content;
   padding: 0.25rem 0 0.75rem;
   animation: none;
-  scroll-snap-type: x proximity;
 }
 
 .release-card {
@@ -1447,6 +1446,16 @@ function startReleaseCarouselAutoScroll() {
   }
 
   let isPaused = false;
+  let resumeTimer = null;
+
+  function pauseBriefly() {
+    isPaused = true;
+
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      isPaused = false;
+    }, 1200);
+  }
 
   function step() {
     const maxScroll = shell.scrollWidth - shell.clientWidth;
@@ -1455,7 +1464,7 @@ function startReleaseCarouselAutoScroll() {
       if (shell.scrollLeft >= maxScroll - 1) {
         shell.scrollLeft = 0;
       } else {
-        shell.scrollLeft += 0.45;
+        shell.scrollLeft += 0.35;
       }
     }
 
@@ -1464,8 +1473,10 @@ function startReleaseCarouselAutoScroll() {
 
   shell.addEventListener("mouseenter", () => isPaused = true);
   shell.addEventListener("mouseleave", () => isPaused = false);
-  shell.addEventListener("touchstart", () => isPaused = true, { passive: true });
-  shell.addEventListener("touchend", () => isPaused = false);
+
+  shell.addEventListener("pointerdown", pauseBriefly, { passive: true });
+  shell.addEventListener("pointerup", pauseBriefly, { passive: true });
+  shell.addEventListener("scroll", pauseBriefly, { passive: true });
 
   step();
 }
