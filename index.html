@@ -1585,6 +1585,33 @@ if (rankedBooks.length > 0) {
 
 renderFreshBooks(books);
 renderFeaturedAuthors(featuredAuthors);
+function enableCarouselAutoScroll() {
+  const shell = document.querySelector(".release-carousel-shell");
+  if (!shell) return;
+
+  let isPaused = false;
+
+  function step() {
+    if (!isPaused) {
+      const maxScroll = shell.scrollWidth - shell.clientWidth;
+
+if (shell.scrollLeft >= maxScroll - 1) {
+  shell.scrollLeft = 0;
+} else {
+  shell.scrollLeft += 0.4;
+}
+    }
+    requestAnimationFrame(step);
+  }
+
+  shell.addEventListener("mouseenter", () => isPaused = true);
+  shell.addEventListener("mouseleave", () => isPaused = false);
+
+  shell.addEventListener("touchstart", () => isPaused = true, { passive: true });
+  shell.addEventListener("touchend", () => isPaused = false);
+
+  step();
+}
   } catch (error) {
     console.error(error);
     document.getElementById("trendingLabel").textContent = "From the shelf";
@@ -1688,6 +1715,10 @@ function initializeDiscordButton() {
 initializeDiscordButton();
 renderVibeCards();
 loadLandingData();
+
+setTimeout(() => {
+  enableCarouselAutoScroll();
+}, 500);
   </script>
 </body>
 </html>
