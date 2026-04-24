@@ -548,6 +548,40 @@
         min-width: 0;
         width: 100%;
       }
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 2rem 0 2.2rem;
+  color: var(--soft);
+  font-size: 0.9rem;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  color: var(--muted);
+  font-size: 0.85rem;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--accent);
+  border-color: rgba(216,163,93,0.4);
+}
+
+.footer-inner {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+      
     }
   </style>
 </head>
@@ -670,6 +704,18 @@
       </div>
     </section>
   </main>
+
+  <footer>
+  <div class="container footer-inner">
+    <span>
+      The Blk Shelf • Powered by Melanated Literary Rotations • Discover your next Black indie read.
+    </span>
+
+    <a href="privacy-policy.html" class="footer-link">
+      Privacy Policy
+    </a>
+  </div>
+</footer>
 
 <script>
   const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
