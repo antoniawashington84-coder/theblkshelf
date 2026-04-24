@@ -1509,11 +1509,12 @@ const newReleaseBooks = datedBooks
     return `
   <a class="card-link release-card" href="book.html?id=${encodeURIComponent(id)}&source=landing_fresh_books">
     <div class="release-cover-wrap">
-      <img
+            <img
         class="release-cover"
-        src="${escapeHtml(cover)}"
+        src="${escapeHtml(cover || DEFAULT_COVER)}"
         alt="${escapeHtml(title)} cover"
-        loading="lazy"
+        loading="eager"
+        decoding="async"
         onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
       />
 
