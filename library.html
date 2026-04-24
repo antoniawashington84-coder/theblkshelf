@@ -806,7 +806,7 @@ applyFilters();
     buildChipGroup("vibe-filters", getUniqueFlattenedValues(allBooks, "vibes"), "vibe");
     buildChipGroup("age-filters", getUniqueValues(allBooks, "ageRange"), "age");
     buildChipGroup("spice-filters", getUniqueValues(allBooks, "spiceLevel"), "spice");
-    buildChipGroup("representation-filters", getUniqueValues(allBooks, "representation"), "representation");
+    buildChipGroup("representation-filters", getUniqueCommaSeparatedValues(allBooks, "representation"), "representation");
   }
 
   function buildChipGroup(containerId, values, type) {
@@ -838,6 +838,15 @@ applyFilters();
         .filter(Boolean)
     )].sort((a, b) => a.localeCompare(b));
   }
+
+  function getUniqueCommaSeparatedValues(items, field) {
+  return [...new Set(
+    items
+      .flatMap(item => normalizeText(item[field]).split(","))
+      .map(value => normalizeText(value))
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b));
+}
 
   function normalizeText(value) {
   return String(value || "").trim();
@@ -982,7 +991,10 @@ applyFilters();
     const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
     const ageRange = normalizeText(book.ageRange);
     const spiceLevel = normalizeText(book.spiceLevel);
-    const representation = normalizeText(book.representation);
+    const representations = normalizeText(book.representation)
+  .split(",")
+  .map(normalizeText)
+  .filter(Boolean);
     const vibes = Array.isArray(book.vibes) ? book.vibes.map(normalizeText) : [];
 
     const matchesAuthor =
@@ -1004,7 +1016,8 @@ applyFilters();
       state.spiceLevels.size === 0 || state.spiceLevels.has(spiceLevel);
 
     const matchesRepresentation =
-      state.representations.size === 0 || state.representations.has(representation);
+  state.representations.size === 0 ||
+  representations.some(rep => state.representations.has(rep));
 
     const isTrending = trendingBookIds.has(book.bookId);
 
