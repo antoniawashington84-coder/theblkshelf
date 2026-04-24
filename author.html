@@ -454,10 +454,83 @@
       }
     }
 
-    @media (max-width: 760px) {
+        @media (max-width: 760px) {
+      .container {
+        width: min(calc(100% - 1rem), var(--max));
+      }
+
       nav {
         flex-direction: column;
         align-items: flex-start;
+      }
+
+      header {
+        padding: 1.3rem 0 1.7rem;
+      }
+
+      .page {
+        padding: 1.4rem 0 2.5rem;
+      }
+
+      .author-layout {
+        gap: 1rem;
+      }
+
+      .author-photo-panel,
+      .author-main,
+      .section-card {
+        border-radius: 22px;
+      }
+
+      .author-photo-panel,
+      .author-main {
+        padding: 1rem;
+      }
+
+      .author-head h1 {
+        font-size: 2.3rem;
+      }
+
+      .works-section {
+        margin-top: 1.1rem;
+      }
+
+      .works-section h2 {
+        font-size: 1.35rem;
+      }
+
+      .mini-shelf {
+        border-width: 7px;
+        border-radius: 12px;
+        padding: 0.25rem 0;
+      }
+
+      .mini-shelf-row {
+        gap: 0.42rem;
+        padding: 1.15rem 0.45rem 0.8rem;
+        min-height: 150px;
+        flex-wrap: nowrap;
+      }
+
+      .mini-shelf-row::before {
+        height: 13px;
+      }
+
+      .mini-book {
+        width: 62px;
+        flex: 0 0 62px;
+      }
+
+      .mini-book-card {
+        border-radius: 9px;
+      }
+
+      .mini-book:hover {
+        transform: translateY(-6px);
+      }
+
+      .mini-book-overlay {
+        display: none;
       }
     }
   </style>
