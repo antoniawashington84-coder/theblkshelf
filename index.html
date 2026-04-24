@@ -440,21 +440,24 @@
 }
 
 .release-carousel-shell {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   border-radius: 24px;
   position: relative;
+  -webkit-overflow-scrolling: touch;
 }
 
 .release-carousel {
   display: flex;
   gap: 1rem;
   width: max-content;
-  animation: scrollReleases 40s linear infinite;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0 0.75rem;
+  animation: none;
+  scroll-snap-type: x proximity;
 }
 
-.release-carousel:hover {
-  animation-play-state: paused;
+.release-card {
+  scroll-snap-align: start;
 }
 
 .release-card {
@@ -528,15 +531,6 @@
   color: var(--soft);
   font-size: 0.9rem;
   margin-top: 0.45rem;
-}
-
-@keyframes scrollReleases {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-50% - 0.5rem));
-  }
 }
 
 .inline-link {
@@ -1496,11 +1490,9 @@ const newReleaseBooks = datedBooks
     return;
   }
 
-  const carouselItems = [...selectedBooks, ...selectedBooks];
+    target.classList.remove("loading-state");
 
-  target.classList.remove("loading-state");
-
-  target.innerHTML = carouselItems.map((book) => {
+  target.innerHTML = selectedBooks.map((book) => {
     const id = pick(book, ["id", "bookId", "bookID"]);
     const title = pick(book, ["title", "bookTitle"], "Untitled");
     const author = pick(book, ["author", "authorName"], "Author");
