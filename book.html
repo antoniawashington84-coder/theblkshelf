@@ -68,19 +68,50 @@
     }
 
     .brand {
-      font-size: 1.15rem;
-      font-weight: bold;
-      letter-spacing: 0.04em;
-    }
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
 
-    .brand small {
-      display: block;
-      color: var(--soft);
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 0.18rem;
-    }
+.brand-logo {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  border-radius: 50%;
+  flex-shrink: 0;
+  opacity: 0.95;
+  transition: 0.2s ease;
+  box-shadow:
+    0 0 0 4px rgba(216,163,93,0.45),
+    0 6px 20px rgba(0,0,0,0.45),
+    0 0 16px rgba(216,163,93,0.45);
+}
+
+.brand-title {
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 0.92;
+}
+
+.brand small {
+  display: block;
+  color: var(--soft);
+  font-size: 0.88rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 0.18rem;
+}
+
+.brand:hover .brand-logo {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
 
     .nav-links {
       display: flex;
@@ -406,10 +437,20 @@
 
 .footer-inner {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  text-align: center;
+  gap: 0.4rem;
+}
+
+.footer-line {
+  line-height: 1.5;
+}
+
+.footer-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--text);
 }
 
 .footer-link {
@@ -477,8 +518,26 @@
 
 .footer-inner {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 0.6rem;
+}
+
+.brand {
+  gap: 0.65rem;
+}
+
+.brand-logo {
+  width: 52px;
+  height: 52px;
+}
+
+.brand-title {
+  font-size: 1.85rem;
+}
+
+.brand small {
+  font-size: 0.64rem;
 }
 
     }
@@ -546,17 +605,26 @@
   <header>
     <div class="container">
       <nav>
-        <div class="brand">
-          The Blk Shelf
-          <small>Powered by Melanated Literary Rotations</small>
-        </div>
-        <div class="nav-links">
-          <a href="index.html">Home</a>
-          <a href="library.html">Library</a>
-          <a href="featured-authors.html">Featured Authors</a>
-          <a href="index.html#readers">Join the List</a>
-        </div>
-      </nav>
+  <a class="brand" href="index.html" aria-label="The Blk Shelf home">
+    <img 
+      src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
+      alt="The Blk Shelf logo"
+      class="brand-logo"
+    >
+
+    <div class="brand-text">
+      <span class="brand-title">The Blk Shelf</span>
+      <small>Powered by Melanated Literary Rotations</small>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="library.html">Library</a>
+    <a href="featured-authors.html">Featured Authors</a>
+    <a href="index.html#readers">Join the List</a>
+  </div>
+</nav>
 
       <div class="breadcrumb">
         <a href="index.html">Home</a>
@@ -663,13 +731,19 @@
 
   <footer>
   <div class="container footer-inner">
-    <span>
-      The Blk Shelf • Powered by Melanated Literary Rotations • Discover your next Black indie read.
-    </span>
+    <div class="footer-line footer-title">
+      The Blk Shelf
+    </div>
 
-    <a href="privacy-policy.html" class="footer-link">
-      Privacy Policy
-    </a>
+    <div class="footer-line">
+      Powered by Melanated Literary Rotations • Discover your next Black indie read.
+    </div>
+
+    <div class="footer-line">
+      <a href="privacy-policy.html" class="footer-link">
+        Privacy Policy
+      </a>
+    </div>
   </div>
 </footer>
 
