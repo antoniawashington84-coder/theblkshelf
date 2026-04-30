@@ -1013,6 +1013,124 @@
   gap: 0.6rem;
 }
 }
+
+/* ===== BASELINE UPGRADE: BROWN IDENTITY + BETTER CONTRAST ===== */
+
+:root {
+  --text: #fff8f0;
+  --muted: #e3d2c0;
+  --soft: #c9b7a5;
+  --line: rgba(255,255,255,0.18);
+}
+
+/* Keep original brown background, just improve readability */
+body {
+  color: var(--text);
+}
+
+/* Lighter brown cards/panels */
+.card,
+.hero-card,
+.wide-panel,
+.callout {
+  background: linear-gradient(180deg, #3f2e23, #241d17);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: var(--text);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Better paragraph contrast */
+.hero p.lead,
+.hero p.support,
+.section-head p,
+.card p,
+.callout p,
+.wide-panel p,
+.trend-text span,
+.empty-state,
+.loading-state,
+.footer-link,
+footer {
+  color: var(--muted);
+}
+
+/* Better small-label contrast */
+.section-label,
+.meta,
+.brand small,
+.note,
+.release-date,
+#readers .reader-signup-perks-inline,
+.signup-label {
+  color: var(--soft);
+}
+
+/* Stronger mini cards */
+.stat,
+.trend-item,
+#readers .reader-signup-perk {
+  background: rgba(63,46,35,0.9);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Buttons stay gold/action-led */
+.btn-primary {
+  background: #e6b06a;
+  color: #120e0b;
+  border: 2px solid #120e0b;
+}
+
+.btn-primary:hover {
+  background: #f2c994;
+}
+
+/* Secondary buttons clearer */
+.btn-secondary {
+  background: #241d17;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: #3f2e23;
+  border-color: rgba(216,163,93,0.45);
+}
+
+/* Gold accents stay for action/attention */
+.accent,
+.inline-link,
+.section-cta {
+  color: #f2c994;
+}
+
+/* Reader form inputs */
+#readerSignupForm input {
+  background: #17100c;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: var(--text);
+}
+
+#readerSignupForm input::placeholder {
+  color: var(--soft);
+}
+
+#readerSignupForm input:focus {
+  outline: 3px solid #f2c994;
+  border-color: #f2c994;
+}
+
+/* Accessibility focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #f2c994;
+  outline-offset: 3px;
+}
+
+/* ===== END BASELINE UPGRADE ===== */
+
   </style>
 </head>
 <body>
