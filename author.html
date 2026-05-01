@@ -6,32 +6,39 @@
   <title>The Blk Shelf – Author</title>
   <style>
     :root {
-      --bg: #120e0b;
-      --bg-soft: #19120e;
-      --panel: #1d1713;
-      --panel-2: #241c16;
-      --text: #f5eee6;
-      --muted: #c4b4a4;
-      --soft: #8f7f72;
-      --accent: #d8a35d;
-      --accent-soft: rgba(216,163,93,0.12);
-      --line: rgba(255,255,255,0.08);
-      --shadow: 0 22px 60px rgba(0,0,0,0.34);
-      --radius: 24px;
-      --max: 1280px;
-    }
+  --bg: #0f0c0a;
+  --bg-soft: #171310;
+  --panel: #1d1814;
+  --panel-2: #241d17;
+
+  --text: #fff8f0;
+  --muted: #e3d2c0;
+  --soft: #c9b7a5;
+  --accent: #d8a35d;
+  --accent-soft: rgba(216,163,93,0.14);
+  --line: rgba(255,255,255,0.18);
+
+  --shadow: 0 22px 60px rgba(0,0,0,0.34);
+  --radius: 24px;
+  --max: 1280px;
+}
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top, rgba(216,163,93,0.12), transparent 20%),
-        linear-gradient(180deg, #17110d 0%, #120e0b 60%, #140f0c 100%);
-    }
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  line-height: 1.6;
+  background:
+    linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 
     a { color: inherit; text-decoration: none; }
 
@@ -53,10 +60,9 @@
     }
 
     header {
-      padding: 2rem 0 2.4rem;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-    }
+  padding: 2rem 0 2.4rem;
+  border-bottom: 1px solid var(--line);
+}
 
     nav {
       display: flex;
@@ -144,13 +150,16 @@
     }
 
     .author-photo-panel,
-    .author-main,
-    .section-card {
-      background: linear-gradient(180deg, rgba(29,23,19,0.98), rgba(20,15,12,0.98));
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      box-shadow: var(--shadow);
-    }
+.author-main,
+.section-card {
+  background: linear-gradient(180deg, #3f2e23, #241d17);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 30px;
+  color: var(--text);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
 
     .author-photo-panel {
       padding: 1.2rem;
@@ -220,22 +229,25 @@
     }
 
     .btn-primary {
-      background: var(--accent);
-      color: #1a130d;
-    }
+  background: #e6b06a;
+  color: #120e0b;
+  border: 2px solid #120e0b;
+}
 
-    .btn-primary:hover { background: #e2b06d; }
+.btn-primary:hover {
+  background: #f2c994;
+}
 
-    .btn-secondary {
-      background: rgba(255,255,255,0.03);
-      color: var(--text);
-      border-color: var(--line);
-    }
+.btn-secondary {
+  background: #241d17;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: var(--text);
+}
 
-    .btn-secondary:hover {
-      border-color: rgba(216,163,93,0.24);
-      background: rgba(255,255,255,0.05);
-    }
+.btn-secondary:hover {
+  background: #3f2e23;
+  border-color: rgba(216,163,93,0.45);
+}
 
     .author-main {
       padding: 1.6rem;
@@ -505,6 +517,12 @@
   border-color: rgba(216,163,93,0.4);
 }
 
+.social-item,
+.error-box {
+  background: rgba(63,46,35,0.9);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
     @media (max-width: 1080px) {
       .author-layout {
         grid-template-columns: 1fr;
@@ -516,7 +534,17 @@
     }
 
         @media (max-width: 760px) {
-      .container {
+  body {
+    background:
+      linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+
+  .container {
         width: min(calc(100% - 1rem), var(--max));
       }
 
