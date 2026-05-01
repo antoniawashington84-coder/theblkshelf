@@ -1274,8 +1274,8 @@ if (img) {
 }
 
         article.addEventListener("click", () => {
-          window.location.href = `book.html?id=${encodeURIComponent(book.bookId)}`;
-        });
+  window.location.href = `book.html?id=${encodeURIComponent(book.bookId)}&source=library`;
+});
 
         shelf.appendChild(article);
       });
