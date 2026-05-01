@@ -6,36 +6,33 @@
   <title>Privacy Policy – The Blk Shelf</title>
 
   <style>
-/* CUSTOM FONT */
-@font-face {
-  font-family: "PlayfairCustom";
-  src: url("PlayfairDisplay-Black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-}
-
-/* EXISTING STYLES */
+   
 :root {
-      --bg: #120e0b;
-      --panel: #1d1713;
-      --text: #f5eee6;
-      --muted: #c4b4a4;
-      --soft: #8f7f72;
-      --accent: #d8a35d;
-      --line: rgba(255,255,255,0.08);
-      --max: 1100px;
-    }
+  --bg: #0f0c0a;
+  --panel: #1d1814;
+  --text: #fff8f0;
+  --muted: #e3d2c0;
+  --soft: #c9b7a5;
+  --accent: #d8a35d;
+  --line: rgba(255,255,255,0.18);
+  --max: 1100px;
+}
 
     * { box-sizing: border-box; }
 
     body {
-      margin: 0;
-      font-family: "Playfair Display", Georgia, serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top, rgba(216,163,93,0.12), transparent 20%),
-        linear-gradient(180deg, #17110d 0%, #120e0b 60%, #140f0c 100%);
-    }
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--text);
+  line-height: 1.6;
+  background:
+    linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 
     a { color: inherit; text-decoration: none; }
 
@@ -138,11 +135,15 @@
     }
 
     .policy-card {
-      background: linear-gradient(180deg, rgba(29,23,19,0.98), rgba(20,15,12,0.98));
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 1.8rem;
-    }
+  background: linear-gradient(180deg, #3f2e23, #241d17);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 24px;
+  padding: 1.8rem;
+  color: var(--text);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
 
     footer {
       border-top: 1px solid var(--line);
@@ -182,7 +183,17 @@
 }
 
     @media (max-width: 700px) {
-      h1 { font-size: 2.1rem; }
+  body {
+    background:
+      linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+
+  h1 { font-size: 2.1rem; }
       h2 { font-size: 1.2rem; }
 
       .footer-inner {
@@ -350,7 +361,7 @@
 
       <h2>9. CHILDREN’S PRIVACY</h2>
       <p>
-        The Blk Shelf is not intended for individuals under the age of 18. We do not knowingly collect
+        The Blk Shelf is not intended for individuals under the age of 13. We do not knowingly collect
         personal information from children.
       </p>
       <p>If we become aware of such data, we will take steps to delete it.</p>
