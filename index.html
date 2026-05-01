@@ -792,6 +792,16 @@
     }
 
         @media (max-width: 720px) {
+          body {
+  background:
+    linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+          
   .container {
     width: min(calc(100% - 1rem), var(--max));
   }
@@ -1158,10 +1168,10 @@ input:focus-visible {
 
 <div class="hero-grid">
   <div>
-    <span class="eyebrow">Built to grow into a Black indie reading ecosystem</span>
+    <span class="eyebrow">Black indie books, curated by mood and story</span>
     <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
     <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
-    <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered without fighting for scraps in overcrowded marketplaces.</p>
+    <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered in a space built with their work in mind.</p>
 
     <div class="button-row">
       <a class="btn btn-primary" href="library.html">Explore the Library</a>
@@ -1194,7 +1204,7 @@ input:focus-visible {
   <div class="trending-discussion">
     <a
       id="discordButton"
-      class="btn btn-secondary btn-full"
+      class="btn btn-primary btn-full"
       href="https://discord.gg/8mpFKMRCZ"
       target="_blank"
 rel="noopener noreferrer"
@@ -1234,7 +1244,7 @@ rel="noopener noreferrer"
           <div class="section-label">Browse by vibe</div>
           <h2>Because readers search for a feeling, not just a genre.</h2>
         </div>
-        <p>Don’t build this like a dead bookstore directory. Build it like a discovery engine people actually want to come back to.</p>
+        <p>Not every reader comes looking for a category. Sometimes they come looking for heat, comfort, chaos, tension, healing, or a book that refuses to leave them alone.</p>
       </div>
 
       <div class="vibe-grid" id="vibeGrid">
@@ -1250,7 +1260,7 @@ rel="noopener noreferrer"
         <div class="section-label">New & upcoming</div>
         <h2>Fresh from the shelf.</h2>
       </div>
-      <p>Scroll the new heat and upcoming drops.</p>
+      <p>← Scroll the new heat and upcoming drops →</p>
     </div>
 
     <div class="release-carousel-shell">
@@ -1698,13 +1708,9 @@ function startReleaseCarouselAutoScroll() {
   function step() {
     const maxScroll = shell.scrollWidth - shell.clientWidth;
 
-    if (!isPaused && maxScroll > 0) {
-      if (shell.scrollLeft >= maxScroll - 1) {
-        shell.scrollLeft = 0;
-      } else {
-        shell.scrollLeft += 0.35;
-      }
-    }
+    if (!isPaused && maxScroll > 0 && shell.scrollLeft < maxScroll - 1) {
+  shell.scrollLeft += 0.35;
+}
 
     releaseCarouselAnimationId = requestAnimationFrame(step);
   }
