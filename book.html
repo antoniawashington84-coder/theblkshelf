@@ -1034,6 +1034,15 @@ function markBookClickTracked(bookId) {
 
   const source = getBookSource();
 
+  // Google Analytics tracking
+  if (typeof gtag === "function") {
+    gtag("event", "book_click", {
+      book_id: bookId,
+      source: source
+    });
+  }
+
+  // Your backend tracking for trending/rankings
   try {
     await fetch(API_URL, {
       method: "POST",
