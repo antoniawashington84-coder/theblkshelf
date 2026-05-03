@@ -707,7 +707,7 @@
 
     <div class="brand-text">
       <span class="brand-title">The Blk Shelf</span>
-      <small>Powered by Black authors</small>
+      <small>Powered by Melanated Literary Rotations</small>
     </div>
   </a>
 
@@ -829,7 +829,7 @@
     </div>
 
     <div class="footer-line">
-      Powered by Black authors • Discover your next Black indie read.
+      Powered by Melanated Literary Rotations • Discover your next Black indie read.
     </div>
 
     <div class="footer-line">
@@ -1150,8 +1150,9 @@ now.setHours(0, 0, 0, 0);
 const newReleaseCutoff = new Date(now);
 newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
 
-const releaseTime = new Date(book.releaseDate).getTime();
-const hasValidReleaseDate = !Number.isNaN(releaseTime);
+const releaseDate = parseLocalDate(book.releaseDate);
+const releaseTime = releaseDate ? releaseDate.getTime() : 0;
+const hasValidReleaseDate = !!releaseDate;
 
 const isUpcomingRelease =
   hasValidReleaseDate && releaseTime >= now.getTime();
@@ -1211,10 +1212,28 @@ const matchesRankingFilter =
   }
 }
 
-  function parseDateSafe(value) {
-    const time = new Date(value).getTime();
-    return Number.isNaN(time) ? 0 : time;
+  function parseLocalDate(value) {
+  if (!value) return null;
+
+  const raw = String(value).trim();
+
+  const isoDateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDateOnly) {
+    return new Date(
+      Number(isoDateOnly[1]),
+      Number(isoDateOnly[2]) - 1,
+      Number(isoDateOnly[3])
+    );
   }
+
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function parseDateSafe(value) {
+  const date = parseLocalDate(value);
+  return date ? date.getTime() : 0;
+}
 
   function renderCase() {
     const container = document.getElementById("bookshelf-inject");
