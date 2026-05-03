@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZR7W1MNL3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KZR7W1MNL3');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQs – The Blk Shelf</title>
+
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --panel: #1d1814;
+      --text: #fff8f0;
+      --muted: #e3d2c0;
+      --soft: #c9b7a5;
+      --accent: #d8a35d;
+      --line: rgba(255,255,255,0.18);
+      --max: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+        url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .brand-logo {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      border-radius: 50%;
+      flex-shrink: 0;
+      opacity: 0.95;
+      transition: 0.2s ease;
+      box-shadow:
+        0 0 0 4px rgba(216,163,93,0.45),
+        0 6px 20px rgba(0,0,0,0.45),
+        0 0 16px rgba(216,163,93,0.45);
+    }
+
+    .brand:hover .brand-logo {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-size: clamp(2.25rem, 4vw, 3.25rem);
+      line-height: 0.92;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--soft);
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-top: 0.18rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      border-bottom-color: rgba(216,163,93,0.45);
+      outline: none;
+    }
+
+    .page {
+      padding: 2.5rem 0 3.5rem;
+    }
+
+    .faq-card {
+      background: linear-gradient(180deg, #3f2e23, #241d17);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 24px;
+      padding: 1.8rem;
+      color: var(--text);
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.42rem 0.88rem;
+      border: 1px solid rgba(216,163,93,0.24);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      line-height: 0.98;
+      margin: 0.9rem 0 0.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 52rem;
+      margin: 0 0 2rem;
+      font-size: 1.05rem;
+    }
+
+    .faq-hero {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.16);
+}
+
+    .faq-section {
+      margin-top: 2rem;
+    }
+
+    .faq-section h2 {
+      font-size: 1.8rem;
+      margin: 0 0 1rem;
+      color: var(--text);
+    }
+
+    .accordion {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    details {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.06), transparent 32%),
+    rgba(63,46,35,0.92);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-left: 4px solid rgba(216,163,93,0.65);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+details:hover {
+  transform: translateY(-2px);
+  border-color: rgba(216,163,93,0.45);
+}
+
+details[open] {
+  background:
+    linear-gradient(135deg, rgba(216,163,93,0.12), transparent 35%),
+    rgba(63,46,35,0.96);
+}
+
+    summary {
+  cursor: pointer;
+  padding: 1rem 1.1rem;
+  font-weight: bold;
+  color: var(--text);
+  list-style: none;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+summary::before {
+  content: "✦";
+  color: #f2c994;
+  font-size: 0.95rem;
+}
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::after {
+      content: "+";
+      color: #f2c994;
+      font-size: 1.35rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    details[open] summary::after {
+      content: "–";
+    }
+
+    details p,
+    details ul {
+      color: var(--muted);
+      margin: 0;
+      padding: 0 1.1rem 1rem;
+    }
+
+    details ul {
+      padding-left: 2.2rem;
+    }
+
+    details li {
+      margin-bottom: 0.35rem;
+    }
+
+    .faq-note {
+      margin-top: 2rem;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.22);
+      color: var(--muted);
+    }
+
+    .faq-note a {
+      color: #f2c994;
+      font-weight: bold;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 2.2rem;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.4rem;
+    }
+
+    .footer-line {
+      line-height: 1.5;
+    }
+
+    .footer-title {
+      font-weight: bold;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .footer-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--accent);
+      border-color: rgba(216,163,93,0.4);
+    }
+
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid #f2c994;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        background:
+          linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+          url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
+
+      .container {
+        width: min(calc(100% - 1rem), var(--max));
+      }
+
+      header {
+        padding: 1.3rem 0 1.7rem;
+      }
+
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.85rem;
+      }
+
+      .brand {
+        gap: 0.65rem;
+      }
+
+      .brand-logo {
+        width: 52px;
+        height: 52px;
+      }
+
+      .brand-title {
+        font-size: 1.85rem;
+      }
+
+      .brand small {
+        font-size: 0.64rem;
+      }
+
+      .nav-links {
+        gap: 0.85rem;
+        font-size: 0.88rem;
+      }
+
+      .page {
+        padding: 1.5rem 0 2.5rem;
+      }
+
+      .faq-card {
+        padding: 1.15rem;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+
+      .intro {
+        font-size: 0.95rem;
+      }
+
+      .faq-section h2 {
+        font-size: 1.45rem;
+      }
+
+      summary {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+      }
+
+      details p,
+      details ul {
+        padding: 0 0.9rem 0.9rem;
+        font-size: 0.92rem;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a class="brand" href="index.html" aria-label="The Blk Shelf home">
+        <img 
+          src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
+          alt="The Blk Shelf logo"
+          class="brand-logo"
+        >
+
+        <div class="brand-text">
+          <span class="brand-title">The Blk Shelf</span>
+          <small>Powered by Black authors</small>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="library.html">Library</a>
+        <a href="featured-authors.html">Featured Authors</a>
+        <a href="faq.html">FAQs</a>
+        <a href="index.html#readers">Join the List</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <div class="container">
+    <div class="faq-card">
+      <div class="faq-hero">
+  <span class="eyebrow">Reader & Author Help</span>
+  <h1>Questions, answered.</h1>
+  <p class="intro">
+    Everything readers and authors need to know before they browse, submit, or join the shelf.
+  </p>
+</div>
+
+      <section class="faq-section">
+        <h2>Reader FAQs</h2>
+
+        <div class="accordion">
+          <details>
+            <summary>What is The Blk Shelf?</summary>
+            <p>The Blk Shelf is a discovery platform built to help readers find Black indie books across genres, moods, and story styles without digging through algorithm clutter.</p>
+          </details>
+
+          <details>
+            <summary>How are books added to the site?</summary>
+            <p>Books are submitted by authors and reviewed before being listed. The catalog is not scraped, auto-filled, or randomly pulled from marketplaces.</p>
+          </details>
+
+          <details>
+            <summary>Can I read books directly on The Blk Shelf?</summary>
+            <p>No. The Blk Shelf is for discovery. Book pages link out to available retailers, author websites, BookFunnel, or other places where the author has made the book available.</p>
+          </details>
+
+          <details>
+            <summary>What does “Trending” mean?</summary>
+            <p>Trending is based on reader activity from the previous completed week. It reflects books readers engaged with across the site.</p>
+          </details>
+
+          <details>
+            <summary>What do the “New” and “Upcoming” badges mean?</summary>
+            <p>“New” means the book was released recently. “Upcoming” means the book has a future release date. These labels are based on release dates submitted by the author.</p>
+          </details>
+
+          <details>
+            <summary>Why do some books have fewer purchase links?</summary>
+            <p>Authors choose which links to submit. Some books may only be available on one retailer, while others may include multiple options like Amazon, Barnes & Noble, Kobo, Apple Books, BookFunnel, or the author’s website.</p>
+          </details>
+
+          <details>
+            <summary>How do I find books by mood or trope?</summary>
+            <p>Use the Library filters. You can browse by genre, sub-genre, vibe, age range, spice level, representation, release type, and more.</p>
+          </details>
+
+          <details>
+            <summary>How do I stay updated?</summary>
+            <p>Join the reader list to receive updates about new books, featured authors, shelf updates, and platform news.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <h2>Author FAQs</h2>
+
+        <div class="accordion">
+          <details>
+            <summary>Who can submit to The Blk Shelf?</summary>
+            <p>The Blk Shelf is built for Black indie authors, including self-published and independently published authors.</p>
+          </details>
+
+          <details>
+            <summary>Is there a fee to be listed?</summary>
+            <p>No. Standard listing on The Blk Shelf is free. There is no pay-to-play requirement for books to appear in the library.</p>
+          </details>
+
+          <details>
+            <summary>How do I submit my author information?</summary>
+            <p>Use the author submission form linked on the homepage. This helps create or update your author profile.</p>
+          </details>
+
+          <details>
+            <summary>How do I submit my book?</summary>
+            <p>Use the book submission form linked on the homepage. You can submit book details, cover information, genres, vibes, representation, links, and release date information.</p>
+          </details>
+
+          <details>
+            <summary>Do I need to submit author information before submitting a book?</summary>
+            <p>Yes, ideally. A book can only go fully live once the author profile and book submission are both approved and connected in the system.</p>
+          </details>
+
+          <details>
+            <summary>How long does approval take?</summary>
+            <p>Approval time depends on submission volume and whether the information provided is complete. Incomplete submissions may take longer because they require follow-up or correction.</p>
+          </details>
+
+          <details>
+            <summary>Why isn’t my book live yet?</summary>
+            <p>Common reasons include missing author approval, missing book approval, incomplete links, missing cover information, or a mismatch between the author submission and book submission.</p>
+          </details>
+
+          <details>
+            <summary>Can I update my author profile or book listing?</summary>
+            <p>Yes. If something needs to be corrected or updated, reach out with the requested change.</p>
+          </details>
+
+          <details>
+            <summary>How are featured authors selected?</summary>
+            <p>Featured authors are selected from approved authors who have at least one approved live book on the platform.</p>
+          </details>
+
+          <details>
+            <summary>How does trending work for authors?</summary>
+            <p>Trending is based on reader engagement. Organic discovery carries stronger weight than homepage exposure so the list is not overly influenced by placement alone.</p>
+          </details>
+        </div>
+      </section>
+
+      <div class="faq-note">
+        Still need help? Email <a href="mailto:theblkshelfbooks@gmail.com">theblkshelfbooks@gmail.com</a>.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-line footer-title">
+      The Blk Shelf
+    </div>
+
+    <div class="footer-line">
+      Powered by Black authors • Discover your next Black indie read.
+    </div>
+
+    <div class="footer-line">
+      <a href="privacy-policy.html" class="footer-link">
+        Privacy Policy
+      </a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
