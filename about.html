@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZR7W1MNL3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KZR7W1MNL3');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us – The Blk Shelf</title>
+
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --text: #fff8f0;
+      --muted: #e3d2c0;
+      --soft: #c9b7a5;
+      --accent: #d8a35d;
+      --line: rgba(255,255,255,0.18);
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+        url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+    .brand-logo {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      border-radius: 50%;
+      flex-shrink: 0;
+      opacity: 0.95;
+      transition: 0.2s ease;
+      box-shadow:
+        0 0 0 4px rgba(216,163,93,0.45),
+        0 6px 20px rgba(0,0,0,0.45),
+        0 0 16px rgba(216,163,93,0.45);
+    }
+
+    .brand:hover .brand-logo {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-size: clamp(2.25rem, 4vw, 3.25rem);
+      line-height: 0.92;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--soft);
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-top: 0.18rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a {
+      padding: 0.35rem 0;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-bottom-color: rgba(216,163,93,0.45);
+    }
+
+    .page {
+      padding: 2.5rem 0 3.5rem;
+    }
+
+    .about-card {
+      background: linear-gradient(180deg, #3f2e23, #241d17);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 28px;
+      padding: 2rem;
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.42rem 0.88rem;
+      border: 1px solid rgba(216,163,93,0.24);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 0.98;
+      margin: 0.9rem 0 0.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 0.8rem;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 56rem;
+      font-size: 1.06rem;
+      margin: 0 0 2rem;
+    }
+
+    .split-section {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .panel {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.06), transparent 34%),
+        rgba(63,46,35,0.9);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-left: 4px solid rgba(216,163,93,0.65);
+      border-radius: 20px;
+      padding: 1.25rem;
+    }
+
+    .panel p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .founders-section {
+      margin-top: 2.5rem;
+    }
+
+    .founders-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .founders-head p {
+      color: var(--soft);
+      max-width: 34rem;
+      margin: 0;
+    }
+
+    .founder-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .founder-card {
+      background:
+        linear-gradient(135deg, rgba(216,163,93,0.1), transparent 34%),
+        rgba(63,46,35,0.92);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 22px;
+      overflow: hidden;
+      transition: 0.2s ease;
+    }
+
+    .founder-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(216,163,93,0.45);
+    }
+
+    .founder-photo {
+      aspect-ratio: 4 / 5;
+      background:
+        linear-gradient(rgba(15,12,10,0.15), rgba(15,12,10,0.35)),
+        linear-gradient(135deg, rgba(216,163,93,0.28), rgba(36,29,23,0.95));
+      display: grid;
+      place-items: center;
+      color: #f2c994;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .founder-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .founder-content {
+      padding: 1rem;
+    }
+
+    .founder-content h3 {
+      margin: 0 0 0.25rem;
+      font-size: 1.15rem;
+      line-height: 1.1;
+    }
+
+    .founder-role {
+      color: #f2c994;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+
+    .founder-content p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .cta-note {
+      margin-top: 2rem;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.22);
+      color: var(--muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 2.2rem;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.4rem;
+    }
+
+    .footer-title {
+      font-weight: bold;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .footer-link {
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-bottom: 1px solid transparent;
+      transition: 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--accent);
+      border-color: rgba(216,163,93,0.4);
+    }
+
+    @media (max-width: 1050px) {
+      .founder-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .split-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        background:
+          linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+          url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
+
+      .container {
+        width: min(calc(100% - 1rem), var(--max));
+      }
+
+      header {
+        padding: 1.3rem 0 1.7rem;
+      }
+
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .brand {
+        gap: 0.65rem;
+      }
+
+      .brand-logo {
+        width: 52px;
+        height: 52px;
+      }
+
+      .brand-title {
+        font-size: 1.85rem;
+      }
+
+      .brand small {
+        font-size: 0.64rem;
+      }
+
+      .nav-links {
+        gap: 0.85rem;
+        font-size: 0.88rem;
+      }
+
+      .page {
+        padding: 1.5rem 0 2.5rem;
+      }
+
+      .about-card {
+        padding: 1.15rem;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+
+      .intro {
+        font-size: 0.95rem;
+      }
+
+      .founder-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .founder-content {
+        padding: 0.8rem;
+      }
+
+      .founder-content h3 {
+        font-size: 1rem;
+      }
+
+      .founder-role {
+        font-size: 0.68rem;
+      }
+
+      .founder-content p {
+        font-size: 0.78rem;
+        line-height: 1.35;
+      }
+
+      .founder-grid .founder-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  max-width: 50%;
+  justify-self: center;
+}
+
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a class="brand" href="index.html" aria-label="The Blk Shelf home">
+        <img 
+          src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
+          alt="The Blk Shelf logo"
+          class="brand-logo"
+        >
+
+        <div class="brand-text">
+          <span class="brand-title">The Blk Shelf</span>
+          <small>Powered by Black authors</small>
+        </div>
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="library.html">Library</a>
+        <a href="featured-authors.html">Featured Authors</a>
+        <a href="about.html">About Us</a>
+        <a href="faq.html">FAQs</a>
+        <a href="index.html#readers">Join the List</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <div class="container">
+    <div class="about-card">
+      <span class="eyebrow">About The Blk Shelf</span>
+      <h1>Built for Black indie stories to be found.</h1>
+
+      <p class="intro">
+        The Blk Shelf was created to make discovery easier for readers and visibility stronger for Black independent authors. We believe good stories should not disappear because an algorithm failed to notice them.
+      </p>
+
+      <div class="split-section">
+        <section class="panel">
+          <h2>Our Mission</h2>
+          <p>
+            To connect readers with Black indie books across genres, moods, and storytelling traditions while creating a discovery space that values visibility, intention, and community.
+          </p>
+        </section>
+
+        <section class="panel">
+          <h2>Why We Built It</h2>
+          <p>
+            Readers should not have to dig through endless noise to find Black indie stories, and authors should not have to beg platforms to make their work visible. The Blk Shelf is built to close that gap.
+          </p>
+        </section>
+      </div>
+
+      <section class="founders-section">
+        <div class="founders-head">
+          <div>
+            <span class="eyebrow">The Founders</span>
+            <h2>Meet the people behind the shelf.</h2>
+          </div>
+          <p>Placeholder founder profiles for the team building and shaping The Blk Shelf.</p>
+        </div>
+
+        <div class="founder-grid">
+          <article class="founder-card">
+            <div class="founder-photo">Founder Image</div>
+            <div class="founder-content">
+              <h3>Founder Name</h3>
+              <div class="founder-role">Founder Role</div>
+              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+            </div>
+          </article>
+
+          <article class="founder-card">
+            <div class="founder-photo">Founder Image</div>
+            <div class="founder-content">
+              <h3>Founder Name</h3>
+              <div class="founder-role">Founder Role</div>
+              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+            </div>
+          </article>
+
+          <article class="founder-card">
+            <div class="founder-photo">Founder Image</div>
+            <div class="founder-content">
+              <h3>Founder Name</h3>
+              <div class="founder-role">Founder Role</div>
+              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+            </div>
+          </article>
+
+          <article class="founder-card">
+            <div class="founder-photo">Founder Image</div>
+            <div class="founder-content">
+              <h3>Founder Name</h3>
+              <div class="founder-role">Founder Role</div>
+              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+            </div>
+          </article>
+
+          <article class="founder-card">
+            <div class="founder-photo">Founder Image</div>
+            <div class="founder-content">
+              <h3>Founder Name</h3>
+              <div class="founder-role">Founder Role</div>
+              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <div class="cta-note">
+        The Blk Shelf is powered by Black authors and built for readers, authors, and the stories that deserve to be seen.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-title">
+      The Blk Shelf
+    </div>
+
+    <div>
+      Powered by Black authors • Discover your next Black indie read.
+    </div>
+
+    <div>
+      <a href="privacy-policy.html" class="footer-link">
+        Privacy Policy
+      </a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
