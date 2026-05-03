@@ -667,7 +667,7 @@
 
     <div class="brand-text">
       <span class="brand-title">The Blk Shelf</span>
-      <small>Powered by Black authors</small>
+      <small>Powered by Melanated Literary Rotations</small>
     </div>
   </a>
 
@@ -790,7 +790,7 @@
     </div>
 
     <div class="footer-line">
-      Powered by Black authors • Discover your next Black indie read.
+      Powered by Melanated Literary Rotations • Discover your next Black indie read.
     </div>
 
     <div class="footer-line">
@@ -856,15 +856,34 @@ function markBookClickTracked(bookId) {
     }
 
     function formatDate(dateString) {
-      if (!dateString) return "—";
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return dateString;
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      });
-    }
+  if (!dateString) return "—";
+
+  const raw = String(dateString).trim();
+
+  const isoDateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDateOnly) {
+    const year = Number(isoDateOnly[1]);
+    const month = Number(isoDateOnly[2]) - 1;
+    const day = Number(isoDateOnly[3]);
+
+    const date = new Date(year, month, day);
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  }
+
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return raw;
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
 
     function normalizeUrl(url) {
   const value = textOrFallback(url, "");
