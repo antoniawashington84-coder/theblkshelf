@@ -1164,7 +1164,7 @@ input:focus-visible {
   >
   <div class="brand-text">
     <span class="brand-title">The Blk Shelf</span>
-    <small>Powered by Black authors</small>
+    <small>Powered by Melanated Literary Rotations</small>
   </div>
 </a>
   <div class="nav-links">
@@ -1395,7 +1395,7 @@ rel="noopener noreferrer"
     </div>
 
     <div class="footer-line">
-      Powered by Black authors • Discover your next Black indie read.
+      Powered by Melanated Literary Rotations • Discover your next Black indie read.
     </div>
 
     <div class="footer-line">
@@ -1683,9 +1683,27 @@ function buildRankedBooks(rankings, books) {
     .filter(Boolean);
 }
 
+function parseLocalDate(value) {
+  if (!value) return null;
+
+  const raw = String(value).trim();
+
+  const isoDateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoDateOnly) {
+    return new Date(
+      Number(isoDateOnly[1]),
+      Number(isoDateOnly[2]) - 1,
+      Number(isoDateOnly[3])
+    );
+  }
+
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
     function formatReleaseDateLabel(dateValue) {
-  const date = new Date(dateValue);
-  if (Number.isNaN(date.getTime())) return "";
+  const date = parseLocalDate(dateValue);
+  if (!date) return "";
 
   return date.toLocaleDateString("en-US", {
     month: "short",
@@ -1749,13 +1767,13 @@ function renderFreshBooks(books) {
   const datedBooks = books
     .map((book) => {
       const rawDate = pick(book, ["releaseDate", "pubDate", "publicationDate"], "");
-      const parsedDate = new Date(rawDate);
+      const parsedDate = parseLocalDate(rawDate);
 
-      return {
-        ...book,
-        _parsedReleaseDate: parsedDate,
-        _hasValidDate: !Number.isNaN(parsedDate.getTime())
-      };
+return {
+  ...book,
+  _parsedReleaseDate: parsedDate,
+  _hasValidDate: !!parsedDate
+};
     })
     .filter(book => book._hasValidDate);
 
