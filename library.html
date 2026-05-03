@@ -412,6 +412,33 @@
   overflow: hidden;
 }
 
+.book-release-badge {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  z-index: 3;
+  padding: 0.28rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: bold;
+  background: rgba(18,14,11,0.78);
+  border: 1px solid rgba(216,163,93,0.35);
+  color: #f2c994;
+  max-width: calc(100% - 0.9rem);
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .book-release-badge {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.6rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+}
+
 .book-cover {
   width: 100%;
   height: 100%;
@@ -1230,9 +1257,25 @@ const matchesRankingFilter =
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function parseDateSafe(value) {
-  const date = parseLocalDate(value);
-  return date ? date.getTime() : 0;
+function getReleaseBadgeLabel(book) {
+  const releaseDate = parseLocalDate(book.releaseDate);
+  if (!releaseDate) return "";
+
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const newReleaseCutoff = new Date(now);
+  newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
+
+  if (releaseDate >= now) {
+    return "Upcoming";
+  }
+
+  if (releaseDate >= newReleaseCutoff && releaseDate < now) {
+    return "New Release";
+  }
+
+  return "";
 }
 
   function renderCase() {
@@ -1266,9 +1309,13 @@ function parseDateSafe(value) {
       const article = document.createElement("article");
 article.className = "book";
 
+const releaseBadge = getReleaseBadgeLabel(book);
+
 article.innerHTML = `
   <div class="book-card">
     <div class="book-cover-wrap">
+      ${releaseBadge ? `<div class="book-release-badge">${escapeHtml(releaseBadge)}</div>` : ""}
+
       <img
         class="book-cover"
         src="${escapeHtml(book.bookCover || DEFAULT_COVER)}"
