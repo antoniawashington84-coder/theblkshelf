@@ -12,36 +12,31 @@
 </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Blk Shelf – Library</title>
+  <title>The Blk Shelf</title>
   <style>
     :root {
-  --bg: #0f0c0a;
-  --bg-soft: #171310;
-  --panel: #1d1814;
-  --panel-2: #241d17;
-  --wood: #6b4427;
-  --wood-dark: #4c301a;
-  --wood-light: #9b6b43;
-
-  --text: #fff8f0;
-  --muted: #e3d2c0;
-  --soft: #c9b7a5;
-  --accent: #d8a35d;
-  --accent-soft: rgba(216,163,93,0.14);
-  --line: rgba(255,255,255,0.18);
-
-  --shadow: 0 24px 70px rgba(0,0,0,0.35);
-  --radius: 22px;
-  --max: 1380px;
-}
+      --bg: #0f0c0a;
+      --bg-soft: #171310;
+      --panel: #1d1814;
+      --panel-2: #241d17;
+      --text: #f4eee8;
+      --muted: #c0b3a6;
+      --soft: #8d7f72;
+      --accent: #d8a35d;
+      --accent-2: #8a4f1d;
+      --line: rgba(255,255,255,0.08);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius: 22px;
+      --max: 1180px;
+    }
 
     * { box-sizing: border-box; }
+
     html { scroll-behavior: smooth; }
+
     body {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  color: var(--text);
-  line-height: 1.6;
   background:
     linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
     url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
@@ -49,6 +44,8 @@
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.6;
 }
 
     a { color: inherit; text-decoration: none; }
@@ -60,19 +57,25 @@
 
     .eyebrow {
       display: inline-block;
-      padding: 0.4rem 0.85rem;
+      padding: 0.45rem 0.9rem;
       border: 1px solid rgba(216,163,93,0.25);
       border-radius: 999px;
       background: rgba(216,163,93,0.08);
-      color: #f2cb98;
-      font-size: 0.78rem;
+      color: #f2c994;
+      font-size: 0.8rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    header {
-  padding: 2rem 0 2.5rem;
-  border-bottom: 1px solid var(--line);
+    header.hero {
+      padding: 2.2rem 0 2.8rem;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+  margin-top: -0.5rem;
 }
 
     nav {
@@ -122,6 +125,7 @@
 .brand:hover .brand-logo {
   opacity: 1;
   transform: scale(1.03);
+  transition: 0.2s ease;
 }
 
 .brand-text {
@@ -211,377 +215,611 @@
   outline: none;
 }
 
-    .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 1rem;
-      flex-wrap: wrap;
+.nav-links a {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: var(--text);
+  border-bottom-color: rgba(216,163,93,0.45);
+  outline: none;
+}
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: center;
     }
 
     h1 {
-      margin: 0.8rem 0 0.6rem;
-      font-size: clamp(2.3rem, 5vw, 4.3rem);
-      line-height: 0.97;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      line-height: 0.96;
+      margin: 1rem 0 1rem;
       letter-spacing: -0.03em;
     }
 
-    .hero p {
+    .accent { color: var(--accent); }
+
+    .hero p.lead {
+      font-size: 1.15rem;
+      max-width: 45rem;
       color: var(--muted);
-      max-width: 48rem;
-      margin: 0;
-      font-size: 1.05rem;
+      margin: 0 0 1.2rem;
+    }
+
+    .hero p.support {
+      max-width: 42rem;
+      color: var(--soft);
+      margin-bottom: 2rem;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
     }
 
     .btn {
       display: inline-block;
-      padding: 0.9rem 1.25rem;
+      padding: 0.95rem 1.35rem;
       border-radius: 14px;
-      border: 1px solid transparent;
       font-weight: bold;
+      border: 1px solid transparent;
       transition: 0.2s ease;
-      cursor: pointer;
-      text-align: center;
     }
 
     .btn-primary {
       background: var(--accent);
       color: #1a130d;
-      width: 100%;
-      margin-top: 1rem;
+    }
+
+    .btn-primary:hover {
+      background: #e6b06a;
+      transform: translateY(-1px);
     }
 
     .btn-secondary {
+      border-color: var(--line);
       background: rgba(255,255,255,0.03);
       color: var(--text);
-      border: 1px solid var(--line);
     }
 
-    .btn-primary {
-  background: #e6b06a;
-  color: #120e0b;
-  border: 2px solid #120e0b;
-}
-
-.btn-primary:hover {
-  background: #f2c994;
-}
-
-.btn-secondary {
-  background: #241d17;
-  border: 2px solid rgba(255,255,255,0.3);
-  color: var(--text);
-}
-
-.btn-secondary:hover {
-  background: #3f2e23;
-  border-color: rgba(216,163,93,0.45);
-}
-
-    .library-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 2rem;
-      padding: 3rem 0;
+    .btn-secondary:hover {
+      border-color: rgba(216,163,93,0.35);
+      background: rgba(255,255,255,0.05);
     }
 
-    /* FILTERS SIDEBAR */
-    .filters {
-  align-self: start;
-  background: linear-gradient(180deg, #3f2e23, #241d17);
-  border: 1px solid rgba(255,255,255,0.22);
-  border-radius: 28px;
-  padding: 1.5rem;
-  color: var(--text);
-  box-shadow:
-    0 12px 30px rgba(0,0,0,0.35),
-    inset 0 1px 0 rgba(255,255,255,0.05);
-}
-
-    .filters h2 { margin: 0.2rem 0 0.4rem; font-size: 1.6rem; }
-    .filters .desc { margin: 0 0 1rem; color: var(--soft); font-size: 0.95rem; }
-
-.filter-group {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 1.2rem 0 0;
-  margin-top: 1.2rem;
-}
-
-.filter-group:first-of-type {
-  border-top: none;
-  padding-top: 0;
-  margin-top: 0;
-}
-
-.filter-group summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1.02rem;
-  user-select: none;
-}
-
-.filter-group summary::after {
-  content: '→';
-  font-size: 0.8rem;
-  color: var(--accent);
-  transition: transform 0.3s ease;
-}
-
-.filter-group[open] summary::after {
-  transform: rotate(90deg);
-}
-
-.filter-content {
-  padding-top: 1rem;
-}
-
-    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem; }
-    .chip {
-      padding: 0.45rem 0.7rem;
-      border: 1px solid rgba(216,163,93,0.18);
-      border-radius: 999px;
-      background: rgba(216,163,93,0.07);
-      color: var(--muted);
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-
-    .chip.active {
-  background: var(--accent);
-  color: #1a130d;
-  border-color: var(--accent);
-  font-weight: bold;
-}
-
-.book.hidden {
-  display: none;
-}
-
-    .field {
-      width: 100%;
-      background: rgba(7,7,7,0.28);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 0.8rem 0.9rem;
-      font: inherit;
-      margin-bottom: 0.7rem;
-    }
-
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-
-    /* BOOKCASE RESULTS */
-    .results-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      color: var(--muted);
-    }
-
-    .bookshelf {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 18%),
-    linear-gradient(180deg, #2a1d14 0%, #1d140f 100%);
-  border: 12px solid #2b1d13;
-  border-radius: 14px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.03),
-    0 24px 70px rgba(0,0,0,0.45);
-  padding: 0.5rem 0;
-  overflow: hidden;
-}
-
-.shelf-row {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  gap: 1rem;
-  padding: 2.4rem 1.5rem 1.2rem;
-  min-height: 340px;
-  flex-wrap: nowrap;
-
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.025), transparent 30%),
-    linear-gradient(180deg, rgba(0,0,0,0.18), transparent 20%, transparent 75%, rgba(0,0,0,0.18) 100%);
-}
-
-.shelf-row::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 22px;
-  background:
-    linear-gradient(180deg, #7b5230 0%, #5e3b21 45%, #3f2716 100%);
-  box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.08),
-    inset 0 -6px 10px rgba(0,0,0,0.35),
-    0 -8px 20px rgba(0,0,0,0.28);
-  z-index: 1;
-}
-
-.shelf-row::after {
-  content: "";
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 22px;
-  height: 16px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.22), transparent);
-  filter: blur(6px);
-  z-index: 0;
-}
-
-.shelf-row > * {
-  position: relative;
-  z-index: 2;
-}
-
-.shelf-row:nth-child(odd) {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 30%),
-    linear-gradient(180deg, rgba(0,0,0,0.16), transparent 20%, transparent 75%, rgba(0,0,0,0.2) 100%);
-}
-
-.shelf-row:nth-child(even) {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 30%),
-    linear-gradient(180deg, rgba(0,0,0,0.2), transparent 20%, transparent 75%, rgba(0,0,0,0.16) 100%);
-}
-
-.book {
-  position: relative;
-  width: 180px;
-  flex: 0 0 180px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.book:hover {
-  transform: translateY(-12px);
-  z-index: 10;
-}
-
-.book-card {
-  background: linear-gradient(180deg, rgba(29,23,19,0.98), rgba(20,15,12,0.98));
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow:
-    0 10px 24px rgba(0,0,0,0.35),
-    0 2px 0 rgba(255,255,255,0.03) inset;
-}
-
-.book-cover-wrap {
-  position: relative;
-  aspect-ratio: 2 / 3;
-  background: rgba(255,255,255,0.04);
-  overflow: hidden;
-}
-
-.book-release-badge {
-  position: absolute;
-  top: 0.45rem;
-  left: 0.45rem;
-  z-index: 3;
-  padding: 0.28rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.58rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-weight: bold;
-  background: rgba(18,14,11,0.78);
-  border: 1px solid rgba(216,163,93,0.35);
-  color: #f2c994;
-  max-width: calc(100% - 0.9rem);
+.btn-full {
+  width: 100%;
   text-align: center;
+  display: block;
 }
 
-@media (max-width: 720px) {
-  .book-release-badge {
-    top: 0.25rem;
-    left: 0.25rem;
-    padding: 0.18rem 0.28rem;
-    border-radius: 999px;
-    font-size: 0.42rem;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    max-width: calc(100% - 0.5rem);
-    white-space: nowrap;
-  }
+.btn.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
-.book-cover {
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      max-width: 42rem;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-card {
+  background: linear-gradient(180deg, rgba(36,29,23,0.96), rgba(22,17,13,0.96));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 1.4rem;
+  box-shadow: var(--shadow);
+  max-height: 780px;
+  overflow: auto;
+}
+
+    .hero-card h2 {
+      margin: 0.2rem 0 1rem;
+      font-size: 1.7rem;
+    }
+
+    .section-label {
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.76rem;
+    }
+
+    .trend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 18px;
+  padding: 0.7rem;
+  margin-bottom: 0.65rem;
+}
+
+.trend-cover {
+  width: 42px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.25);
+}
+
+.trend-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  background: rgba(255,255,255,0.04);
-  transition: transform 0.3s ease, filter 0.3s ease;
-  -webkit-user-drag: none;
 }
 
-.book:hover .book-cover {
-  transform: scale(1.03);
-  filter: brightness(0.8);
-}
-
-.book-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.85),
-    rgba(0,0,0,0.4),
-    transparent
-  );
+.trend-text {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 0.6rem;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  min-width: 0;
 }
 
-.book:hover .book-overlay {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.overlay-title {
-  font-size: 0.8rem;
-  font-weight: bold;
+.trend-text strong {
+  font-size: 0.95rem;
   line-height: 1.2;
 }
 
-.overlay-author {
-  font-size: 0.7rem;
-  opacity: 0.75;
+.trend-text span {
+  font-size: 0.8rem;
+  color: var(--soft);
 }
 
-    .pagination {
+    .rank {
+  min-width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(216,163,93,0.14);
+  color: #f3c78e;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.trending-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.trending-discussion {
+  display: flex;
+}
+
+.trending-discussion .btn {
+  width: 100%;
+}
+
+    .trend-item span {
+      display: block;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    section {
+      padding: 4rem 0;
+    }
+
+    .section-head {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-head h2 {
+      margin: 0.4rem 0 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .section-head p {
+      max-width: 30rem;
+      color: var(--soft);
+      margin: 0;
+    }
+
+    .vibe-grid,
+    .author-grid,
+    .benefit-grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .vibe-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .author-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .benefit-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(29,24,20,0.96), rgba(22,17,13,0.96));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      padding: 1.3rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+
+    .card:hover {
+      border-color: rgba(216,163,93,0.22);
+      transform: translateY(-2px);
+      transition: 0.2s ease;
+    }
+
+    .thumb {
+      height: 120px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(216,163,93,0.24), rgba(36,29,23,0.8), rgba(138,79,29,0.24));
+      margin-bottom: 1rem;
+    }
+
+    .author-cover {
+      height: 210px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(216,163,93,0.20), rgba(30,24,18,0.9));
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      margin: 0.4rem 0;
+      font-size: 1.25rem;
+    }
+
+    .meta {
+      color: var(--soft);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card p {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .card-link,
+.trend-link {
+  display: block;
+}
+
+.card-link .card,
+.trend-link .trend-item {
+  transition: 0.2s ease;
+}
+
+.card-link:hover .card,
+.trend-link:hover .trend-item {
+  border-color: rgba(216,163,93,0.28);
+  transform: translateY(-2px);
+}
+
+.cover-frame,
+.author-photo {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(216,163,93,0.14), rgba(30,24,18,0.92));
+  margin-bottom: 1rem;
+}
+
+.cover-frame {
+  aspect-ratio: 2 / 3;
+}
+
+.author-photo {
+  aspect-ratio: 4 / 5;
+}
+
+.cover-frame img,
+.author-photo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.release-carousel-shell {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 24px;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+.release-carousel {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  padding: 0.25rem 0 0.75rem;
+  animation: none;
+}
+
+.release-card {
+  scroll-snap-align: start;
+}
+
+.release-card {
+  width: 240px;
+  flex: 0 0 240px;
+}
+
+.release-card .card {
+  height: 100%;
+}
+
+.release-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.release-badge {
+  display: inline-block;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(216,163,93,0.2);
+  background: rgba(216,163,93,0.08);
+  color: var(--muted);
+}
+
+.release-cover-wrap {
+  position: relative;
+  width: 180px;
+  aspect-ratio: 2 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(29,24,20,0.25), rgba(29,24,20,0.25)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg");
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.35),
+    0 2px 0 rgba(255,255,255,0.03) inset;
+  transition: transform 0.25s ease;
+}
+
+.release-card:hover .release-cover-wrap {
+  transform: translateY(-6px);
+}
+
+.release-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: transparent;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.release-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.6rem;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.35),
+    transparent
+  );
+}
+
+.release-date {
+  color: var(--soft);
+  font-size: 0.9rem;
+  margin-top: 0.45rem;
+}
+
+.inline-link {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.inline-link:hover {
+  color: #f2c994;
+}
+
+.section-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.section-cta:hover {
+  color: #f2c994;
+}
+
+.empty-state,
+.loading-state {
+  color: var(--soft);
+  padding: 1rem 0;
+}
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 1.5rem;
-      margin-top: 4rem;
+      align-items: stretch;
     }
 
-    .btn-nav {
-      background: var(--bg-soft);
-      border: 1px solid var(--line);
-      color: white;
-      min-width: 200px;
+    .callout {
+      background: linear-gradient(180deg, rgba(216,163,93,0.10), rgba(24,19,14,0.96));
+      border: 1px solid rgba(216,163,93,0.12);
+      border-radius: 28px;
+      padding: 2rem;
     }
 
+    .callout h2, .wide-panel h2 {
+      margin-top: 0.5rem;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.06;
+    }
 
+    .wide-panel {
+      background: linear-gradient(180deg, rgba(29,24,20,0.96), rgba(22,17,13,0.96));
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      padding: 2rem;
+    }
+
+    .callout p, .wide-panel p {
+      color: var(--muted);
+      max-width: 48rem;
+    }
+
+        #readers .reader-signup-intro {
+      margin-bottom: 1rem;
+    }
+
+    #readers .reader-signup-perks {
+      display: grid;
+      gap: 0.7rem;
+      margin: 1.2rem 0 1.35rem;
+    }
+
+    #readers .reader-signup-perk {
+      padding: 0.85rem 0.95rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    #readers .reader-signup-perk strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    #readers .reader-signup-perk span {
+      color: var(--soft);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    #readers .reader-signup-perks-inline {
+  color: var(--soft);
+  font-size: 0.9rem;
+  margin: 0.6rem 0 1.1rem;
+  letter-spacing: 0.02em;
+}
+
+    #readerSignupForm {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+    .signup-label {
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-bottom: -0.35rem;
+    }
+
+    #readerSignupForm input {
+      width: 100%;
+      padding: 1rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(11,10,9,0.72);
+      color: var(--text);
+      font: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    #readerSignupForm input::placeholder {
+      color: #9f907f;
+    }
+
+    #readerSignupForm input:focus {
+      outline: none;
+      border-color: rgba(216,163,93,0.5);
+      box-shadow: 0 0 0 3px rgba(216,163,93,0.12);
+      background: rgba(11,10,9,0.82);
+    }
+
+    #readerSignupButton {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.2rem;
+    }
+
+    #readerSignupButton[disabled] {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .signup-hp {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px !important;
+      height: 1px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .note {
+      color: var(--soft);
+      font-size: 0.88rem;
+      margin-top: 0.9rem;
+      min-height: 1.4em;
+    }
+
+    .note.is-success {
+      color: #f2c994;
+    }
+
+    .note.is-error {
+      color: #e7b0a2;
+    }
 
     footer {
   border-top: 1px solid var(--line);
@@ -620,39 +858,49 @@
   border-color: rgba(216,163,93,0.4);
 }
 
-        @media (max-width: 1150px) {
-      .library-layout {
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .split,
+      .vibe-grid,
+      .author-grid,
+      .benefit-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-grid,
+      .split {
         grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 720px) {
-  body {
-    background:
-      linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
-    background-size: cover;
-    background-position: center top;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
+        @media (max-width: 720px) {
+          body {
+  background:
+    linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+          
+  .container {
+    width: min(calc(100% - 1rem), var(--max));
   }
 
-  .container {
-        width: min(calc(100% - 1rem), var(--max));
-      }
+  nav,
+.section-head,
+.button-row {
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-      header {
-        padding: 1.2rem 0 1.6rem;
-      }
+nav {
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
 
-      nav {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-bottom: 1.4rem;
-      }
-
-      .desktop-only {
+.desktop-only {
   display: none;
 }
 
@@ -672,126 +920,19 @@
   padding: 0.35rem 0.52rem;
 }
 
-      .brand h1 {
-        font-size: 1.8rem;
-        margin: 0;
-      }
+  section {
+    padding: 2.5rem 0;
+  }
 
-      
-      .hero h1 {
-        font-size: 2.35rem;
-      }
+  .brand-title {
+    font-size: 1.7rem;
+  }
 
-      .library-layout {
-        gap: 1.2rem;
-        padding: 1.4rem 0 2rem;
-      }
+  .brand small {
+    font-size: 0.62rem;
+  }
 
-      .filters {
-        border-radius: 20px;
-        padding: 1rem;
-        box-shadow: 0 14px 34px rgba(0,0,0,0.32);
-      }
-
-      .filters h2 {
-        font-size: 1.25rem;
-      }
-
-      .filter-group {
-        padding: 0.85rem 0 0;
-        margin-top: 0.85rem;
-      }
-
-      .filter-group summary {
-        font-size: 0.95rem;
-      }
-
-      .filter-content {
-        padding-top: 0.75rem;
-      }
-
-      .chip-row {
-        gap: 0.4rem;
-        margin-bottom: 0.6rem;
-      }
-
-      .chip {
-        font-size: 0.78rem;
-        padding: 0.38rem 0.58rem;
-      }
-
-      .field {
-        padding: 0.72rem 0.78rem;
-        font-size: 0.9rem;
-      }
-
-      .results-top {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-      }
-
-      .results-top p {
-        margin: 0;
-      }
-
-      .results-top select.field {
-        max-width: 100%;
-      }
-
-      .bookshelf {
-        border-width: 7px;
-        border-radius: 12px;
-        padding: 0.25rem 0;
-      }
-
-      .shelf-row {
-        gap: 0.42rem;
-        padding: 1.15rem 0.45rem 0.8rem;
-        min-height: 150px;
-      }
-
-      .shelf-row::before {
-        height: 13px;
-      }
-
-      .shelf-row::after {
-        bottom: 13px;
-        height: 10px;
-      }
-
-      .book {
-        width: 62px;
-        flex: 0 0 62px;
-      }
-
-      .book-card {
-        border-radius: 9px;
-      }
-
-      .book:hover {
-        transform: translateY(-6px);
-      }
-
-      .book-overlay {
-        display: none;
-      }
-
-      .pagination {
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-top: 2rem;
-      }
-
-      .btn-nav {
-        min-width: 0;
-        width: 100%;
-      }
-
-
-.brand {
+  .brand {
   gap: 0.65rem;
 }
 
@@ -808,40 +949,319 @@
   font-size: 0.64rem;
 }
 
-.footer-inner {
+  header.hero {
+    padding: 1.6rem 0 2.6rem;
+  }
+
+  h1 {
+    font-size: 2.75rem;
+  }
+
+  .hero p.lead {
+    font-size: 1.02rem;
+  }
+
+  .hero p.support {
+    font-size: 0.95rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+  }
+
+  .stat {
+    padding: 0.75rem 0.55rem;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .stat strong {
+    font-size: 1.05rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .hero-card {
+    max-height: none;
+    padding: 1rem;
+    border-radius: 22px;
+  }
+
+  .trend-item {
+    padding: 0.55rem;
+    gap: 0.55rem;
+    border-radius: 14px;
+  }
+
+  .rank {
+    min-width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+  }
+
+  .trend-cover {
+    width: 34px;
+    height: 50px;
+  }
+
+  .trend-text strong {
+    font-size: 0.85rem;
+  }
+
+  .trend-text span {
+    font-size: 0.72rem;
+  }
+
+  .section-head {
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2,
+  .callout h2,
+  .wide-panel h2 {
+    font-size: 1.75rem;
+  }
+
+  .section-head p,
+  .callout p,
+  .wide-panel p {
+    font-size: 0.92rem;
+  }
+
+  .author-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .vibe-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+  }
+
+  .benefit-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    border-radius: 16px;
+  }
+
+  .author-photo {
+    border-radius: 12px;
+    margin-bottom: 0.55rem;
+  }
+
+  .thumb {
+    height: 54px;
+    border-radius: 12px;
+    margin-bottom: 0.55rem;
+  }
+
+  .meta {
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+  }
+
+  .card h3 {
+    font-size: 0.9rem;
+    line-height: 1.15;
+    margin: 0.3rem 0;
+  }
+
+  .card p {
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .release-carousel {
+    gap: 0.65rem;
+  }
+
+  .release-card {
+    width: 118px;
+    flex: 0 0 118px;
+  }
+
+  .release-cover-wrap {
+    width: 118px;
+    border-radius: 14px;
+  }
+
+  .release-badge {
+    font-size: 0.58rem;
+    padding: 0.28rem 0.42rem;
+  }
+
+  .split {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .wide-panel,
+  .callout {
+    padding: 1.2rem;
+    border-radius: 22px;
+  }
+
+  #readerSignupForm input {
+    padding: 0.85rem;
+  }
+
+  .footer-inner {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   gap: 0.6rem;
 }
-      
-    }
+}
+
+/* ===== BASELINE UPGRADE: BROWN IDENTITY + BETTER CONTRAST ===== */
+
+:root {
+  --text: #fff8f0;
+  --muted: #e3d2c0;
+  --soft: #c9b7a5;
+  --line: rgba(255,255,255,0.18);
+}
+
+/* Keep original brown background, just improve readability */
+body {
+  color: var(--text);
+}
+
+/* Lighter brown cards/panels */
+.card,
+.hero-card,
+.wide-panel,
+.callout {
+  background: linear-gradient(180deg, #3f2e23, #241d17);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: var(--text);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Better paragraph contrast */
+.hero p.lead,
+.hero p.support,
+.section-head p,
+.card p,
+.callout p,
+.wide-panel p,
+.trend-text span,
+.empty-state,
+.loading-state,
+.footer-link,
+footer {
+  color: var(--muted);
+}
+
+/* Better small-label contrast */
+.section-label,
+.meta,
+.brand small,
+.note,
+.release-date,
+#readers .reader-signup-perks-inline,
+.signup-label {
+  color: var(--soft);
+}
+
+/* Stronger mini cards */
+.stat,
+.trend-item,
+#readers .reader-signup-perk {
+  background: rgba(63,46,35,0.9);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Buttons stay gold/action-led */
+.btn-primary {
+  background: #e6b06a;
+  color: #120e0b;
+  border: 2px solid #120e0b;
+}
+
+.btn-primary:hover {
+  background: #f2c994;
+}
+
+/* Secondary buttons clearer */
+.btn-secondary {
+  background: #241d17;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: #3f2e23;
+  border-color: rgba(216,163,93,0.45);
+}
+
+/* Gold accents stay for action/attention */
+.accent,
+.inline-link,
+.section-cta {
+  color: #f2c994;
+}
+
+/* Reader form inputs */
+#readerSignupForm input {
+  background: #17100c;
+  border: 2px solid rgba(255,255,255,0.3);
+  color: var(--text);
+}
+
+#readerSignupForm input::placeholder {
+  color: var(--soft);
+}
+
+#readerSignupForm input:focus {
+  outline: 3px solid #f2c994;
+  border-color: #f2c994;
+}
+
+/* Accessibility focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #f2c994;
+  outline-offset: 3px;
+}
+
+/* ===== END BASELINE UPGRADE ===== */
+
   </style>
 </head>
 <body>
-
-  <header>
+  <header class="hero">
     <div class="container">
       <nav>
   <a class="brand" href="index.html" aria-label="The Blk Shelf home">
-    <img 
-      src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
-      alt="The Blk Shelf logo"
-      class="brand-logo"
-    >
-
-    <div class="brand-text">
-      <span class="brand-title">The Blk Shelf</span>
-      <small>Powered by Black authors</small>
-    </div>
-  </a>
-
+  <img 
+    src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
+    alt="The Blk Shelf logo"
+    class="brand-logo"
+  >
+  <div class="brand-text">
+    <span class="brand-title">The Blk Shelf</span>
+    <small>Powered by Black authors</small>
+  </div>
+</a>
   <div class="nav-links">
   <a class="desktop-only" href="index.html">Home</a>
   <a href="library.html">Library</a>
   <a href="featured-authors.html">Featured Authors</a>
   <a class="desktop-only" href="about.html">About</a>
   <a class="desktop-only" href="faq.html">FAQs</a>
-  <a href="index.html#readers">Join List</a>
+  <a href="#readers">Join List</a>
 
   <details class="mobile-more-menu">
     <summary>Menu</summary>
@@ -853,111 +1273,221 @@
   </details>
 </div>
 </nav>
-      <div class="hero">
-        <div>
-          <span class="eyebrow">The Digital Library</span>
-          <h1>Explore the Stacks.</h1>
+
+<div class="hero-grid">
+  <div>
+    <span class="eyebrow">Black indie books, curated by mood and story</span>
+    <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
+    <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
+    <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered in a space built with their work in mind.</p>
+
+    <div class="button-row">
+      <a class="btn btn-primary" href="library.html">Explore the Library</a>
+      <a class="btn btn-secondary" href="featured-authors.html">Meet Featured Authors</a>
+    </div>
+
+          <div class="stats">
+  <div class="stat">
+    <strong id="booksStatValue">—</strong>
+    <span id="booksStatLabel">Black indie books</span>
+  </div>
+  <div class="stat">
+    <strong id="authorsStatValue">—</strong>
+    <span id="authorsStatLabel">Black indie authors</span>
+  </div>
+  <div class="stat">
+    <strong>Weekly</strong>
+    rankings + updates
+  </div>
+</div>
         </div>
+
+        <div class="trending-wrapper">
+  <aside class="hero-card">
+    <div class="section-label" id="trendingLabel">Loading shelf data</div>
+    <h2 id="trendingHeading">Loading books...</h2>
+    <div id="trendingBooks" class="loading-state">Loading books...</div>
+  </aside>
+
+  <div class="trending-discussion">
+    <a
+      id="discordButton"
+      class="btn btn-primary btn-full"
+      href="https://discord.gg/8mpFKMRCZ"
+      target="_blank"
+rel="noopener noreferrer"
+    >
+      Discuss What's Trending on Discord
+    </a>
+  </div>
+</div>
       </div>
     </div>
   </header>
 
-  <main class="container library-layout" id="library-anchor">
-<aside class="filters">
-  <span class="eyebrow">Filter library</span>
-  <h2>Find your next read.</h2>
-<p> </p>
-  <details class="filter-group">
-    <summary>Author</summary>
-    <div class="filter-content">
-      <input class="field" id="author-search" type="text" placeholder="Search author..." />
+  <section id="authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Featured authors</div>
+        <h2>Meet the writers behind the stories.</h2>
+      </div>
+      <p>This is where real authors get surfaced. Not buried behind a marketplace built to favor scale over connection.</p>
     </div>
-  </details>
 
-  <details class="filter-group">
-    <summary>Genre</summary>
-    <div class="filter-content">
-      <div class="chip-row" id="genre-filters"></div>
+    <div id="featuredAuthorsGrid" class="author-grid">
+      <div class="loading-state">Loading featured authors...</div>
     </div>
-  </details>
 
-  <details class="filter-group">
-  <summary>Sub-Genre</summary>
-  <div class="filter-content">
-    <div class="chip-row" id="subgenre-filters"></div>
-  </div>
-</details>
-
-  <details class="filter-group" id="vibe-filter-group">
-  <summary>Vibe</summary>
-  <div class="filter-content">
-    <div class="chip-row" id="vibe-filters"></div>
-  </div>
-</details>
-
-  <details class="filter-group">
-    <summary>Age Range</summary>
-    <div class="filter-content">
-      <div class="chip-row" id="age-filters"></div>
-    </div>
-  </details>
-
-  <details class="filter-group">
-    <summary>Spice Level</summary>
-    <div class="filter-content">
-      <div class="chip-row" id="spice-filters"></div>
-    </div>
-  </details>
-
-  <details class="filter-group">
-    <summary>Representation</summary>
-    <div class="filter-content">
-      <div class="chip-row" id="representation-filters"></div>
-    </div>
-  </details>
-
-  <details class="filter-group">
-  <summary>Ranking</summary>
-  <div class="filter-content">
-    <div class="chip-row">
-      <span class="chip ranking-filter-chip" data-ranking-filter="trending">Trending</span>
-      <span class="chip ranking-filter-chip" data-ranking-filter="new-releases">New Releases</span>
-      <span class="chip ranking-filter-chip" data-ranking-filter="upcoming-releases">Upcoming Releases</span>
-      <span class="chip ranking-filter-chip" data-ranking-filter="featured-authors">Featured Authors</span>
+    <div style="margin-top: 1.5rem;">
+      <a class="section-cta" href="featured-authors.html">View all featured authors →</a>
     </div>
   </div>
-</details>
+</section>
 
-  <button class="btn btn-primary" id="apply-filters-btn">Apply Filters</button>
-  <button class="btn btn-secondary" id="clear-filters-btn" style="width:100%; margin-top:0.75rem;">Clear Filters</button>
-</aside>
-
-    <section>
-      <div class="results-top">
-        <p>Bookcase <span id="current-page">1</span> (Displaying Books <span id="range">1-100</span>)</p>
-        <div style="font-size: 0.9rem;">
-          Sort:
-          <select id="sort-select" class="field" style="display:inline-block; width:auto; margin:0 0 0 0.5rem; padding:0.45rem 0.7rem;">
-            <option value="default">Default</option>
-            <option value="title-asc">Title A–Z</option>
-            <option value="title-desc">Title Z–A</option>
-            <option value="newest">Newest Release</option>
-            <option value="oldest">Oldest Release</option>
-          </select>
+  <section id="library">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Browse by vibe</div>
+          <h2>Because readers search for a feeling, not just a genre.</h2>
         </div>
+        <p>Not every reader comes looking for a category. Sometimes they come looking for heat, comfort, chaos, tension, healing, or a book that refuses to leave them alone.</p>
       </div>
 
-      <div class="bookshelf" id="bookshelf-inject">
-        </div>
-
-      <div class="pagination" id="paginationControls">
-  <button class="btn btn-nav" id="prevCaseBtn" onclick="navigate(-1)">← Previous Case</button>
-  <button class="btn btn-nav" id="nextCaseBtn" onclick="navigate(1)" style="background: var(--accent); color: black; border: none;">Next Case (Next 100 Books) →</button>
+      <div class="vibe-grid" id="vibeGrid">
+  <div class="loading-state">Loading vibes...</div>
 </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <footer>
+<section id="fresh-books">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <div class="section-label">New & upcoming</div>
+        <h2>Fresh from the shelf.</h2>
+      </div>
+      <p>← Scroll the new heat and upcoming drops →</p>
+    </div>
+
+    <div class="release-carousel-shell">
+      <div id="freshBooksCarousel" class="release-carousel loading-state">Loading books...</div>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+      <a class="section-cta" href="library.html">Browse the full library →</a>
+    </div>
+  </div>
+</section>
+
+  <section>
+  <div class="container split">
+    <div class="wide-panel">
+      <div class="section-label">Built to connect Black Indie authors to readers</div>
+      <h2>Find stories that feel like they were meant for you.</h2>
+      <p>Finding a good book shouldn’t feel like digging through noise. The Blk Shelf keeps the focus where it belongs—on stories that hit, voices that stand out, and books that actually match your mood.</p>
+
+      <div class="benefit-grid">
+        <article class="card">
+          <h3>Curated discovery</h3>
+          <p>Find books by vibe, voice, and what’s actually resonating—not whatever an algorithm decides to push.</p>
+        </article>
+        <article class="card">
+          <h3>Stories that hit</h3>
+          <p>From soft and cozy to dark and chaotic, the range is real. Pick your lane and find something worth your time.</p>
+        </article>
+        <article class="card">
+          <h3>No more digging</h3>
+          <p>You shouldn’t have to scroll forever to find something good. We already did that part.</p>
+        </article>
+      </div>
+    </div>
+
+            <aside class="callout" id="readers">
+        <div class="section-label">Join the list</div>
+        <h2>Stay close to the books that matter.</h2>
+        <p class="reader-signup-intro">
+  Stay tapped in without chasing posts, pages, or algorithms.
+</p>
+
+        <p class="reader-signup-perks-inline">
+  New releases • Featured authors • Shelf updates
+</p>
+
+        <form id="readerSignupForm" novalidate>
+          <label class="signup-label" for="readerFirstName">First name</label>
+          <input
+            id="readerFirstName"
+            type="text"
+            name="firstName"
+            placeholder="Enter your first name"
+            autocomplete="given-name"
+            required
+          />
+
+          <label class="signup-label" for="readerEmail">Email address</label>
+          <input
+            id="readerEmail"
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            autocomplete="email"
+            inputmode="email"
+            required
+          />
+
+          <input
+            type="text"
+            name="company"
+            id="readerCompany"
+            class="signup-hp"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
+
+          <button class="btn btn-primary" id="readerSignupButton" type="submit">
+            Join the Reader List
+          </button>
+        </form>
+
+        <div class="note" id="readerSignupNote" aria-live="polite">
+          No clutter. Just Black indie books, featured authors, and updates worth opening.
+        </div>
+      </aside>
+    </div>
+  </section>
+
+    <section id="submit" style="padding-top: 0;">
+    <div class="container">
+      <div class="callout">
+        <div class="section-label">For authors</div>
+        <h2>Want your book featured on The Blk Shelf?</h2>
+        <div class="button-row" style="margin-top: 1.4rem; margin-bottom: 0;">
+          <a
+            class="btn btn-primary"
+            href="https://forms.gle/sfoy41AxfsZj17Yx9"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Submit Author Info
+          </a>
+
+          <a
+            class="btn btn-secondary"
+            href="https://forms.gle/Kuei1dWKap7ud5Ax5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Submit Your Book
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <footer>
   <div class="container footer-inner">
     <div class="footer-line footer-title">
       The Blk Shelf
@@ -975,139 +1505,46 @@
   </div>
 </footer>
 
-<script>
-  const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+  <script>
+    const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+    const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+    const DEFAULT_AUTHOR = "https://placehold.co/500x625/1d1814/f4eee8?text=Author";
+    const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
+let releaseCarouselAnimationId = null;
 
-const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
-const NEW_RELEASE_WINDOW_DAYS = 60;
-
-  let page = 1;
-  const booksPerShelf = 5;
-  const shelvesPerCase = 20;
-  const booksPerCase = booksPerShelf * shelvesPerCase;
-
-  let allBooks = [];
-let filteredBooks = [];
-let trendingBookIds = new Set();
-let featuredAuthorIds = new Set();
-
-const state = {
-  authorQuery: "",
-  genres: new Set(),
-  subGenres: new Set(),
-  vibes: new Set(),
-  ageRanges: new Set(),
-  spiceLevels: new Set(),
-  representations: new Set(),
-  rankingFilter: new Set(),
-  sortBy: "default"
-};
-
-  async function loadLibrary() {
-  try {
-    const [libraryRes, rankingRes, featuredRes] = await Promise.all([
-      fetch(`${API_BASE}?type=library`),
-      fetch(`${API_BASE}?type=weekly-ranking`),
-      fetch(`${API_BASE}?type=featured`)
-    ]);
-
-    const libraryData = await libraryRes.json();
-    const rankingData = await rankingRes.json();
-    const featuredData = await featuredRes.json();
-
-    if (!libraryData.success || !Array.isArray(libraryData.books)) {
-      throw new Error("Library data did not load correctly.");
+    function getCurrentMonthKey() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}`;
     }
 
-    let books = libraryData.books;
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-const savedShuffleOrder = sessionStorage.getItem("library_shuffle_order");
+    function pick(obj, keys, fallback = "") {
+      for (const key of keys) {
+        if (obj && obj[key] != null && String(obj[key]).trim() !== "") {
+          return obj[key];
+        }
+      }
+      return fallback;
+    }
 
-if (state.sortBy === "default" && savedShuffleOrder) {
-  books = applySavedShuffleOrder(books, savedShuffleOrder);
-} else if (state.sortBy === "default") {
-  books = shuffleArray(books);
-  sessionStorage.setItem(
-    "library_shuffle_order",
-    JSON.stringify(books.map(book => book.bookId).filter(Boolean))
-  );
-}
-
-allBooks = books;
-filteredBooks = [...allBooks];
-
-    trendingBookIds = new Set(
-      (rankingData.rankings || []).map(item => item.bookId)
-    );
-
-    featuredAuthorIds = new Set(
-      (featuredData.authors || []).map(item => item.authorId)
-    );
-
-    buildDynamicFilterChips();
-attachFilterEvents();
-applyInitialUrlFilters();
-applyFilters();
-  } catch (error) {
-    console.error("Library load failed:", error);
-    document.getElementById("bookshelf-inject").innerHTML = `
-      <div style="padding:2rem; color:#f5eee6;">
-        Could not load books right now.
-      </div>
-    `;
-  }
-}
-
-  function buildDynamicFilterChips() {
-    buildChipGroup("genre-filters", getUniqueValues(allBooks, "genre"), "genre");
-    buildChipGroup("subgenre-filters", getUniqueFlattenedValues(allBooks, "subGenres"), "subgenre");
-    buildChipGroup("vibe-filters", getUniqueFlattenedValues(allBooks, "vibes"), "vibe");
-    buildChipGroup("age-filters", getUniqueValues(allBooks, "ageRange"), "age");
-    buildChipGroup("spice-filters", getUniqueValues(allBooks, "spiceLevel"), "spice");
-    buildChipGroup("representation-filters", getUniqueCommaSeparatedValues(allBooks, "representation"), "representation");
-  }
-
-  function buildChipGroup(containerId, values, type) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
-
-    values.forEach(value => {
-      const chip = document.createElement("span");
-      chip.className = "chip filter-chip";
-      chip.dataset.type = type;
-      chip.dataset.value = value;
-      chip.textContent = value;
-      container.appendChild(chip);
-    });
-  }
-
-  function getUniqueValues(items, field) {
-    return [...new Set(
-      items
-        .map(item => normalizeText(item[field]))
-        .filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b));
-  }
-
-  function getUniqueFlattenedValues(items, field) {
-    return [...new Set(
-      items.flatMap(item => Array.isArray(item[field]) ? item[field] : [])
-        .map(value => normalizeText(value))
-        .filter(Boolean)
-    )].sort((a, b) => a.localeCompare(b));
-  }
-
-  function getUniqueCommaSeparatedValues(items, field) {
-  return [...new Set(
-    items
-      .flatMap(item => normalizeText(item[field]).split(","))
-      .map(value => normalizeText(value))
-      .filter(Boolean)
-  )].sort((a, b) => a.localeCompare(b));
-}
-
-  function normalizeText(value) {
-  return String(value || "").trim();
+    function normalizeArray(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.books)) return data.books;
+  if (Array.isArray(data?.authors)) return data.authors;
+  if (Array.isArray(data?.items)) return data.items;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.rankings)) return data.rankings;
+  return [];
 }
 
 function shuffleArray(items) {
@@ -1119,235 +1556,233 @@ function shuffleArray(items) {
   return copy;
 }
 
-function applySavedShuffleOrder(items, savedOrder) {
-  let orderedIds = [];
+const VIBE_IMAGE_BASE = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/vibes/";
 
-  try {
-    orderedIds = JSON.parse(savedOrder);
-  } catch (_) {
-    sessionStorage.removeItem("library_shuffle_order");
-    return shuffleArray(items);
+const VIBE_OPTIONS = [
+  {
+    title: "Hot & Heavy 🌶️",
+    filterValue: "Hot & Heavy 🌶️",
+    image: `${VIBE_IMAGE_BASE}vibe-hot-heavy.jpg`,
+    description: "For readers who want heat on the page and chemistry that refuses to behave."
+  },
+  {
+    title: "Worth the Wait (Slow Burn)",
+    filterValue: "Worth the Wait (Slow Burn)",
+    image: `${VIBE_IMAGE_BASE}vibe-slow-burn.jpg`,
+    description: "Tension, restraint, and payoff that takes its sweet time getting there."
+  },
+  {
+    title: "No Breathers (Fast-Paced)",
+    filterValue: "No Breathers (Fast-Paced)",
+    image: `${VIBE_IMAGE_BASE}vibe-fast-paced.jpg`,
+    description: "Quick hooks, high momentum, and stories that do not let up."
+  },
+  {
+    title: "Emotional Damage",
+    filterValue: "Emotional Damage",
+    image: `${VIBE_IMAGE_BASE}vibe-emotional-damage.jpg`,
+    description: "Messy feelings, deep wounds, and books that drag your heart by the neck."
+  },
+  {
+    title: "Soft Life (Cozy)",
+    filterValue: "Soft Life (Cozy)",
+    image: `${VIBE_IMAGE_BASE}vibe-soft-life.jpg`,
+    description: "Comfort reads, gentler stakes, and stories you want to curl up inside."
+  },
+  {
+    title: "Ain't Nothing Sweet (Gritty)",
+    filterValue: "Ain't Nothing Sweet (Gritty)",
+    image: `${VIBE_IMAGE_BASE}vibe-gritty.jpg`,
+    description: "Sharp edges, hard truths, and stories that do not clean themselves up for you."
+  },
+  {
+    title: "Dark & Twisted",
+    filterValue: "Dark & Twisted",
+    image: `${VIBE_IMAGE_BASE}vibe-dark-twisted.jpg`,
+    description: "Morally messy, intense, and made for readers who like their stories with teeth."
+  },
+  {
+    title: "Healing / Redemption",
+    filterValue: "Healing / Redemption",
+    image: `${VIBE_IMAGE_BASE}vibe-healing-redemption.jpg`,
+    description: "Stories about repair, recovery, second chances, and becoming something new."
+  },
+  {
+    title: "Found Family",
+    filterValue: "Found Family",
+    image: `${VIBE_IMAGE_BASE}vibe-found-family.jpg`,
+    description: "Ride-or-die bonds, chosen people, and connection built the hard way."
+  },
+  {
+    title: "Everybody Got Issues",
+    filterValue: "Everybody Got Issues",
+    image: `${VIBE_IMAGE_BASE}vibe-everybody-got-issues.jpg`,
+    description: "Complicated people, complicated choices, and nobody clean enough to judge."
+  },
+  {
+    title: "Plot gonna Plot",
+    filterValue: "Plot gonna Plot",
+    image: `${VIBE_IMAGE_BASE}vibe-plot-driven.jpg`,
+    description: "For readers who want twists, turns, reveals, and strong external momentum."
+  },
+  {
+    title: "Character-Driven",
+    filterValue: "Character-Driven",
+    image: `${VIBE_IMAGE_BASE}vibe-character-driven.jpg`,
+    description: "For readers who stay for voice, interiority, and people who feel real."
+  }
+];
+
+function renderVibeCards() {
+  const target = document.getElementById("vibeGrid");
+  if (!target) return;
+
+  const selectedVibes = shuffleArray(VIBE_OPTIONS).slice(0, 6);
+
+  target.innerHTML = selectedVibes.map((vibe) => `
+    <a class="card-link" href="library.html?vibe=${encodeURIComponent(vibe.filterValue)}">
+      <article class="card">
+        <div class="thumb" style="${vibe.image ? `background-image: linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)), url('${escapeHtml(vibe.image)}'); background-size: cover; background-position: center;` : ''}"></div>
+        <div class="meta">Curated lane</div>
+        <h3>${escapeHtml(vibe.title)}</h3>
+        <p>${escapeHtml(vibe.description)}</p>
+      </article>
+    </a>
+  `).join("");
+}
+
+function formatRoundedStat(count) {
+  const safeCount = Number(count) || 0;
+
+  if (safeCount < 50) {
+    return String(safeCount);
   }
 
-  const itemMap = new Map(
-    items
-      .filter(book => book.bookId)
-      .map(book => [book.bookId, book])
-  );
+  return `${Math.floor(safeCount / 50) * 50}+`;
+}
 
-  const orderedItems = orderedIds
-    .map(id => itemMap.get(id))
+function countUniqueLiveAuthors(books) {
+  const uniqueAuthorIds = new Set();
+
+  books.forEach(book => {
+    const authorId = pick(book, ["authorId", "authorID"], "");
+    const authorName = pick(book, ["authorName", "author"], "");
+
+    if (authorId) {
+      uniqueAuthorIds.add(authorId);
+    } else if (authorName) {
+      uniqueAuthorIds.add(`name:${authorName.toLowerCase()}`);
+    }
+  });
+
+  return uniqueAuthorIds.size;
+}
+
+function renderHeroStats(books) {
+  const booksCount = books.length;
+  const authorsCount = countUniqueLiveAuthors(books);
+
+  const booksStatValue = document.getElementById("booksStatValue");
+  const authorsStatValue = document.getElementById("authorsStatValue");
+  const authorsStatLabel = document.getElementById("authorsStatLabel");
+
+  if (booksStatValue) {
+    booksStatValue.textContent = formatRoundedStat(booksCount);
+  }
+
+  if (authorsStatValue) {
+    authorsStatValue.textContent = formatRoundedStat(authorsCount);
+  }
+
+  if (authorsStatLabel) {
+    authorsStatLabel.textContent = authorsCount === 1 ? "Black indie author" : "Black indie authors";
+  }
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return await res.json();
+}
+
+    function renderTrendingBooks(books, mode = "fallback") {
+  const target = document.getElementById("trendingBooks");
+  const label = document.getElementById("trendingLabel");
+  const heading = document.getElementById("trendingHeading");
+
+  if (!books.length) {
+    label.textContent = "From the shelf";
+    heading.textContent = "Books to try";
+    target.innerHTML = '<div class="empty-state">No books available yet.</div>';
+    return;
+  }
+
+  const isTrending = mode === "trending";
+
+  label.textContent = isTrending ? "Trending now" : "From the shelf";
+  heading.textContent = isTrending ? "Top 10 books on the shelf" : "Books to try";
+
+  target.innerHTML = books.slice(0, 10).map((book, index) => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    const title = pick(book, ["title", "bookTitle"], "Untitled");
+    const author = pick(book, ["author", "authorName"], "Author");
+    const genre = pick(book, ["genre", "genres", "category"], "Book");
+    const cover = pick(book, ["cover", "bookCover", "coverImage", "image"], DEFAULT_COVER);
+
+    const clickSource = isTrending ? "landing_trending" : "landing_books_to_try";
+    const rankDisplay = isTrending ? (index + 1) : "•";
+
+    return `
+      <a class="trend-link" href="book.html?id=${encodeURIComponent(id)}&source=${encodeURIComponent(clickSource)}">
+        <div class="trend-item">
+          <div class="rank">${rankDisplay}</div>
+
+          <div class="trend-cover">
+            <img 
+              src="${escapeHtml(cover)}" 
+              alt="${escapeHtml(title)} cover" 
+              loading="lazy"
+              onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+            >
+          </div>
+
+          <div class="trend-text">
+            <strong>${escapeHtml(title)}</strong>
+            <span>${escapeHtml(author)} • ${escapeHtml(genre)}</span>
+          </div>
+        </div>
+      </a>
+    `;
+  }).join("");
+}
+
+function buildRankedBooks(rankings, books) {
+  const bookMap = new Map();
+
+  books.forEach(book => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    if (id) {
+      bookMap.set(id, book);
+    }
+  });
+
+  return rankings
+    .map(rankItem => {
+      const bookId = pick(rankItem, ["bookId", "id", "bookID"]);
+      const matchedBook = bookMap.get(bookId);
+
+      if (!matchedBook) return null;
+
+      return {
+        ...matchedBook,
+        rank: pick(rankItem, ["rank"], null),
+        clickCount: pick(rankItem, ["clickCount"], 0)
+      };
+    })
     .filter(Boolean);
-
-  const orderedIdSet = new Set(orderedIds);
-
-  const newItems = items.filter(book => !orderedIdSet.has(book.bookId));
-
-  return [...orderedItems, ...newItems];
 }
 
-function getUrlVibeFilter() {
-  const params = new URLSearchParams(window.location.search);
-  return normalizeText(params.get("vibe"));
-}
-
-function applyInitialUrlFilters() {
-  const vibeFromUrl = getUrlVibeFilter();
-  if (!vibeFromUrl) return;
-
-  state.vibes.clear();
-
-  const vibeChips = document.querySelectorAll('#vibe-filters .filter-chip');
-
-  vibeChips.forEach(chip => {
-    const chipValue = normalizeText(chip.dataset.value);
-    const isMatch = chipValue.toLowerCase() === vibeFromUrl.toLowerCase();
-
-    chip.classList.toggle("active", isMatch);
-
-    if (isMatch) {
-      state.vibes.add(chipValue);
-    }
-  });
-
-  if (state.vibes.size > 0) {
-    const vibeGroup = document.getElementById("vibe-filter-group");
-    if (vibeGroup) {
-      vibeGroup.setAttribute("open", "open");
-    }
-  }
-}
-
-  function attachFilterEvents() {
-  document.getElementById("apply-filters-btn").addEventListener("click", applyFilters);
-
-  document.getElementById("clear-filters-btn").addEventListener("click", clearFilters);
-
-  document.getElementById("author-search").addEventListener("input", (e) => {
-    state.authorQuery = e.target.value.trim().toLowerCase();
-  });
-
-  document.getElementById("sort-select").addEventListener("change", (e) => {
-    state.sortBy = e.target.value;
-    applyFilters();
-  });
-
-  document.addEventListener("click", (e) => {
-    const chip = e.target.closest(".filter-chip");
-    if (chip) {
-      chip.classList.toggle("active");
-
-      const { type, value } = chip.dataset;
-
-      if (type === "genre") toggleSetValue(state.genres, value);
-      if (type === "subgenre") toggleSetValue(state.subGenres, value);
-      if (type === "vibe") toggleSetValue(state.vibes, value);
-      if (type === "age") toggleSetValue(state.ageRanges, value);
-      if (type === "spice") toggleSetValue(state.spiceLevels, value);
-      if (type === "representation") toggleSetValue(state.representations, value);
-    }
-
-    const rankingFilterChip = e.target.closest(".ranking-filter-chip");
-    if (rankingFilterChip) {
-      rankingFilterChip.classList.toggle("active");
-      toggleSetValue(state.rankingFilter, rankingFilterChip.dataset.rankingFilter);
-    }
-  });
-}
-
-  function toggleSetValue(setObj, value) {
-    if (setObj.has(value)) {
-      setObj.delete(value);
-    } else {
-      setObj.add(value);
-    }
-  }
-
-  function clearFilters() {
-    state.authorQuery = "";
-state.genres.clear();
-state.subGenres.clear();
-state.vibes.clear();
-state.ageRanges.clear();
-state.spiceLevels.clear();
-state.representations.clear();
-state.rankingFilter.clear();
-state.sortBy = "default";
-
-document.getElementById("author-search").value = "";
-document.getElementById("sort-select").value = "default";
-document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
-
-page = 1;
-applyFilters();
-  }
-
-  function applyFilters() {
-  filteredBooks = allBooks.filter(book => {
-    const authorName = normalizeText(book.authorName).toLowerCase();
-    const genre = normalizeText(book.genre);
-    const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
-    const ageRange = normalizeText(book.ageRange);
-    const spiceLevel = normalizeText(book.spiceLevel);
-    const representations = normalizeText(book.representation)
-  .split(",")
-  .map(normalizeText)
-  .filter(Boolean);
-    const vibes = Array.isArray(book.vibes) ? book.vibes.map(normalizeText) : [];
-
-    const matchesAuthor =
-      !state.authorQuery || authorName.includes(state.authorQuery);
-
-    const matchesGenre =
-      state.genres.size === 0 || state.genres.has(genre);
-
-    const matchesSubGenre =
-      state.subGenres.size === 0 || subGenres.some(sub => state.subGenres.has(sub));
-
-    const matchesVibe =
-      state.vibes.size === 0 || vibes.some(vibe => state.vibes.has(vibe));
-
-    const matchesAge =
-      state.ageRanges.size === 0 || state.ageRanges.has(ageRange);
-
-    const matchesSpice =
-      state.spiceLevels.size === 0 || state.spiceLevels.has(spiceLevel);
-
-    const matchesRepresentation =
-  state.representations.size === 0 ||
-  representations.some(rep => state.representations.has(rep));
-
-    const isTrending = trendingBookIds.has(book.bookId);
-
-    const now = new Date();
-now.setHours(0, 0, 0, 0);
-
-const newReleaseCutoff = new Date(now);
-newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
-
-const releaseDate = parseLocalDate(book.releaseDate);
-const releaseTime = releaseDate ? releaseDate.getTime() : 0;
-const hasValidReleaseDate = !!releaseDate;
-
-const isUpcomingRelease =
-  hasValidReleaseDate && releaseTime >= now.getTime();
-
-const isNewRelease =
-  hasValidReleaseDate &&
-  releaseTime < now.getTime() &&
-  releaseTime >= newReleaseCutoff.getTime();
-
-const isFeaturedAuthor = featuredAuthorIds.has(book.authorId);
-
-const matchesRankingFilter =
-  state.rankingFilter.size === 0 ||
-  (state.rankingFilter.has("trending") && isTrending) ||
-  (state.rankingFilter.has("new-releases") && isNewRelease) ||
-  (state.rankingFilter.has("upcoming-releases") && isUpcomingRelease) ||
-  (state.rankingFilter.has("featured-authors") && isFeaturedAuthor);
-
-    return matchesAuthor &&
-      matchesGenre &&
-      matchesSubGenre &&
-      matchesVibe &&
-      matchesAge &&
-      matchesSpice &&
-      matchesRepresentation &&
-      matchesRankingFilter;
-  });
-
-  sortFilteredBooks();
-
-  page = 1;
-  renderCase();
-  updateResultsTop();
-}
-
-       
-
-  function sortFilteredBooks() {
-  if (state.sortBy === "title-asc") {
-    filteredBooks.sort((a, b) => normalizeText(a.title).localeCompare(normalizeText(b.title)));
-    return;
-  }
-
-  if (state.sortBy === "title-desc") {
-    filteredBooks.sort((a, b) => normalizeText(b.title).localeCompare(normalizeText(a.title)));
-    return;
-  }
-
-  if (state.sortBy === "newest") {
-    filteredBooks.sort((a, b) => parseDateSafe(b.releaseDate) - parseDateSafe(a.releaseDate));
-    return;
-  }
-
-  if (state.sortBy === "oldest") {
-    filteredBooks.sort((a, b) => parseDateSafe(a.releaseDate) - parseDateSafe(b.releaseDate));
-    return;
-  }
-}
-
-  function parseLocalDate(value) {
+function parseLocalDate(value) {
   if (!value) return null;
 
   const raw = String(value).trim();
@@ -1365,175 +1800,312 @@ const matchesRankingFilter =
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function getReleaseBadgeLabel(book) {
-  const releaseDate = parseLocalDate(book.releaseDate);
-  if (!releaseDate) return "";
+    function formatReleaseDateLabel(dateValue) {
+  const date = parseLocalDate(dateValue);
+  if (!date) return "";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function startReleaseCarouselAutoScroll() {
+  const shell = document.querySelector(".release-carousel-shell");
+  if (!shell) return;
+
+  if (releaseCarouselAnimationId) {
+    cancelAnimationFrame(releaseCarouselAnimationId);
+  }
+
+  let isPaused = false;
+  let resumeTimer = null;
+
+  function pauseBriefly() {
+    isPaused = true;
+
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      isPaused = false;
+    }, 1200);
+  }
+
+  function step() {
+    const maxScroll = shell.scrollWidth - shell.clientWidth;
+
+    if (!isPaused && maxScroll > 0 && shell.scrollLeft < maxScroll - 1) {
+  shell.scrollLeft += 0.35;
+}
+
+    releaseCarouselAnimationId = requestAnimationFrame(step);
+  }
+
+  shell.addEventListener("mouseenter", () => isPaused = true);
+  shell.addEventListener("mouseleave", () => isPaused = false);
+
+  shell.addEventListener("pointerdown", pauseBriefly, { passive: true });
+  shell.addEventListener("pointerup", pauseBriefly, { passive: true });
+  shell.addEventListener("scroll", pauseBriefly, { passive: true });
+
+  step();
+}
+
+function renderFreshBooks(books) {
+  const target = document.getElementById("freshBooksCarousel");
+  if (!target) return;
+
+  if (!books.length) {
+    target.innerHTML = '<div class="empty-state">No books available yet.</div>';
+    return;
+  }
 
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
-  const newReleaseCutoff = new Date(now);
-  newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
+  const datedBooks = books
+    .map((book) => {
+      const rawDate = pick(book, ["releaseDate", "pubDate", "publicationDate"], "");
+      const parsedDate = parseLocalDate(rawDate);
 
-  if (releaseDate >= now) {
-    return "Upcoming";
+return {
+  ...book,
+  _parsedReleaseDate: parsedDate,
+  _hasValidDate: !!parsedDate
+};
+    })
+    .filter(book => book._hasValidDate);
+
+  const upcomingBooks = datedBooks
+    .filter(book => book._parsedReleaseDate >= now)
+    .sort((a, b) => a._parsedReleaseDate - b._parsedReleaseDate)
+    .slice(0, 8)
+    .map(book => ({ ...book, _releaseType: "Upcoming Release" }));
+
+  const NEW_RELEASE_WINDOW_DAYS = 60;
+
+const newReleaseCutoff = new Date(now);
+newReleaseCutoff.setDate(newReleaseCutoff.getDate() - NEW_RELEASE_WINDOW_DAYS);
+
+const newReleaseBooks = datedBooks
+  .filter(book =>
+    book._parsedReleaseDate < now &&
+    book._parsedReleaseDate >= newReleaseCutoff
+  )
+  .sort((a, b) => b._parsedReleaseDate - a._parsedReleaseDate)
+  .slice(0, 8)
+  .map(book => ({ ...book, _releaseType: "Available Now" }));
+
+    let selectedBooks = [...upcomingBooks, ...newReleaseBooks];
+
+  if (!selectedBooks.length) {
+    selectedBooks = datedBooks
+      .sort((a, b) => b._parsedReleaseDate - a._parsedReleaseDate)
+      .slice(0, 8)
+      .map(book => ({ ...book, _releaseType: "From the Shelf" }));
   }
 
-  if (releaseDate >= newReleaseCutoff && releaseDate < now) {
-    return "Fresh";
-  }
-
-  return "";
-}
-
-  function renderCase() {
-    const container = document.getElementById("bookshelf-inject");
-    container.innerHTML = "";
-
-    const startIndex = (page - 1) * booksPerCase;
-    const endIndex = startIndex + booksPerCase;
-    const caseBooks = filteredBooks.slice(startIndex, endIndex);
-
-    if (!caseBooks.length) {
-  container.innerHTML = `
-    <div style="padding:2rem; color:#f5eee6;">
-      No books matched these filters.
-    </div>
-  `;
-  document.getElementById("current-page").innerText = page;
-  document.getElementById("range").innerText = "0-0";
-  updatePaginationControls();
-  return;
-}
-
-    for (let s = 0; s < shelvesPerCase; s++) {
-      const shelfBooks = caseBooks.slice(s * booksPerShelf, (s + 1) * booksPerShelf);
-      if (!shelfBooks.length) break;
-
-      const shelf = document.createElement("div");
-      shelf.className = "shelf-row";
-
-      shelfBooks.forEach((book, index) => {
-      const article = document.createElement("article");
-article.className = "book";
-
-const releaseBadge = getReleaseBadgeLabel(book);
-
-article.innerHTML = `
-  <div class="book-card">
-    <div class="book-cover-wrap">
-      ${releaseBadge ? `<div class="book-release-badge">${escapeHtml(releaseBadge)}</div>` : ""}
-
-      <img
-        class="book-cover"
-        src="${escapeHtml(book.bookCover || DEFAULT_COVER)}"
-        alt="${escapeHtml(book.title || "Untitled")} cover"
-        loading="lazy"
-      />
-
-      <div class="book-overlay">
-        <div class="overlay-title">${escapeHtml(book.title || "Untitled")}</div>
-        <div class="overlay-author">${escapeHtml(book.authorName || "Unknown Author")}</div>
-      </div>
-    </div>
-  </div>
-`;
-
-const img = article.querySelector(".book-cover");
-if (img) {
-  img.onerror = () => {
-    img.onerror = null;
-    img.src = DEFAULT_COVER;
-  };
-}
-
-        article.addEventListener("click", () => {
-  window.location.href = `book.html?id=${encodeURIComponent(book.bookId)}&source=library`;
-});
-
-        shelf.appendChild(article);
-      });
-
-      container.appendChild(shelf);
-    }
-
-    const displayStart = filteredBooks.length ? startIndex + 1 : 0;
-    const displayEnd = Math.min(endIndex, filteredBooks.length);
-
-    document.getElementById("current-page").innerText = page;
-document.getElementById("range").innerText = `${displayStart}-${displayEnd}`;
-updatePaginationControls();
-  }
-
-  function updateResultsTop() {
-  const resultsTop = document.querySelector(".results-top");
-  const p = resultsTop.querySelector("p");
-
-  const start = filteredBooks.length === 0 ? 0 : ((page - 1) * booksPerCase) + 1;
-  const end = Math.min(page * booksPerCase, filteredBooks.length);
-
-  p.innerHTML = `Bookcase <span id="current-page">${page}</span> (Displaying Books <span id="range">${start}-${end}</span> of ${filteredBooks.length})`;
-}
-
-function updatePaginationControls() {
-  const paginationControls = document.getElementById("paginationControls");
-  const prevBtn = document.getElementById("prevCaseBtn");
-  const nextBtn = document.getElementById("nextCaseBtn");
-
-  if (!paginationControls || !prevBtn || !nextBtn) return;
-
-  const maxPage = Math.ceil(filteredBooks.length / booksPerCase);
-
-  if (filteredBooks.length <= booksPerCase) {
-    paginationControls.style.display = "none";
+  if (!selectedBooks.length) {
+    target.classList.remove("loading-state");
+    target.innerHTML = '<div class="empty-state">No dated releases available yet.</div>';
     return;
   }
 
-  paginationControls.style.display = "flex";
-  prevBtn.style.display = page <= 1 ? "none" : "inline-block";
-  nextBtn.style.display = page >= maxPage ? "none" : "inline-block";
+    target.classList.remove("loading-state");
+
+  target.innerHTML = selectedBooks.map((book) => {
+    const id = pick(book, ["id", "bookId", "bookID"]);
+    const title = pick(book, ["title", "bookTitle"], "Untitled");
+    const author = pick(book, ["author", "authorName"], "Author");
+        const cover = pick(book, ["cover", "bookCover", "coverImage", "image"], DEFAULT_COVER);
+
+    return `
+  <a class="card-link release-card" href="book.html?id=${encodeURIComponent(id)}&source=landing_fresh_books">
+    <div class="release-cover-wrap">
+            <img
+        class="release-cover"
+        src="${escapeHtml(cover || DEFAULT_COVER)}"
+        alt="${escapeHtml(title)} cover"
+        loading="eager"
+        decoding="sync"
+        referrerpolicy="no-referrer"
+        onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+      />
+
+      <div class="release-overlay">
+        <span class="release-badge">${escapeHtml(book._releaseType)}</span>
+      </div>
+    </div>
+  </a>
+`;
+  }).join("");
+
+  startReleaseCarouselAutoScroll();
 }
 
-  function navigate(direction) {
-    const maxPage = Math.max(1, Math.ceil(filteredBooks.length / booksPerCase));
-    const nextPage = page + direction;
-
-    if (nextPage < 1 || nextPage > maxPage) return;
-
-    page = nextPage;
-    renderCase();
-    updateResultsTop();
-    document.getElementById("library-anchor").scrollIntoView({ behavior: "smooth" });
+function renderFeaturedAuthors(authors) {
+  const target = document.getElementById("featuredAuthorsGrid");
+  if (!authors.length) {
+    target.innerHTML = '<div class="empty-state">No featured authors available right now.</div>';
+    return;
   }
 
-  function escapeHtml(value) {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#39;");
+  target.innerHTML = authors.slice(0, 4).map((author) => {
+    const id = pick(author, ["id", "authorId", "authorID"]);
+    const name = pick(author, ["name", "authorName"], "Featured Author");
+    const genres = pick(author, ["genres", "genre", "category"], "Featured author");
+    const image = pick(author, ["headshotLogo", "image", "photo", "authorPhoto", "headshot"], DEFAULT_AUTHOR);
+    const featuredTitle = pick(author, ["featuredTitle", "bookTitle", "title"], "");
+
+    const genreText = Array.isArray(genres) ? genres.join(", ") : genres;
+
+    return `
+      <a class="card-link" href="author.html?id=${encodeURIComponent(id)}&source=landing_featured_authors">
+        <article class="card">
+          <div class="author-photo">
+            <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.onerror=null;this.src='${DEFAULT_AUTHOR}'">
+          </div>
+          <div class="meta">${escapeHtml(genreText)}</div>
+          <h3>${escapeHtml(name)}</h3>
+          <p>${featuredTitle ? `Featured title: <em>${escapeHtml(featuredTitle)}</em>` : "View author profile"}</p>
+        </article>
+      </a>
+    `;
+  }).join("");
+}
+
+    async function loadLandingData() {
+  try {
+    const monthKey = getCurrentMonthKey();
+
+    const [booksResponse, featuredResponse, rankingsResponse] = await Promise.all([
+      fetchJson(`${API_BASE}?type=library`),
+      fetchJson(`${API_BASE}?type=featured&month=${encodeURIComponent(monthKey)}`),
+      fetchJson(`${API_BASE}?type=weekly-ranking`)
+    ]);
+
+    const books = normalizeArray(booksResponse);
+const featuredAuthors = normalizeArray(featuredResponse);
+const rankings = normalizeArray(rankingsResponse);
+
+renderHeroStats(books);
+
+const rankedBooks = buildRankedBooks(rankings, books);
+
+if (rankedBooks.length > 0) {
+  renderTrendingBooks(rankedBooks, "trending");
+} else {
+  const fallbackBooks = shuffleArray(books).slice(0, 10);
+  renderTrendingBooks(fallbackBooks, "fallback");
+}
+
+renderFreshBooks(books);
+renderFeaturedAuthors(featuredAuthors);
+
+  } catch (error) {
+    console.error(error);
+    document.getElementById("trendingLabel").textContent = "From the shelf";
+    document.getElementById("trendingHeading").textContent = "Books to try";
+    document.getElementById("trendingBooks").innerHTML = '<div class="empty-state">Unable to load books right now.</div>';
+    document.getElementById("freshBooksCarousel").innerHTML = '<div class="empty-state">Unable to load books right now.</div>';
+    document.getElementById("featuredAuthorsGrid").innerHTML = '<div class="empty-state">Unable to load featured authors right now.</div>';
+  }
+}
+
+            document.getElementById("readerSignupForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const note = document.getElementById("readerSignupNote");
+  const button = document.getElementById("readerSignupButton");
+  const firstNameInput = form.querySelector('input[name="firstName"]');
+  const emailInput = form.querySelector('input[name="email"]');
+  const honeypotInput = form.querySelector('input[name="company"]');
+
+  note.classList.remove("is-success", "is-error");
+
+  const firstName = firstNameInput.value.trim();
+  const email = emailInput.value.trim();
+  const honeypot = honeypotInput.value.trim();
+
+  if (!firstName || !email) {
+    note.textContent = "Please enter your first name and email address.";
+    note.classList.add("is-error");
+    return;
   }
 
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    note.textContent = "Please enter a valid email address.";
+    note.classList.add("is-error");
+    return;
+  }
 
-    function setupAccordionFilters() {
-    const filterGroups = document.querySelectorAll(".filter-group");
+  if (honeypot) {
+    note.textContent = "Thanks for signing up.";
+    note.classList.add("is-success");
+    form.reset();
+    return;
+  }
 
-    filterGroups.forEach(group => {
-      group.addEventListener("toggle", () => {
-        if (group.open) {
-          filterGroups.forEach(otherGroup => {
-            if (otherGroup !== group) {
-              otherGroup.removeAttribute("open");
-            }
-          });
-        }
-      });
+  button.disabled = true;
+  button.textContent = "Joining...";
+  note.textContent = "Submitting...";
+
+  try {
+    const payload = {
+      firstName,
+      email,
+      source: "landing_join_the_list",
+      page: "index",
+      submittedAt: new Date().toISOString()
+    };
+
+    const response = await fetch(READER_SIGNUP_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
     });
-  }
 
-  setupAccordionFilters();
-  loadLibrary();
-</script>
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || `Signup failed: ${response.status}`);
+    }
+
+    note.textContent = "You’re in. Keep an eye on your inbox for new releases, featured authors, and shelf updates.";
+    note.classList.add("is-success");
+    form.reset();
+  } catch (error) {
+    console.error(error);
+    note.textContent = "Something went wrong. Please try again in a moment.";
+    note.classList.add("is-error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Join the Reader List";
+  }
+});
+
+function initializeDiscordButton() {
+  const discordUrl = "https://discord.gg/8mpFKMRCZ"; // ADD YOUR DISCORD LINK HERE LATER
+  const button = document.getElementById("discordButton");
+
+  if (!button) return;
+
+  if (discordUrl) {
+    button.href = discordUrl;
+    button.classList.remove("disabled");
+    button.removeAttribute("aria-disabled");
+    button.setAttribute("target", "_blank");
+    button.setAttribute("rel", "noopener noreferrer");
+  }
+}
+
+initializeDiscordButton();
+renderVibeCards();
+loadLandingData();
+
+  </script>
 </body>
 </html>
