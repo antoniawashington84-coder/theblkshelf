@@ -54,12 +54,13 @@
     }
 
     nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  flex-wrap: nowrap;
+}
 
     .brand {
       display: inline-flex;
@@ -107,24 +108,88 @@
       margin-top: 0.18rem;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
+  .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
 
-    .nav-links a {
-      padding: 0.35rem 0;
-      border-bottom: 1px solid transparent;
-      transition: 0.2s ease;
-    }
+.nav-links a,
+.mobile-more-menu summary {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
 
-    .nav-links a:hover {
-      color: var(--text);
-      border-bottom-color: rgba(216,163,93,0.45);
-    }
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.mobile-more-menu summary:hover,
+.mobile-more-menu summary:focus-visible {
+  color: var(--text);
+  border-bottom-color: rgba(216,163,93,0.45);
+  outline: none;
+}
+
+.mobile-more-menu summary {
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.desktop-only {
+  display: inline-block;
+}
+
+.mobile-more-menu {
+  display: none;
+  position: relative;
+}
+
+.mobile-more-menu summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: bold;
+}
+
+.mobile-more-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-more-links {
+  position: absolute;
+  right: auto;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 165px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem;
+  border-radius: 16px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+  z-index: 100;
+}
+
+.mobile-more-links a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(63,46,35,0.9);
+  color: var(--muted);
+}
+
+.mobile-more-links a:hover,
+.mobile-more-links a:focus-visible {
+  color: var(--text);
+  background: rgba(216,163,93,0.12);
+  outline: none;
+}
 
     .page {
       padding: 2.5rem 0 3.5rem;
@@ -351,9 +416,31 @@
       }
 
       nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.desktop-only {
+  display: none;
+}
+
+.mobile-more-menu {
+  display: block;
+}
+
+.nav-links {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+}
+
+.nav-links {
+  gap: 0.9rem;
+  font-size: 0.85rem;
+}
 
       .brand {
         gap: 0.65rem;
@@ -370,11 +457,6 @@
 
       .brand small {
         font-size: 0.64rem;
-      }
-
-      .nav-links {
-        gap: 0.85rem;
-        font-size: 0.88rem;
       }
 
       .page {
@@ -445,13 +527,22 @@
       </a>
 
       <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="library.html">Library</a>
-        <a href="featured-authors.html">Featured Authors</a>
-        <a href="about.html">About Us</a>
-        <a href="faq.html">FAQs</a>
-        <a href="index.html#readers">Join the List</a>
-      </div>
+  <a class="desktop-only" href="index.html">Home</a>
+  <a href="library.html">Library</a>
+  <a href="featured-authors.html">Featured Authors</a>
+  <a class="desktop-only" href="about.html">About</a>
+  <a class="desktop-only" href="faq.html">FAQs</a>
+  <a href="index.html#readers">Join List</a>
+
+  <details class="mobile-more-menu">
+    <summary>Menu</summary>
+    <div class="mobile-more-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQs</a>
+    </div>
+  </details>
+</div>
     </nav>
   </div>
 </header>
@@ -495,47 +586,85 @@ The team behind The Blk Shelf brings together readers, writers, and builders com
 
         <div class="founder-grid">
           <article class="founder-card">
-            <div class="founder-photo">Founder Image</div>
+            <div class="founder-photo">
+  <img src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/c.wynter.png" alt="C. Wynter">
+</div>
             <div class="founder-content">
-              <h3>Founder Name</h3>
-              <div class="founder-role">Founder Role</div>
-              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+              <h3>C. Wynter</h3>
+              <div class="founder-role">Founder</div>
+              <p>C. Wynter was born and raised in Virginia( 757) to be exact. I wear many hats, but in this space, I show up as an author and a creator.</p>
+              <p>For a long time, I believed my purpose was just writing. Somewhere along the way, God showed me it was bigger than that.</p>
+              <p>The BLK Shelf didn’t come from perfection it came from an idea. A “wild” one at that. But what makes it powerful is the people who believed in it enough to bring it to life.</p>
+              <p>At its core, The BLK Shelf is about ownership. It’s about saying we don’t need a seat in someone else’s room—we built our own. It’s about creating space for Black indie authors who write purely for the love of the pen, and giving those voices the exposure they’ve always deserved.</p>
+              <p>My role? If you ask the founders, they’ll tell you I ask for the impossible in the shortest amount of time. But to me, it’s about always thinking ahead what’s next, how we improve, what we fix… and, as always, just one more thing.</p>
+              <p>We all have a place in The BLK Shelf. No single role defines us, but together, we play to our strengths for the success of something bigger than any one person.</p>
+              <p>This isn’t just for me. This is for us. And most importantly, this is for my daughter so one day I can show her what her mother built, and remind her that she is unstoppable.</p>
+              <p>I’m just grateful to be on the right side of history🤎</p>
             </div>
           </article>
 
           <article class="founder-card">
-            <div class="founder-photo">Founder Image</div>
+            <div class="founder-photo">
+  <img src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/shani.png" alt="C. Wynter">
+</div>
             <div class="founder-content">
-              <h3>Founder Name</h3>
-              <div class="founder-role">Founder Role</div>
-              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+              <h3>Shani Denise</h3>
+              <div class="founder-role">Founder</div>
+              <p>Shani Denise is a Detroit native author, publisher, and co-founder of The BLK Shelf. Known for her soulful and spicy urban romances, she writes stories that center Black love in all its beauty—blending heart, heat, and healing into every page.
+As the voice behind multiple titles including Summertime in the City, When the City Sleeps, and Carried to the Altar, Shani Denise brings the grit and warmth of Detroit into her storytelling while creating unforgettable characters readers can feel.
+Beyond her work as an author, she is the founder of Pink Flame Publishing and a passionate advocate for Black indie authors. Through The BLK Shelf, she is helping build a space where Black writers are not only visible—but valued, supported, and celebrated on their own terms.</p>
             </div>
           </article>
 
           <article class="founder-card">
-            <div class="founder-photo">Founder Image</div>
+            <div class="founder-photo">
+  <img src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/monet.png" alt="C. Wynter">
+</div>
             <div class="founder-content">
-              <h3>Founder Name</h3>
-              <div class="founder-role">Founder Role</div>
-              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+              <h3>Monét</h3>
+              <div class="founder-role">Founder</div>
+              <p>Monet is a co-founder of The BLK Shelf and the creative force behind Marketing by Monèt, a bookish marketing brand dedicated to amplifying Black indie authors. With a strong background in marketing and graphic design, Monet has worked across a wide range of projects within the indie author community—crafting visuals, branding, and promotional strategies that help stories stand out and connect with the right audience. </p>
+
+<p>Her work is rooted in intention and representation. Having collaborated with a diverse array of Black authors across multiple genres, Monet understands the importance of not only visibility, but authenticity in how these stories are presented to the world. From eye-catching graphics to cohesive brand identities, her goal is always to make sure each story feels seen before it’s even read. </p>
+
+<p> Beyond her professional work, Monet is a passionate reader who genuinely loves Black stories in all their forms—romance, fantasy, drama, and everything in between. That love fuels both her business and her mission: to create spaces where Black authors are celebrated, supported, and discovered. </p>
+
+<p> Through The BLK Shelf, Monet continues to merge her creative expertise with her passion for storytelling, helping build a platform where Black literature thrives. </p>
             </div>
           </article>
 
           <article class="founder-card">
-            <div class="founder-photo">Founder Image</div>
+            <div class="founder-photo">
+  <img src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/vera.png" alt="C. Wynter">
+</div>
             <div class="founder-content">
-              <h3>Founder Name</h3>
+              <h3>Vera T. Brown</h3>
               <div class="founder-role">Founder Role</div>
-              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+              <p>Vera T. Brown is a Southern Black author, Navy veteran, and co-founder of The BLK Shelf. Known for her paranormal and supernatural storytelling, she writes emotionally driven stories that explore power, identity, and transformation through a Black lens.
+By trade, she works in the legal field, bringing structure and precision into both her writing and her work behind the scenes. As a co-founder of The BLK Shelf, she focuses on building the systems and foundation that support discoverability for Black indie authors.
+Through her work, she is committed to helping create a space where Black stories are not only visible—but consistently found, supported, and positioned to grow.
+</p>
             </div>
           </article>
 
           <article class="founder-card">
-            <div class="founder-photo">Founder Image</div>
+            <div class="founder-photo">
+  <img src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/k.will.png" alt="C. Wynter">
+</div>
             <div class="founder-content">
-              <h3>Founder Name</h3>
+              <h3>Coack K. Will</h3>
               <div class="founder-role">Founder Role</div>
-              <p>Short founder bio placeholder. Add background, connection to the mission, and role in The Blk Shelf.</p>
+              <p>Coach K. Will is an author, editor, and Co-Founder of The Blk Shelf from Norfolk, Virginia — and if you're looking to put her in a box, you'll need a bigger one.</p>
+
+<p>Her catalog tells the story: Rebuilt, a raw look at rising from rock bottom. Street Proverbs, 31 days in Proverbs for the culture. When the Saints Slide Back, Christian fiction that hits like real life. Dust & Glory, 90 Days with STILL, Where Faith Meets Monday — devotionals and tools for people who want faith that works outside of Sunday.</p>
+
+<p>And then there's YZ — her debut literary crime novel that goes where many writers won't. A family shattered by police violence. A fight for justice that won't be silenced. K. Will doesn't tiptoe around the hard stuff. She puts it center stage.</p>
+
+<p>And for the grown woman who has done the work and is done shrinking? There's Aht Aht: Grown Woman Wisdom — 40 short, powerful chapters of clarity, boundaries, and that firm but loving "no ma'am" to everything she's already outgrown. Faith-adjacent. Funny. Freeing.</p>
+
+<p>Her theological training, her Norfolk roots, and her own journey of rebuilding give her work a grounded, authentic voice that connects across the aisle — from the church pew to the courtroom steps to the nightstand of a woman who finally knows her worth.</p>
+
+<p>One label will never be enough. That's kind of the point.</p>
             </div>
           </article>
         </div>
