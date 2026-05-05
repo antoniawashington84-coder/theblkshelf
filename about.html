@@ -278,51 +278,69 @@
     }
 
     .founder-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 1rem;
-    }
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
+}
 
-    .founder-card {
-      background:
-        linear-gradient(135deg, rgba(216,163,93,0.1), transparent 34%),
-        rgba(63,46,35,0.92);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 22px;
-      overflow: hidden;
-      transition: 0.2s ease;
-    }
+.founder-grid .founder-card:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+  max-width: 520px;
+  justify-self: center;
+}
+
+  .founder-card {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  min-height: 260px;
+  background:
+    linear-gradient(135deg, rgba(216,163,93,0.1), transparent 34%),
+    rgba(63,46,35,0.92);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 22px;
+  overflow: hidden;
+  transition: 0.2s ease;
+}
 
     .founder-card:hover {
       transform: translateY(-3px);
       border-color: rgba(216,163,93,0.45);
     }
 
-    .founder-photo {
-      aspect-ratio: 4 / 5;
-      background:
-        linear-gradient(rgba(15,12,10,0.15), rgba(15,12,10,0.35)),
-        linear-gradient(135deg, rgba(216,163,93,0.28), rgba(36,29,23,0.95));
-      display: grid;
-      place-items: center;
-      color: #f2c994;
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-align: center;
-      padding: 1rem;
-    }
+  .founder-photo {
+  width: 160px;
+  height: 100%;
+  min-height: 260px;
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(rgba(15,12,10,0.15), rgba(15,12,10,0.35)),
+    linear-gradient(135deg, rgba(216,163,93,0.28), rgba(36,29,23,0.95));
+  display: grid;
+  place-items: center;
+  color: #f2c994;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+}
 
     .founder-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
 
     .founder-content {
-      padding: 1rem;
-    }
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-grow: 1;
+}
 
     .founder-content h3 {
       margin: 0 0 0.25rem;
@@ -339,10 +357,11 @@
     }
 
     .founder-content p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin: 0;
-    }
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  margin: 0;
+}
 
     .cta-note {
       margin-top: 2rem;
@@ -387,14 +406,14 @@
     }
 
     @media (max-width: 1050px) {
-      .founder-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
+  .founder-grid {
+    grid-template-columns: 1fr;
+  }
 
-      .split-section {
-        grid-template-columns: 1fr;
-      }
-    }
+  .split-section {
+    grid-template-columns: 1fr;
+  }
+}
 
     @media (max-width: 700px) {
       body {
@@ -476,10 +495,21 @@
         font-size: 0.95rem;
       }
 
-      .founder-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-      }
+  .founder-grid {
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.founder-card {
+  grid-template-columns: 110px 1fr;
+  min-height: 190px;
+}
+
+.founder-photo {
+  width: 110px;
+  min-height: 190px;
+  height: 100%;
+}
 
       .founder-content {
         padding: 0.8rem;
@@ -499,9 +529,9 @@
       }
 
       .founder-grid .founder-card:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-  max-width: 50%;
-  justify-self: center;
+  grid-column: auto;
+  max-width: none;
+  justify-self: stretch;
 }
 
     }
@@ -639,7 +669,7 @@ Beyond her work as an author, she is the founder of Pink Flame Publishing and a 
 </div>
             <div class="founder-content">
               <h3>Vera T. Brown</h3>
-              <div class="founder-role">Founder Role</div>
+              <div class="founder-role">Founder</div>
               <p>Vera T. Brown is a Southern Black author, Navy veteran, and co-founder of The BLK Shelf. Known for her paranormal and supernatural storytelling, she writes emotionally driven stories that explore power, identity, and transformation through a Black lens.
 By trade, she works in the legal field, bringing structure and precision into both her writing and her work behind the scenes. As a co-founder of The BLK Shelf, she focuses on building the systems and foundation that support discoverability for Black indie authors.
 Through her work, she is committed to helping create a space where Black stories are not only visible—but consistently found, supported, and positioned to grow.
@@ -653,7 +683,7 @@ Through her work, she is committed to helping create a space where Black stories
 </div>
             <div class="founder-content">
               <h3>Coack K. Will</h3>
-              <div class="founder-role">Founder Role</div>
+              <div class="founder-role">Founder</div>
               <p>Coach K. Will is an author, editor, and Co-Founder of The Blk Shelf from Norfolk, Virginia — and if you're looking to put her in a box, you'll need a bigger one.</p>
 
 <p>Her catalog tells the story: Rebuilt, a raw look at rising from rock bottom. Street Proverbs, 31 days in Proverbs for the culture. When the Saints Slide Back, Christian fiction that hits like real life. Dust & Glory, 90 Days with STILL, Where Faith Meets Monday — devotionals and tools for people who want faith that works outside of Sunday.</p>
