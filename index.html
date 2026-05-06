@@ -80,10 +80,11 @@
 
     nav {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  margin-bottom: 1.2rem;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  flex-wrap: nowrap;
 }
 
     .brand {
@@ -133,13 +134,87 @@
   line-height: 1;
 }
 
-    .nav-links {
+.nav-links {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  flex-wrap: wrap;
   color: var(--muted);
   font-size: 0.95rem;
+}
+
+.nav-links a,
+.mobile-more-menu summary {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.mobile-more-menu summary:hover,
+.mobile-more-menu summary:focus-visible {
+  color: var(--text);
+  border-bottom-color: rgba(216,163,93,0.45);
+  outline: none;
+}
+
+.mobile-more-menu summary {
+  font-weight: bold;
+  letter-spacing: 0.04em;
+}
+
+.desktop-only {
+  display: inline-block;
+}
+
+.mobile-more-menu {
+  display: none;
+  position: relative;
+}
+
+.mobile-more-menu summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: bold;
+}
+
+.mobile-more-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-more-links {
+  position: absolute;
+  right: auto;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 165px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem;
+  border-radius: 16px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+  z-index: 100;
+}
+
+.mobile-more-links a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(63,46,35,0.9);
+  color: var(--muted);
+}
+
+.mobile-more-links a:hover,
+.mobile-more-links a:focus-visible {
+  color: var(--text);
+  background: rgba(216,163,93,0.12);
+  outline: none;
 }
 
 .nav-links a {
@@ -816,16 +891,36 @@
   }
 
   nav,
-  .section-head,
-  .button-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.section-head,
+.button-row {
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-  nav {
-    gap: 0.85rem;
-    margin-bottom: 1.6rem;
-  }
+nav {
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.desktop-only {
+  display: none;
+}
+
+.mobile-more-menu {
+  display: block;
+}
+
+.nav-links {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+}
+
+.nav-links {
+  gap: 0.9rem;
+  font-size: 0.85rem;
+}
 
   section {
     padding: 2.5rem 0;
@@ -855,11 +950,6 @@
 .brand small {
   font-size: 0.64rem;
 }
-
-  .nav-links {
-    gap: 0.85rem;
-    font-size: 0.88rem;
-  }
 
   header.hero {
     padding: 1.6rem 0 2.6rem;
@@ -1168,11 +1258,20 @@ input:focus-visible {
   </div>
 </a>
   <div class="nav-links">
-    <a href="library.html">Library</a>
-    <a href="featured-authors.html">Featured Authors</a>
-    <a href="#readers">Join the List</a>
-    <a href="#submit">Submit a Book</a>
-  </div>
+  <a href="library.html">Library</a>
+  <a href="featured-authors.html">Featured Authors</a>
+  <a class="desktop-only" href="about.html">About</a>
+  <a class="desktop-only" href="faq.html">FAQs</a>
+  <a href="#readers">Join List</a>
+
+  <details class="mobile-more-menu">
+    <summary>Menu</summary>
+    <div class="mobile-more-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQs</a>
+    </div>
+  </details>
+</div>
 </nav>
 
 <div class="hero-grid">
