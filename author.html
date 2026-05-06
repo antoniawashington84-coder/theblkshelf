@@ -13,6 +13,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Blk Shelf – Author</title>
+
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+/>
+
   <style>
     :root {
   --bg: #0f0c0a;
@@ -601,6 +607,35 @@
   border-color: rgba(216,163,93,0.4);
 }
 
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.social-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  font-size: 1.05rem;
+  transition: 0.25s ease;
+}
+
+.social-icon:hover {
+  transform: translateY(-2px);
+  color: var(--text);
+  background: rgba(216,163,93,0.12);
+  border-color: rgba(216,163,93,0.4);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+}
+
 .social-item,
 .error-box {
   background: rgba(63,46,35,0.9);
@@ -853,8 +888,10 @@
     </div>
   </main>
 
-  <footer>
+<footer>
+
   <div class="container footer-inner">
+
     <div class="footer-line footer-title">
       The Blk Shelf
     </div>
@@ -864,11 +901,53 @@
     </div>
 
     <div class="footer-line">
+
       <a href="privacy-policy.html" class="footer-link">
         Privacy Policy
       </a>
+
+      •
+
+      <a href="terms-and-conditions.html" class="footer-link">
+        Terms & Conditions
+      </a>
+
     </div>
+
+    <div class="footer-line social-links">
+
+      <a
+        href="https://instagram.com/theblkshelf"
+        class="social-icon"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+      >
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+
+      <a
+        href="https://tiktok.com/@the.blk.shelf"
+        class="social-icon"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="TikTok"
+      >
+        <i class="fa-brands fa-tiktok"></i>
+      </a>
+
+      <a
+        href="mailto:theblkshelfbooks@gmail.com"
+        class="social-icon"
+        aria-label="Email"
+      >
+        <i class="fa-solid fa-envelope"></i>
+      </a>
+
+    </div>
+
   </div>
+
 </footer>
 
   <script>
