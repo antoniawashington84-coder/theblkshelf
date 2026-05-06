@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZR7W1MNL3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KZR7W1MNL3');
-</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Privacy Policy – The Blk Shelf</title>
@@ -55,12 +46,14 @@
       border-bottom: 1px solid var(--line);
     }
 
-    nav {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+  nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  flex-wrap: nowrap;
+}
 
     .brand {
   display: inline-flex;
@@ -108,11 +101,83 @@
   line-height: 1;
 }
 
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      color: var(--muted);
-    }
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.nav-links a,
+.mobile-more-menu summary {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid transparent;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.mobile-more-menu summary:hover,
+.mobile-more-menu summary:focus-visible {
+  color: var(--text);
+  border-bottom-color: rgba(216,163,93,0.45);
+  outline: none;
+}
+
+.desktop-only {
+  display: inline-block;
+}
+
+.mobile-more-menu {
+  display: none;
+  position: relative;
+}
+
+.mobile-more-menu summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--text);
+  font-weight: bold;
+}
+
+.mobile-more-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-more-links {
+  position: absolute;
+  right: auto;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 165px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem;
+  border-radius: 16px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+  z-index: 100;
+}
+
+.mobile-more-links a {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(63,46,35,0.9);
+  color: var(--muted);
+}
+
+.mobile-more-links a:hover,
+.mobile-more-links a:focus-visible {
+  color: var(--text);
+  background: rgba(216,163,93,0.12);
+  outline: none;
+}
 
     .page {
       padding: 2.5rem 0 3.5rem;
@@ -202,6 +267,28 @@
     background-attachment: scroll;
   }
 
+  nav {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.4rem;
+}
+
+.desktop-only {
+  display: none;
+}
+
+.mobile-more-menu {
+  display: block;
+}
+
+.nav-links {
+  width: 100%;
+  justify-content: flex-start;
+  gap: 0.9rem;
+  font-size: 0.85rem;
+}
+
   h1 { font-size: 2.1rem; }
       h2 { font-size: 1.2rem; }
 
@@ -251,11 +338,22 @@
   </a>
 
   <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="library.html">Library</a>
-    <a href="featured-authors.html">Featured Authors</a>
-    <a href="index.html#readers">Join the List</a>
-  </div>
+  <a class="desktop-only" href="index.html">Home</a>
+  <a href="library.html">Library</a>
+  <a href="featured-authors.html">Featured Authors</a>
+  <a class="desktop-only" href="about.html">About</a>
+  <a class="desktop-only" href="faq.html">FAQs</a>
+  <a href="index.html#readers">Join List</a>
+
+  <details class="mobile-more-menu">
+    <summary>Menu</summary>
+    <div class="mobile-more-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQs</a>
+    </div>
+  </details>
+</div>
 </nav>
   </div>
 </header>
