@@ -380,6 +380,25 @@
       margin-bottom: 0.7rem;
     }
 
+    .search-radio-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.search-radio-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.search-radio-row input {
+  accent-color: var(--accent);
+}
+
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
 
     /* BOOKCASE RESULTS */
@@ -905,10 +924,25 @@
   <h2>Find your next read.</h2>
 <p> </p>
   <details class="filter-group">
-    <summary>Author</summary>
-    <div class="filter-content">
-      <input class="field" id="author-search" type="text" placeholder="Search author..." />
-    </div>
+    <summary>Search</summary>
+<div class="filter-content">
+
+  <div class="search-radio-row">
+    <label>
+      <input type="radio" name="search-type" value="author" checked>
+      Author
+    </label>
+
+    <label>
+      <input type="radio" name="search-type" value="title">
+      Title
+    </label>
+  </div>
+
+  <input class="field" id="author-search" type="text" placeholder="Search author..." />
+
+</div>
+
   </details>
 
   <details class="filter-group">
@@ -1074,6 +1108,7 @@ let featuredAuthorIds = new Set();
 
 const state = {
   authorQuery: "",
+searchType: "author",
   genres: new Set(),
   subGenres: new Set(),
   vibes: new Set(),
@@ -1191,6 +1226,41 @@ applyFilters();
   return String(value || "").trim();
 }
 
+function normalizeForSearch(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function getSearchScore(book, query) {
+  if (!query) return 0;
+
+  const title = normalizeForSearch(book.title);
+  const author = normalizeForSearch(book.authorName);
+
+  const target = state.searchType === "title" ? title : author;
+
+  if (target === query) return 100;
+  if (target.includes(query)) return 85;
+
+  const queryWords = query.split(" ").filter(Boolean);
+  if (!queryWords.length) return 0;
+
+  let matchedWords = 0;
+
+  queryWords.forEach(word => {
+    if (target.includes(word)) matchedWords++;
+  });
+
+  const matchRatio = matchedWords / queryWords.length;
+
+  return matchRatio >= 0.6 ? Math.round(matchRatio * 60) : 0;
+}
+
 function shuffleArray(items) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -1265,8 +1335,22 @@ function applyInitialUrlFilters() {
   document.getElementById("clear-filters-btn").addEventListener("click", clearFilters);
 
   document.getElementById("author-search").addEventListener("input", (e) => {
-    state.authorQuery = e.target.value.trim().toLowerCase();
+  state.authorQuery = normalizeForSearch(e.target.value);
+});
+
+document.querySelectorAll('input[name="search-type"]').forEach(radio => {
+  radio.addEventListener("change", (e) => {
+    state.searchType = e.target.value;
+
+    const searchInput = document.getElementById("author-search");
+    searchInput.placeholder =
+      state.searchType === "title"
+        ? "Search title..."
+        : "Search author...";
+
+    applyFilters();
   });
+});
 
   document.getElementById("sort-select").addEventListener("change", (e) => {
     state.sortBy = e.target.value;
@@ -1314,9 +1398,12 @@ state.spiceLevels.clear();
 state.representations.clear();
 state.rankingFilter.clear();
 state.sortBy = "default";
+state.searchType = "author";
 
 document.getElementById("author-search").value = "";
 document.getElementById("sort-select").value = "default";
+document.querySelector('input[name="search-type"][value="author"]').checked = true;
+document.getElementById("author-search").placeholder = "Search author...";
 document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
 
 page = 1;
@@ -1325,7 +1412,7 @@ applyFilters();
 
   function applyFilters() {
   filteredBooks = allBooks.filter(book => {
-    const authorName = normalizeText(book.authorName).toLowerCase();
+    const searchScore = getSearchScore(book, state.authorQuery);
     const genre = normalizeText(book.genre);
     const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
     const ageRange = normalizeText(book.ageRange);
@@ -1336,8 +1423,10 @@ applyFilters();
   .filter(Boolean);
     const vibes = Array.isArray(book.vibes) ? book.vibes.map(normalizeText) : [];
 
-    const matchesAuthor =
-      !state.authorQuery || authorName.includes(state.authorQuery);
+    const matchesSearch =
+  !state.authorQuery || searchScore > 0;
+
+book._searchScore = searchScore;
 
     const matchesGenre =
       state.genres.size === 0 || state.genres.has(genre);
@@ -1387,7 +1476,7 @@ const matchesRankingFilter =
   (state.rankingFilter.has("upcoming-releases") && isUpcomingRelease) ||
   (state.rankingFilter.has("featured-authors") && isFeaturedAuthor);
 
-    return matchesAuthor &&
+    return matchesSearch &&
       matchesGenre &&
       matchesSubGenre &&
       matchesVibe &&
@@ -1397,7 +1486,11 @@ const matchesRankingFilter =
       matchesRankingFilter;
   });
 
+  if (state.authorQuery && state.sortBy === "default") {
+  filteredBooks.sort((a, b) => (b._searchScore || 0) - (a._searchScore || 0));
+} else {
   sortFilteredBooks();
+}
 
   page = 1;
   renderCase();
@@ -1408,22 +1501,38 @@ const matchesRankingFilter =
 
   function sortFilteredBooks() {
   if (state.sortBy === "title-asc") {
-    filteredBooks.sort((a, b) => normalizeText(a.title).localeCompare(normalizeText(b.title)));
+    filteredBooks.sort((a, b) =>
+      normalizeText(a.title).localeCompare(normalizeText(b.title))
+    );
     return;
   }
 
   if (state.sortBy === "title-desc") {
-    filteredBooks.sort((a, b) => normalizeText(b.title).localeCompare(normalizeText(a.title)));
+    filteredBooks.sort((a, b) =>
+      normalizeText(b.title).localeCompare(normalizeText(a.title))
+    );
     return;
   }
 
   if (state.sortBy === "newest") {
-    filteredBooks.sort((a, b) => parseDateSafe(b.releaseDate) - parseDateSafe(a.releaseDate));
+    filteredBooks.sort((a, b) => {
+      const dateA = parseLocalDate(a.releaseDate);
+      const dateB = parseLocalDate(b.releaseDate);
+
+      return (dateB ? dateB.getTime() : 0) -
+             (dateA ? dateA.getTime() : 0);
+    });
     return;
   }
 
   if (state.sortBy === "oldest") {
-    filteredBooks.sort((a, b) => parseDateSafe(a.releaseDate) - parseDateSafe(b.releaseDate));
+    filteredBooks.sort((a, b) => {
+      const dateA = parseLocalDate(a.releaseDate);
+      const dateB = parseLocalDate(b.releaseDate);
+
+      return (dateA ? dateA.getTime() : Number.MAX_SAFE_INTEGER) -
+             (dateB ? dateB.getTime() : Number.MAX_SAFE_INTEGER);
+    });
     return;
   }
 }
