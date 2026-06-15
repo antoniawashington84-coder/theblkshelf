@@ -19,6 +19,8 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 />
 
+<link rel="stylesheet" href="includes/shared.css">
+
   <style>
     :root {
   --bg: #0f0c0a;
@@ -55,13 +57,6 @@
   background-attachment: fixed;
 }
 
-    a { color: inherit; text-decoration: none; }
-
-    .container {
-      width: min(calc(100% - 2rem), var(--max));
-      margin: 0 auto;
-    }
-
     .eyebrow {
       display: inline-block;
       padding: 0.42rem 0.88rem;
@@ -73,149 +68,6 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-
-    header {
-  padding: 2rem 0 2.4rem;
-  border-bottom: 1px solid var(--line);
-}
-
-    nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.25rem;
-  margin-bottom: 2.25rem;
-  flex-wrap: nowrap;
-}
-
-    .brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-  flex-shrink: 0;
-}
-
-.brand-logo {
-  width: 76px;
-  height: 76px;
-  object-fit: contain;
-  border-radius: 50%;
-  flex-shrink: 0;
-  opacity: 0.95;
-  transition: 0.2s ease;
-  box-shadow:
-    0 0 0 4px rgba(216,163,93,0.45),
-    0 6px 20px rgba(0,0,0,0.45),
-    0 0 16px rgba(216,163,93,0.45);
-}
-
-.brand-title {
-  font-size: clamp(2.25rem, 4vw, 3.25rem);
-  line-height: 0.92;
-}
-
-.brand small {
-  display: block;
-  color: var(--soft);
-  font-size: 0.88rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  margin-top: 0.18rem;
-}
-
-.brand:hover .brand-logo {
-  opacity: 1;
-  transform: scale(1.03);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-}
-
-  .nav-links {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 1.1rem;
-  flex-wrap: wrap;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.nav-links a,
-.mobile-more-menu summary {
-  padding: 0.25rem 0;
-  border-bottom: 1px solid transparent;
-  transition: 0.2s ease;
-  cursor: pointer;
-}
-
-.nav-links a:hover,
-.nav-links a:focus-visible,
-.mobile-more-menu summary:hover,
-.mobile-more-menu summary:focus-visible {
-  color: var(--text);
-  border-bottom-color: rgba(216,163,93,0.45);
-  outline: none;
-}
-
-.mobile-more-menu summary {
-  font-weight: bold;
-  letter-spacing: 0.04em;
-}
-
-.desktop-only {
-  display: inline-block;
-}
-
-.mobile-more-menu {
-  display: none;
-  position: relative;
-}
-
-.mobile-more-menu summary {
-  list-style: none;
-  cursor: pointer;
-  color: var(--text);
-  font-weight: bold;
-}
-
-.mobile-more-menu summary::-webkit-details-marker {
-  display: none;
-}
-
-.mobile-more-links {
-  position: absolute;
-  right: auto;
-  left: 0;
-  top: calc(100% + 0.5rem);
-  min-width: 165px;
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.55rem;
-  border-radius: 16px;
-  background: #241d17;
-  border: 1px solid rgba(255,255,255,0.22);
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
-  z-index: 100;
-}
-
-.mobile-more-links a {
-  display: block;
-  padding: 0.55rem 0.7rem;
-  border-radius: 12px;
-  background: rgba(63,46,35,0.9);
-  color: var(--muted);
-}
-
-.mobile-more-links a:hover,
-.mobile-more-links a:focus-visible {
-  color: var(--text);
-  background: rgba(216,163,93,0.12);
-  outline: none;
-}
 
     .breadcrumb {
       color: var(--soft);
@@ -570,72 +422,6 @@
       margin-top: 1rem;
     }
 
-    footer {
-  border-top: 1px solid var(--line);
-  padding: 2rem 0 2.2rem;
-  color: var(--soft);
-  font-size: 0.9rem;
-}
-
-.footer-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.4rem;
-}
-
-.footer-line {
-  line-height: 1.5;
-}
-
-.footer-title {
-  font-weight: bold;
-  font-size: 1rem;
-  color: var(--text);
-}
-
-.footer-link {
-  color: var(--muted);
-  font-size: 0.85rem;
-  border-bottom: 1px solid transparent;
-  transition: 0.2s ease;
-}
-
-.footer-link:hover {
-  color: var(--accent);
-  border-color: rgba(216,163,93,0.4);
-}
-
-.social-links {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.35rem;
-}
-
-.social-icon {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: var(--muted);
-  font-size: 1.05rem;
-  transition: 0.25s ease;
-}
-
-.social-icon:hover {
-  transform: translateY(-2px);
-  color: var(--text);
-  background: rgba(216,163,93,0.12);
-  border-color: rgba(216,163,93,0.4);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.28);
-}
-
 .social-item,
 .error-box {
   background: rgba(63,46,35,0.9);
@@ -663,39 +449,10 @@
     background-attachment: scroll;
   }
 
-  .container {
-        width: min(calc(100% - 1rem), var(--max));
-      }
-
-      nav,
-.book-head {
+      .book-head {
   flex-direction: column;
   align-items: flex-start;
 }
-
-.desktop-only {
-  display: none;
-}
-
-.mobile-more-menu {
-  display: block;
-}
-
-.nav-links {
-  width: 100%;
-  justify-content: flex-start;
-  gap: 0.45rem;
-  font-size: 0.8rem;
-}
-
-.nav-links {
-  gap: 0.9rem;
-  font-size: 0.85rem;
-}
-
-      header {
-        padding: 1.3rem 0 1.7rem;
-      }
 
       .page {
         padding: 1.4rem 0 2.5rem;
@@ -762,78 +519,23 @@
         display: none;
       }
 
-      .footer-inner {
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.6rem;
-}
-
-.brand {
-  gap: 0.65rem;
-}
-
-.brand-logo {
-  width: 52px;
-  height: 52px;
-}
-
-.brand-title {
-  font-size: 1.85rem;
-}
-
-.brand small {
-  font-size: 0.64rem;
-}
-
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="container">
-      <nav>
-  <a class="brand" href="index.html" aria-label="The Blk Shelf home">
-    <img 
-      src="https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/blkshelf-seal-cream.png" 
-      alt="The Blk Shelf logo"
-      class="brand-logo"
-    >
+  <div id="site-header"></div>
 
-    <div class="brand-text">
-      <span class="brand-title">The Blk Shelf</span>
-      <small>Powered by Black authors</small>
-    </div>
-  </a>
-
-  <div class="nav-links">
-  <a class="desktop-only" href="index.html">Home</a>
-  <a href="library.html">Library</a>
-  <a href="featured-authors.html">Featured Authors</a>
-  <a class="desktop-only" href="about.html">About</a>
-  <a class="desktop-only" href="faq.html">FAQs</a>
-  <a href="index.html#readers">Join List</a>
-
-  <details class="mobile-more-menu">
-    <summary>Menu</summary>
-    <div class="mobile-more-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="faq.html">FAQs</a>
-    </div>
-  </details>
-</div>
-</nav>
-
-      <div class="breadcrumb">
+  <div class="container">
+    <div class="breadcrumb">
         <a href="index.html">Home</a>
         <span>•</span>
         <a href="featured-authors.html">Featured Authors</a>
         <span>•</span>
         <span id="breadcrumb-author">Author</span>
       </div>
-    </div>
-  </header>
+  </div>
+</header>
 
   <main class="page">
     <div class="container author-layout">
@@ -888,70 +590,30 @@
     </div>
   </main>
 
-<footer>
-
-  <div class="container footer-inner">
-
-    <div class="footer-line footer-title">
-      The Blk Shelf
-    </div>
-
-    <div class="footer-line">
-      Powered by Black authors • Discover your next Black indie read.
-    </div>
-
-    <div class="footer-line">
-
-      <a href="privacy-policy.html" class="footer-link">
-        Privacy Policy
-      </a>
-
-      •
-
-      <a href="terms-and-conditions.html" class="footer-link">
-        Terms & Conditions
-      </a>
-
-    </div>
-
-    <div class="footer-line social-links">
-
-      <a
-        href="https://instagram.com/theblkshelf"
-        class="social-icon"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Instagram"
-      >
-        <i class="fa-brands fa-instagram"></i>
-      </a>
-
-      <a
-        href="https://tiktok.com/@the.blk.shelf"
-        class="social-icon"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="TikTok"
-      >
-        <i class="fa-brands fa-tiktok"></i>
-      </a>
-
-      <a
-        href="mailto:theblkshelfbooks@gmail.com"
-        class="social-icon"
-        aria-label="Email"
-      >
-        <i class="fa-solid fa-envelope"></i>
-      </a>
-
-    </div>
-
-  </div>
-
-</footer>
+<footer id="site-footer"></footer>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+
+    const SUPABASE_URL = "https://njgprucvnayyiooiftaw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qZ3BydWN2bmF5eWlvb2lmdGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDg0ODMsImV4cCI6MjA5MzMyNDQ4M30.1r6r8vyYB0PnrZtugcBz3CPuCP9MMlTTMYXfewEINNw";
+
+async function supabaseFetch(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      Accept: "application/json"
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(`Supabase request failed: ${res.status}`);
+  }
+
+  return await res.json();
+}
+    
     const DEFAULT_AUTHOR = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/author-default.jpg";
     const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
 
@@ -1265,35 +927,80 @@ if (worksSection) worksSection.style.display = "";
 }
 
     async function loadAuthor() {
-      const authorId = getAuthorId();
-      const errorBox = document.getElementById("error-box");
+  const authorId = getAuthorId();
+  const errorBox = document.getElementById("error-box");
 
-      if (!authorId) {
-        errorBox.style.display = "block";
-        errorBox.textContent = "No author ID was found in the URL. Use a link like author.html?id=BLKA0000000001.";
-        return;
-      }
+  if (!authorId) {
+    errorBox.style.display = "block";
+    errorBox.textContent =
+      "No author ID was found in the URL.";
+    return;
+  }
 
-      try {
-        const response = await fetch(`${API_URL}?type=author&id=${encodeURIComponent(authorId)}`);
+  try {
 
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
+    const [authorRows, booksRows, featuredRows] = await Promise.all([
+      supabaseFetch(
+        `authors?select=*&AUTHOR_ID=eq.${encodeURIComponent(authorId)}&APPROVAL=eq.Approved&limit=1`
+      ),
+      supabaseFetch(
+        `books?select=*&Author_ID=eq.${encodeURIComponent(authorId)}&Is_Live=eq.Yes&limit=100`
+      ),
+      supabaseFetch(
+        `featured_authors?select=*`
+      )
+    ]);
 
-        const payload = await response.json();
-
-        if (!payload || payload.success === false || payload.error) {
-          throw new Error(payload?.error || "Author not found");
-        }
-
-        populateAuthor(payload);
-      } catch (error) {
-        console.error("Author load error:", error);
-        errorBox.style.display = "block";
-        errorBox.textContent = `We couldn't load this author right now. ${error.message}`;
-      }
+    if (!authorRows.length) {
+      throw new Error("Author not found");
     }
+
+    const author = authorRows[0];
+
+    const currentMonthKey = new Date().toISOString().slice(0, 7);
+
+    const isFeaturedCurrentMonth = featuredRows.some(row =>
+      row.Author_ID === authorId &&
+      row.Month_Key === currentMonthKey
+    );
+
+    const payload = {
+      author: {
+        authorId: author.AUTHOR_ID || "",
+        authorName: author.AUTHOR_NAME || "",
+        bio: author.BIO || "",
+        genres: author.GENRES || "",
+        websiteLink: author.WEBSITE || "",
+        headshotLogo: author.AUTHORIMAGEPATH
+          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/authors/${author.AUTHORIMAGEPATH}`
+          : "",
+        tikTokLink: author.TIKTOK || "",
+instagramLink: author.INSTAGRAM || "",
+facebookLink: author.FACEBOOK || "",
+substackLink: author.SUBSTACK || "",
+otherSocials: author.OTHER_SOCIALS || "",
+        isFeaturedCurrentMonth
+      },
+
+      works: booksRows.map(book => ({
+        bookId: book.Book_ID || "",
+        title: book.Title || "",
+        bookCover: book.CoverImagePath
+          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${book.CoverImagePath}`
+          : "",
+        releaseDate: book["Release/Expected_Release_Date"] || ""
+      }))
+    };
+
+    populateAuthor(payload);
+
+  } catch (error) {
+    console.error("Author load error:", error);
+    errorBox.style.display = "block";
+    errorBox.textContent =
+      `We couldn't load this author right now. ${error.message}`;
+  }
+}
 
     function handleBookClick(bookId) {
   const source = getSourceParam();
@@ -1312,5 +1019,21 @@ if (worksSection) worksSection.style.display = "";
 
     loadAuthor();
   </script>
+
+  <script>
+async function loadIncludes() {
+
+  const header = await fetch('includes/header.html');
+  document.getElementById('site-header').innerHTML =
+    await header.text();
+
+  const footer = await fetch('includes/footer.html');
+  document.getElementById('site-footer').innerHTML =
+    await footer.text();
+}
+
+loadIncludes();
+</script>
+
 </body>
 </html>
