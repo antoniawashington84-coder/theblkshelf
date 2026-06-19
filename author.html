@@ -972,8 +972,8 @@ if (worksSection) worksSection.style.display = "";
         genres: author.GENRES || "",
         websiteLink: author.WEBSITE || "",
         headshotLogo: author.AUTHORIMAGEPATH
-          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/authors/${author.AUTHORIMAGEPATH}`
-          : "",
+  ? `${SUPABASE_URL}/storage/v1/object/public/authors/${encodeURIComponent(author.AUTHORIMAGEPATH)}`
+  : "",
         tikTokLink: author.TIKTOK || "",
 instagramLink: author.INSTAGRAM || "",
 facebookLink: author.FACEBOOK || "",
