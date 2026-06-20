@@ -247,11 +247,12 @@
 }
 
     .alphabet-nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      margin: 1.4rem 0 2rem;
-    }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 1.4rem 0 2rem;
+}
 
     .alphabet-nav button {
   min-width: 34px;
@@ -361,6 +362,14 @@
       .author-name-list {
         columns: 2;
       }
+
+      .alphabet-nav {
+  justify-content: center;
+}
+
+.alphabet-nav button {
+  flex: 0 0 auto;
+}
     }
 
     @media (max-width: 600px) {
