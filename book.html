@@ -50,7 +50,7 @@
   line-height: 1.6;
   background:
     linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+    url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -418,7 +418,7 @@
   body {
     background:
       linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+      url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
@@ -840,7 +840,7 @@ function markBookClickTracked(bookId) {
     function loadCover(book) {
   const img = document.getElementById("book-cover");
   const fallback = document.getElementById("cover-fallback");
-  const defaultCover = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+  const defaultCover = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
 
   document.getElementById("fallback-genre").textContent = book.genre || "Featured Book";
   document.getElementById("fallback-title").textContent = book.title || "Book Title";
@@ -883,7 +883,7 @@ function markBookClickTracked(bookId) {
     return;
   }
 
-  const defaultCover = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+  const defaultCover = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
   const currentSource = getBookSource();
 
   list.innerHTML = otherBooks.map(book => `
@@ -1084,7 +1084,7 @@ if (authorLink && book.authorId) {
 
   try {
     const bookRows = await supabaseFetch(
-      `books?select=*&Book_ID=eq.${encodeURIComponent(bookId)}&Is_Live=eq.Yes&limit=1`
+      `public_books?select=*&Book_ID=eq.${encodeURIComponent(bookId)}&Is_Live=eq.Yes&limit=1`
     );
 
     if (!bookRows.length) {
@@ -1094,7 +1094,7 @@ if (authorLink && book.authorId) {
     const row = bookRows[0];
 
     const otherRows = await supabaseFetch(
-      `books?select=*&Author_ID=eq.${encodeURIComponent(row.Author_ID)}&Is_Live=eq.Yes&Book_ID=neq.${encodeURIComponent(bookId)}&limit=4`
+      `public_books?select=*&Author_ID=eq.${encodeURIComponent(row.Author_ID)}&Is_Live=eq.Yes&Book_ID=neq.${encodeURIComponent(bookId)}&limit=4`
     );
 
     const payload = {
@@ -1105,8 +1105,8 @@ if (authorLink && book.authorId) {
         title: row.Title || "",
         description: row.Description || "",
         bookCover: row.CoverImagePath
-          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${row.CoverImagePath}`
-          : "",
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
+  : "",
         availableFormats: row.Available_Formats || "",
         websiteLink: row.Website_Link || "",
         amazonLink: row.Amazon_Link || "",
@@ -1127,8 +1127,8 @@ if (authorLink && book.authorId) {
         bookId: book.Book_ID || "",
         title: book.Title || "Untitled Book",
         bookCover: book.CoverImagePath
-          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${book.CoverImagePath}`
-          : "",
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(book.CoverImagePath)}`
+  : "",
         releaseDate: book["Release/Expected_Release_Date"] || ""
       }))
     };
