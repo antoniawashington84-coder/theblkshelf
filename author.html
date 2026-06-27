@@ -941,13 +941,13 @@ if (worksSection) worksSection.style.display = "";
 
     const [authorRows, booksRows, featuredRows] = await Promise.all([
       supabaseFetch(
-        `authors?select=*&AUTHOR_ID=eq.${encodeURIComponent(authorId)}&APPROVAL=eq.Approved&limit=1`
+        `public_authors?select=*&AUTHOR_ID=eq.${encodeURIComponent(authorId)}&APPROVAL=eq.Approved&limit=1`
       ),
       supabaseFetch(
-        `books?select=*&Author_ID=eq.${encodeURIComponent(authorId)}&Is_Live=eq.Yes&limit=100`
+        `public_books?select=*&Author_ID=eq.${encodeURIComponent(authorId)}&Is_Live=eq.Yes&limit=100`
       ),
       supabaseFetch(
-        `featured_authors?select=*`
+        `public_featured_authors?select=*`
       )
     ]);
 
