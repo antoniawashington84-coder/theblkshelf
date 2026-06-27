@@ -52,7 +52,7 @@
   line-height: 1.6;
   background:
     linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+    url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -470,7 +470,7 @@
   body {
     background:
       linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+      url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
@@ -731,7 +731,7 @@ async function supabaseFetch(path) {
   return await res.json();
 }
 
-const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
 const NEW_RELEASE_WINDOW_DAYS = 60;
 
   let page = 1;
@@ -760,15 +760,15 @@ searchType: "author",
   async function loadLibrary() {
   try {
     const booksRows = await supabaseFetch(
-  'books?select=*&Is_Live=eq.Yes'
+  'public_books?select=*&Is_Live=eq.Yes'
 );
 
     const rankingRows = await supabaseFetch(
-      'weekly_rankings?select=*&order=Week_Key.desc,Rank.asc'
+      'public_weekly_rankings?select=*&order=Week_Key.desc,Rank.asc'
     );
 
     const featuredRows = await supabaseFetch(
-      'featured_authors?select=*&order=Month_Key.desc'
+      'public_featured_authors?select=*&order=Month_Key.desc'
     );
 
     const books = booksRows.map(row => ({
@@ -778,8 +778,8 @@ searchType: "author",
       title: row.Title || "",
       description: row.Description || "",
       bookCover: row.CoverImagePath
-        ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${row.CoverImagePath}`
-        : DEFAULT_COVER,
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
+  : DEFAULT_COVER,
       availableFormats: splitCommaList(row.Available_Formats),
       websiteLink: row.Website_Link || "",
       amazonLink: row.Amazon_Link || "",
