@@ -47,7 +47,7 @@
   font-family: Georgia, "Times New Roman", serif;
   background:
     linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+    url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -459,8 +459,8 @@
   border-radius: 18px;
   overflow: hidden;
   background:
-    linear-gradient(rgba(29,24,20,0.25), rgba(29,24,20,0.25)),
-    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg");
+  linear-gradient(rgba(29,24,20,0.25), rgba(29,24,20,0.25)),
+  url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/defaults/cover-default.jpg");
   background-size: cover;
   background-position: center;
   box-shadow:
@@ -692,7 +692,7 @@
   body {
     background:
       linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+      url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
@@ -1228,8 +1228,8 @@ async function supabaseFetch(path) {
   return await res.json();
 }
 
-const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
-    const DEFAULT_AUTHOR = "https://placehold.co/500x625/1d1814/f4eee8?text=Author";
+const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
+    const DEFAULT_AUTHOR = `${SUPABASE_URL}/storage/v1/object/public/defaults/author-default.jpg`;
     const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
     const READER_SIGNUP_ENDPOINT = `${API_BASE}?type=reader-signup`;
 let releaseCarouselAnimationId = null;
@@ -1300,7 +1300,7 @@ function shuffleArray(items) {
   return copy;
 }
 
-const VIBE_IMAGE_BASE = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/vibes/";
+const VIBE_IMAGE_BASE = `${SUPABASE_URL}/storage/v1/object/public/vibes/`;
 
 const VIBE_OPTIONS = [
   {
@@ -1723,10 +1723,10 @@ function renderFeaturedAuthors(authors) {
     const currentMonthKey = getCurrentMonthKey();
 
     const [booksRows, authorsRows, featuredRows, rankingsRows] = await Promise.all([
-  supabaseFetch('books?select=*&Is_Live=eq.Yes&limit=2000'),
-  supabaseFetch('authors?select=*&APPROVAL=eq.Approved'),
-  supabaseFetch('featured_authors?select=*'),
-  supabaseFetch('weekly_rankings?select=*&order=Week_Key.desc,Rank.asc&limit=10')
+  supabaseFetch('public_books?select=*&Is_Live=eq.Yes&limit=2000'),
+  supabaseFetch('public_authors?select=*&APPROVAL=eq.Approved'),
+  supabaseFetch('public_featured_authors?select=*'),
+  supabaseFetch('public_weekly_rankings?select=*&order=Week_Key.desc,Rank.asc&limit=10')
 ]);
 
     const books = booksRows.map(row => ({
@@ -1738,11 +1738,12 @@ function renderFeaturedAuthors(authors) {
       genre: row.Genre || "",
       releaseDate: row["Release/Expected_Release_Date"] || "",
       cover: row.CoverImagePath
-        ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${row.CoverImagePath}`
-        : DEFAULT_COVER,
-      bookCover: row.CoverImagePath
-        ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${row.CoverImagePath}`
-        : DEFAULT_COVER
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
+  : DEFAULT_COVER,
+
+bookCover: row.CoverImagePath
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
+  : DEFAULT_COVER
     }));
 
     const authorsById = new Map(
@@ -1755,8 +1756,8 @@ function renderFeaturedAuthors(authors) {
           name: author.AUTHOR_NAME || "",
           genres: splitCommaList(author.GENRES),
           headshotLogo: author.AUTHORIMAGEPATH
-            ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/authors/${author.AUTHORIMAGEPATH}`
-            : DEFAULT_AUTHOR
+  ? `${SUPABASE_URL}/storage/v1/object/public/authors/${encodeURIComponent(author.AUTHORIMAGEPATH)}`
+  : DEFAULT_AUTHOR
         }
       ])
     );
