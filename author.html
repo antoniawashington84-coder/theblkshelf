@@ -50,7 +50,7 @@
   line-height: 1.6;
   background:
     linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-    url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd.png");
+    url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -442,7 +442,7 @@
   body {
     background:
       linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
-      url("https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/logo/bckgrnd-mobile.png");
+      url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
@@ -614,8 +614,8 @@ async function supabaseFetch(path) {
   return await res.json();
 }
     
-    const DEFAULT_AUTHOR = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/author-default.jpg";
-    const DEFAULT_COVER = "https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/defaults/cover-default.jpg";
+    const DEFAULT_AUTHOR = `${SUPABASE_URL}/storage/v1/object/public/defaults/author-default.jpg`;
+const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
 
     function getAuthorId() {
       const params = new URLSearchParams(window.location.search);
@@ -986,8 +986,8 @@ otherSocials: author.OTHER_SOCIALS || "",
         bookId: book.Book_ID || "",
         title: book.Title || "",
         bookCover: book.CoverImagePath
-          ? `https://antoniawashington84-coder.github.io/theblkshelf-assets/assets/covers/${book.CoverImagePath}`
-          : "",
+  ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(book.CoverImagePath)}`
+  : "",
         releaseDate: book["Release/Expected_Release_Date"] || ""
       }))
     };
