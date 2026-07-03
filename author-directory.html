@@ -548,7 +548,11 @@
 <footer id="site-footer"></footer>
 
 <script>
-const API_BASE = "https://script.google.com/macros/s/AKfycbxwQ5u0HwWY4ssrxfNaRffXiuPwx4wDwJEwT4Ay5DduHcu3z2Y53KBR4KiVMvGWUlV5zw/exec";
+const SUPABASE_URL =
+  "https://njgprucvnayyiooiftaw.supabase.co";
+
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qZ3BydWN2bmF5eWlvb2lmdGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDg0ODMsImV4cCI6MjA5MzMyNDQ4M30.1r6r8vyYB0PnrZtugcBz3CPuCP9MMlTTMYXfewEINNw";
 
 let allAuthors = [];
 let filteredAuthors = [];
@@ -613,20 +617,33 @@ function normalizeArray(data) {
   return [];
 }
 
-async function fetchJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-  return await res.json();
+async function fetchSupabase(table, query = "*") {
+  const url = query.includes("=")
+    ? `${SUPABASE_URL}/rest/v1/${table}?select=${query}`
+    : `${SUPABASE_URL}/rest/v1/${table}?select=${encodeURIComponent(query)}`;
+
+  const response = await fetch(url, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+
+  return response.json();
 }
 
 function buildAuthorsFromBooks(books) {
   const authorMap = new Map();
 
   books.forEach(book => {
-    const authorId = pick(book, ["authorId", "authorID"], "");
-    const authorName = pick(book, ["authorName", "author"], "Unknown Author");
-    const genre = pick(book, ["genre", "genres", "category"], "");
-    const dateAdded = pick(book, ["timestamp", "submittedAt", "createdAt", "dateAdded", "releaseDate"], "");
+    const authorId = pick(book, ["Author_ID", "authorId", "authorID"], "");
+const authorName = pick(book, ["Author_Name", "authorName", "author"], "Unknown Author");
+const genre = pick(book, ["Genre", "Sub_Genres", "genre", "genres", "category"], "");
+const dateAdded = pick(book, ["Release/Expected_Release_Date", "timestamp", "submittedAt", "createdAt", "dateAdded", "releaseDate"], "");
     const key = authorId || authorName.toLowerCase();
 
     if (!authorMap.has(key)) {
@@ -760,43 +777,66 @@ async function renderFeaturedAuthors() {
   try {
     const now = new Date();
     const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    const response = await fetchJson(`${API_BASE}?type=featured&month=${encodeURIComponent(monthKey)}`);
-    const featured = normalizeArray(response).slice(0, 5);
 
-    if (!featured.length) {
+    const [featuredRows, authorRows] = await Promise.all([
+      fetchSupabase(
+        "public_featured_authors",
+        `*&Month_Key=eq.${monthKey}`
+      ),
+      fetchSupabase(
+        "public_authors",
+        "*"
+      )
+    ]);
+
+    const authorsById = new Map(
+      authorRows.map(author => [author.AUTHOR_ID, author])
+    );
+
+    const featuredAuthors = featuredRows
+      .map(row => authorsById.get(row.Author_ID))
+      .filter(Boolean)
+      .slice(0, 5);
+
+    if (!featuredAuthors.length) {
       target.innerHTML = `<div class="empty-state">No featured authors available right now.</div>`;
       return;
     }
 
     target.classList.remove("loading-state");
 
-    target.innerHTML = featured.map(author => {
-      const id = pick(author, ["id", "authorId", "authorID"], "");
-      const name = pick(author, ["name", "authorName"], "Featured Author");
-      const image = pick(author, ["headshotLogo", "image", "photo", "authorPhoto", "headshot"], "");
-      const genres = pick(author, ["genres", "genre", "category"], "Featured Author");
-const matchedDirectoryAuthor = allAuthors.find(directoryAuthor =>
-  directoryAuthor.id === id ||
-  directoryAuthor.name.toLowerCase() === name.toLowerCase()
-);
+    target.innerHTML = featuredAuthors.map(author => {
+      const id = author.AUTHOR_ID || "";
+      const name = author.AUTHOR_NAME || "Featured Author";
+      const genres = author.GENRES || "Featured Author";
 
-const bookCount = matchedDirectoryAuthor ? matchedDirectoryAuthor.bookCount : 0;
-const bookLabel = bookCount === 1 ? "Book" : "Books";
+      const image = author.AUTHORIMAGEPATH
+        ? `${SUPABASE_URL}/storage/v1/object/public/authors/${encodeURIComponent(author.AUTHORIMAGEPATH)}`
+        : "";
+
+      const matchedDirectoryAuthor = allAuthors.find(directoryAuthor =>
+        directoryAuthor.id === id ||
+        directoryAuthor.name.toLowerCase() === name.toLowerCase()
+      );
+
+      const bookCount = matchedDirectoryAuthor ? matchedDirectoryAuthor.bookCount : 0;
+      const bookLabel = bookCount === 1 ? "Book" : "Books";
 
       return `
         <a class="featured-author" href="author.html?id=${encodeURIComponent(id)}&source=author_directory_featured">
-  <span class="featured-author-badge">
-  ${bookCount} ${bookLabel}
-</span>
+          <span class="featured-author-badge">${bookCount} ${bookLabel}</span>
+
           <div class="featured-author-image">
             ${image ? `<img src="${escapeHtml(image)}" alt="${escapeHtml(name)}">` : ""}
           </div>
+
           <strong>${escapeHtml(name)}</strong>
-          <span>${escapeHtml(Array.isArray(genres) ? genres.join(", ") : genres)}</span>
+          <span>${escapeHtml(genres)}</span>
           <span class="featured-author-btn">View Profile →</span>
         </a>
       `;
     }).join("");
+
   } catch (error) {
     console.error(error);
     target.innerHTML = `<div class="empty-state">Unable to load featured authors.</div>`;
@@ -805,10 +845,16 @@ const bookLabel = bookCount === 1 ? "Book" : "Books";
 
 async function loadAuthorDirectory() {
   try {
-    const response = await fetchJson(`${API_BASE}?type=library`);
-    const books = normalizeArray(response);
+    const books =
+    await fetchSupabase(
+        "public_books",
+        "*"
+    );
 
-    allAuthors = buildAuthorsFromBooks(books);
+const liveBooks =
+    books.filter(book => book.Is_Live === "Yes");
+
+    allAuthors = buildAuthorsFromBooks(liveBooks);
     filteredAuthors = [...allAuthors].sort((a, b) => a.name.localeCompare(b.name));
 
     populateGenreFilter(allAuthors);
