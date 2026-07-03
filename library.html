@@ -453,6 +453,45 @@
       margin-top: 4rem;
     }
 
+    .page-numbers{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    flex-wrap:wrap;
+}
+
+.page-number{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.2s;
+    color:var(--text);
+}
+
+.page-number:hover{
+    background:rgba(255,255,255,.08);
+}
+
+.page-number.active{
+    background:var(--accent);
+    color:#120e0b;
+    font-weight:bold;
+}
+
+    .shelf-page-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-weight: bold;
+  min-width: 120px;
+}
+
     .btn-nav {
       background: var(--bg-soft);
       border: 1px solid var(--line);
@@ -579,11 +618,27 @@
         display: none;
       }
 
-      .pagination {
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-top: 2rem;
-      }
+      @media (max-width: 720px) {
+
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .75rem;
+    margin-top: 2rem;
+  }
+
+  .page-numbers{
+    order:3;
+    width:100%;
+    justify-content:center;
+  }
+
+  .btn-nav{
+    flex:1;
+    min-width:140px;
+  }
+
+}
 
       .btn-nav {
         min-width: 0;
@@ -686,7 +741,7 @@
 
     <section>
       <div class="results-top">
-        <p>Bookcase <span id="current-page">1</span> (Displaying Books <span id="range">1-100</span>)</p>
+        <p>Loading library...</p>
         <div style="font-size: 0.9rem;">
           Sort:
           <select id="sort-select" class="field" style="display:inline-block; width:auto; margin:0 0 0 0.5rem; padding:0.45rem 0.7rem;">
@@ -703,8 +758,17 @@
         </div>
 
       <div class="pagination" id="paginationControls">
-  <button class="btn btn-nav" id="prevCaseBtn" onclick="navigate(-1)">← Previous Case</button>
-  <button class="btn btn-nav" id="nextCaseBtn" onclick="navigate(1)" style="background: var(--accent); color: black; border: none;">Next Case (Next 100 Books) →</button>
+
+  <button class="btn btn-nav" id="prevCaseBtn" onclick="navigate(-1)">
+    ← Previous Shelf
+  </button>
+
+  <div id="pageNumbers" class="page-numbers"></div>
+
+  <button class="btn btn-nav" id="nextCaseBtn" onclick="navigate(1)">
+    Next Shelf →
+  </button>
+
 </div>
     </section>
   </main>
@@ -751,7 +815,7 @@ const NEW_RELEASE_WINDOW_DAYS = 60;
 
   let page = 1;
   const booksPerShelf = 5;
-  const shelvesPerCase = 20;
+  const shelvesPerCase = 10;
   const booksPerCase = booksPerShelf * shelvesPerCase;
 
   let allBooks = [];
@@ -775,7 +839,7 @@ searchType: "author",
   async function loadLibrary() {
   try {
     const booksRows = await supabaseFetch(
-  'public_books?select=*&Is_Live=eq.Yes'
+  'public_library_books?select=*'
 );
 
     const rankingRows = await supabaseFetch(
@@ -1316,9 +1380,9 @@ function getReleaseBadgeLabel(book) {
       No books matched these filters.
     </div>
   `;
-  document.getElementById("current-page").innerText = page;
-  document.getElementById("range").innerText = "0-0";
+  
   updatePaginationControls();
+  renderPageNumbers();
   return;
 }
 
@@ -1376,9 +1440,8 @@ if (img) {
     const displayStart = filteredBooks.length ? startIndex + 1 : 0;
     const displayEnd = Math.min(endIndex, filteredBooks.length);
 
-    document.getElementById("current-page").innerText = page;
-document.getElementById("range").innerText = `${displayStart}-${displayEnd}`;
 updatePaginationControls();
+renderPageNumbers();
   }
 
   function updateResultsTop() {
@@ -1388,7 +1451,7 @@ updatePaginationControls();
   const start = filteredBooks.length === 0 ? 0 : ((page - 1) * booksPerCase) + 1;
   const end = Math.min(page * booksPerCase, filteredBooks.length);
 
-  p.innerHTML = `Bookcase <span id="current-page">${page}</span> (Displaying Books <span id="range">${start}-${end}</span> of ${filteredBooks.length})`;
+  p.textContent = `Shelf ${page} • Books ${start}-${end} of ${filteredBooks.length}`;
 }
 
 function updatePaginationControls() {
@@ -1447,6 +1510,71 @@ function updatePaginationControls() {
       });
     });
   }
+
+  function renderPageNumbers() {
+
+    const container = document.getElementById("pageNumbers");
+    const maxPage = Math.ceil(filteredBooks.length / booksPerCase);
+
+    container.innerHTML = "";
+
+    if (maxPage <= 1) return;
+
+    function addButton(number){
+
+        const btn=document.createElement("div");
+
+        btn.className="page-number";
+
+        if(number===page){
+            btn.classList.add("active");
+        }
+
+        btn.textContent=number;
+
+        btn.onclick=()=>{
+            page=number;
+            renderCase();
+            updateResultsTop();
+        };
+
+        container.appendChild(btn);
+    }
+
+    function addDots(){
+
+        const dots=document.createElement("span");
+
+        dots.textContent="...";
+
+        dots.style.padding="0 .4rem";
+
+        container.appendChild(dots);
+
+    }
+
+    const start=Math.max(2,page-2);
+    const end=Math.min(maxPage-1,page+2);
+
+    addButton(1);
+
+    if(start>2){
+        addDots();
+    }
+
+    for(let i=start;i<=end;i++){
+        addButton(i);
+    }
+
+    if(end<maxPage-1){
+        addDots();
+    }
+
+    if(maxPage>1){
+        addButton(maxPage);
+    }
+
+}
 
   setupAccordionFilters();
   loadLibrary();
