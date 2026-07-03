@@ -845,17 +845,25 @@ async function renderFeaturedAuthors() {
 
 async function loadAuthorDirectory() {
   try {
-    const books =
-    await fetchSupabase(
-        "public_books",
-        "*"
+    const authors = await fetchSupabase(
+      "public_author_directory",
+      "*"
     );
 
-const liveBooks =
-    books.filter(book => book.Is_Live === "Yes");
+    allAuthors = authors.map(author => ({
+      id: author.id || "",
+      name: author.name || "Unknown Author",
+      genres: String(author.genres || "")
+        .split(",")
+        .map(g => g.trim())
+        .filter(Boolean),
+      bookCount: Number(author.book_count || 0),
+      newestDate: author.newest_date || ""
+    }));
 
-    allAuthors = buildAuthorsFromBooks(liveBooks);
-    filteredAuthors = [...allAuthors].sort((a, b) => a.name.localeCompare(b.name));
+    filteredAuthors = [...allAuthors].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
 
     populateGenreFilter(allAuthors);
     renderAuthorDirectory();
@@ -865,21 +873,22 @@ const liveBooks =
     document.getElementById("sortFilter").addEventListener("change", applyFilters);
 
     document.querySelectorAll(".letter-filter").forEach(button => {
-  button.addEventListener("click", () => {
-    selectedLetter = button.dataset.letter || "";
+      button.addEventListener("click", () => {
+        selectedLetter = button.dataset.letter || "";
 
-    document.querySelectorAll(".letter-filter").forEach(btn => {
-      btn.classList.toggle("active", btn === button);
+        document.querySelectorAll(".letter-filter").forEach(btn => {
+          btn.classList.toggle("active", btn === button);
+        });
+
+        applyFilters();
+      });
     });
-
-    applyFilters();
-  });
-});
 
     document.getElementById("loadMoreAuthorsButton").addEventListener("click", () => {
       visibleAuthorLimit += 50;
       renderAuthorDirectory();
     });
+
   } catch (error) {
     console.error(error);
     document.getElementById("authorDirectoryList").innerHTML =
