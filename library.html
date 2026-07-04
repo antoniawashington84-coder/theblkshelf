@@ -516,7 +516,20 @@
     background-attachment: scroll;
   }
 
-      
+  .book,
+.book-cover {
+  transition: none;
+}
+
+.book:hover {
+  transform: none;
+}
+
+.book:hover .book-cover {
+  transform: none;
+  filter: none;
+}
+
       .hero h1 {
         font-size: 2.35rem;
       }
@@ -618,7 +631,14 @@
         display: none;
       }
 
-      @media (max-width: 720px) {
+      .btn-nav {
+        min-width: 0;
+        width: 100%;
+      }
+      
+    }
+
+    @media (max-width: 720px) {
 
   .pagination {
     flex-wrap: wrap;
@@ -640,12 +660,6 @@
 
 }
 
-      .btn-nav {
-        min-width: 0;
-        width: 100%;
-      }
-      
-    }
   </style>
 </head>
 <body>
