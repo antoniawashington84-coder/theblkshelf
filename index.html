@@ -1204,19 +1204,33 @@ input:focus-visible {
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qZ3BydWN2bmF5eWlvb2lmdGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDg0ODMsImV4cCI6MjA5MzMyNDQ4M30.1r6r8vyYB0PnrZtugcBz3CPuCP9MMlTTMYXfewEINNw";
     
 async function supabaseFetch(path) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      Accept: "application/json"
-    }
-  });
+  const pageSize = 500;
+  let from = 0;
+  let allRows = [];
 
-  if (!res.ok) {
-    throw new Error(`Supabase request failed: ${res.status}`);
+  while (true) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Accept: "application/json",
+        Range: `${from}-${from + pageSize - 1}`
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error(`Supabase request failed: ${res.status}`);
+    }
+
+    const rows = await res.json();
+    allRows = allRows.concat(rows);
+
+    if (rows.length < pageSize) break;
+
+    from += pageSize;
   }
 
-  return await res.json();
+  return allRows;
 }
 
 const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
@@ -1714,7 +1728,7 @@ function renderFeaturedAuthors(authors) {
     const currentMonthKey = getCurrentMonthKey();
 
     const [booksRows, authorsRows, featuredRows, rankingsRows] = await Promise.all([
-  supabaseFetch('public_books?select=*&Is_Live=eq.Yes&limit=2000'),
+  supabaseFetch('public_library_books?select=*'),
   supabaseFetch('public_authors?select=*&APPROVAL=eq.Approved'),
   supabaseFetch('public_featured_authors?select=*'),
   supabaseFetch('public_weekly_rankings?select=*&order=Week_Key.desc,Rank.asc&limit=10')
