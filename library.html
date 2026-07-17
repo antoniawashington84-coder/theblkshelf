@@ -1123,6 +1123,36 @@ function applyUrlFilter(paramName, stateSet, chipContainerId, groupId) {
   }
 }
 
+function applyRankingUrlFilter() {
+
+  const params = new URLSearchParams(window.location.search);
+  const ranking = normalizeText(params.get("ranking"));
+
+  if (!ranking) return;
+
+  state.rankingFilter.clear();
+
+  document.querySelectorAll(".ranking-filter-chip").forEach(chip => {
+
+    const value = chip.dataset.rankingFilter;
+
+    const match = value.toLowerCase() === ranking.toLowerCase();
+
+    chip.classList.toggle("active", match);
+
+    if (match) {
+      state.rankingFilter.add(value);
+    }
+
+  });
+
+  if (state.rankingFilter.size) {
+    document
+      .getElementById("ranking-filter-group")
+      ?.setAttribute("open", "open");
+  }
+}
+
 function applyInitialUrlFilters() {
 
   applyUrlFilter("genre", state.genres, "genre-filters", "genre-filter-group");
@@ -1162,36 +1192,6 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
     applyFilters();
   });
 });
-
-function applyRankingUrlFilter() {
-
-  const params = new URLSearchParams(window.location.search);
-  const ranking = normalizeText(params.get("ranking"));
-
-  if (!ranking) return;
-
-  state.rankingFilter.clear();
-
-  document.querySelectorAll(".ranking-filter-chip").forEach(chip => {
-
-    const value = chip.dataset.rankingFilter;
-
-    const match = value.toLowerCase() === ranking.toLowerCase();
-
-    chip.classList.toggle("active", match);
-
-    if (match) {
-      state.rankingFilter.add(value);
-    }
-
-  });
-
-  if (state.rankingFilter.size) {
-    document
-      .getElementById("ranking-filter-group")
-      ?.setAttribute("open", "open");
-  }
-}
 
   document.getElementById("sort-select").addEventListener("change", (e) => {
     state.sortBy = e.target.value;
