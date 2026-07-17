@@ -1108,7 +1108,8 @@ function applyUrlFilter(paramName, stateSet, chipContainerId, groupId) {
 
   chips.forEach(chip => {
     const chipValue = normalizeText(chip.dataset.value);
-    const match = chipValue.toLowerCase() === value.toLowerCase();
+    const match =
+  normalizeForSearch(chipValue) === normalizeForSearch(value);
 
     chip.classList.toggle("active", match);
 
