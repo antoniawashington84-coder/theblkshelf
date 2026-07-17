@@ -716,28 +716,28 @@
   </div>
 </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="age-filter-group">
     <summary>Age Range</summary>
     <div class="filter-content">
       <div class="chip-row" id="age-filters"></div>
     </div>
   </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="spice-filter-group">
     <summary>Spice Level</summary>
     <div class="filter-content">
       <div class="chip-row" id="spice-filters"></div>
     </div>
   </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="representation-filter-group">
     <summary>Representation</summary>
     <div class="filter-content">
       <div class="chip-row" id="representation-filters"></div>
     </div>
   </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="ranking-filter-group">
   <summary>Ranking</summary>
   <div class="filter-content">
     <div class="chip-row">
@@ -1123,40 +1123,20 @@ function applyUrlFilter(paramName, stateSet, chipContainerId, groupId) {
 }
 
 function applyInitialUrlFilters() {
-  applyUrlFilter(
-    "genre",
-    state.genres,
-    "genre-filters",
-    "genre-filter-group"
-  );
 
-  applyUrlFilter(
-    "subgenre",
-    state.subGenres,
-    "subgenre-filters",
-    "subgenre-filter-group"
-  );
+  applyUrlFilter("genre", state.genres, "genre-filters", "genre-filter-group");
 
-  applyUrlFilter(
-    "vibe",
-    state.vibes,
-    "vibe-filters",
-    "vibe-filter-group"
-  );
+  applyUrlFilter("subgenre", state.subGenres, "subgenre-filters", "subgenre-filter-group");
 
-  applyUrlFilter(
-    "spice",
-    state.spiceLevels,
-    "spice-filters",
-    "spice-filter-group"
-  );
+  applyUrlFilter("vibe", state.vibes, "vibe-filters", "vibe-filter-group");
 
-  applyUrlFilter(
-    "age",
-    state.ageRanges,
-    "age-filters",
-    "age-filter-group"
-  );
+  applyUrlFilter("age", state.ageRanges, "age-filters", "age-filter-group");
+
+  applyUrlFilter("spice", state.spiceLevels, "spice-filters", "spice-filter-group");
+
+  applyUrlFilter("representation", state.representations, "representation-filters", "representation-filter-group");
+
+  applyRankingUrlFilter();
 }
 
   function attachFilterEvents() {
@@ -1181,6 +1161,36 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
     applyFilters();
   });
 });
+
+function applyRankingUrlFilter() {
+
+  const params = new URLSearchParams(window.location.search);
+  const ranking = normalizeText(params.get("ranking"));
+
+  if (!ranking) return;
+
+  state.rankingFilter.clear();
+
+  document.querySelectorAll(".ranking-filter-chip").forEach(chip => {
+
+    const value = chip.dataset.rankingFilter;
+
+    const match = value.toLowerCase() === ranking.toLowerCase();
+
+    chip.classList.toggle("active", match);
+
+    if (match) {
+      state.rankingFilter.add(value);
+    }
+
+  });
+
+  if (state.rankingFilter.size) {
+    document
+      .getElementById("ranking-filter-group")
+      ?.setAttribute("open", "open");
+  }
+}
 
   document.getElementById("sort-select").addEventListener("change", (e) => {
     state.sortBy = e.target.value;
