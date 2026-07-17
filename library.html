@@ -695,14 +695,14 @@
 
   </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="genre-filter-group">
     <summary>Genre</summary>
     <div class="filter-content">
       <div class="chip-row" id="genre-filters"></div>
     </div>
   </details>
 
-  <details class="filter-group">
+  <details class="filter-group" id="subgenre-filter-group">
   <summary>Sub-Genre</summary>
   <div class="filter-content">
     <div class="chip-row" id="subgenre-filters"></div>
@@ -1094,36 +1094,69 @@ function applySavedShuffleOrder(items, savedOrder) {
   return [...orderedItems, ...newItems];
 }
 
-function getUrlVibeFilter() {
+function applyUrlFilter(paramName, stateSet, chipContainerId, groupId) {
   const params = new URLSearchParams(window.location.search);
-  return normalizeText(params.get("vibe"));
-}
+  const value = normalizeText(params.get(paramName));
 
-function applyInitialUrlFilters() {
-  const vibeFromUrl = getUrlVibeFilter();
-  if (!vibeFromUrl) return;
+  if (!value) return;
 
-  state.vibes.clear();
+  stateSet.clear();
 
-  const vibeChips = document.querySelectorAll('#vibe-filters .filter-chip');
+  const chips = document.querySelectorAll(
+    `#${chipContainerId} .filter-chip`
+  );
 
-  vibeChips.forEach(chip => {
+  chips.forEach(chip => {
     const chipValue = normalizeText(chip.dataset.value);
-    const isMatch = chipValue.toLowerCase() === vibeFromUrl.toLowerCase();
+    const match = chipValue.toLowerCase() === value.toLowerCase();
 
-    chip.classList.toggle("active", isMatch);
+    chip.classList.toggle("active", match);
 
-    if (isMatch) {
-      state.vibes.add(chipValue);
+    if (match) {
+      stateSet.add(chipValue);
     }
   });
 
-  if (state.vibes.size > 0) {
-    const vibeGroup = document.getElementById("vibe-filter-group");
-    if (vibeGroup) {
-      vibeGroup.setAttribute("open", "open");
-    }
+  if (stateSet.size) {
+    document.getElementById(groupId)?.setAttribute("open", "open");
   }
+}
+
+function applyInitialUrlFilters() {
+  applyUrlFilter(
+    "genre",
+    state.genres,
+    "genre-filters",
+    "genre-filter-group"
+  );
+
+  applyUrlFilter(
+    "subgenre",
+    state.subGenres,
+    "subgenre-filters",
+    "subgenre-filter-group"
+  );
+
+  applyUrlFilter(
+    "vibe",
+    state.vibes,
+    "vibe-filters",
+    "vibe-filter-group"
+  );
+
+  applyUrlFilter(
+    "spice",
+    state.spiceLevels,
+    "spice-filters",
+    "spice-filter-group"
+  );
+
+  applyUrlFilter(
+    "age",
+    state.ageRanges,
+    "age-filters",
+    "age-filter-group"
+  );
 }
 
   function attachFilterEvents() {
