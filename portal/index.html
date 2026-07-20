@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Author Portal – The BLK Shelf</title>
+
+  <link rel="stylesheet" href="../admin/css/mate-masie.css">
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <span class="mm-eyebrow">Author Portal</span>
+        <h1 class="mm-page-title">Your Shelf</h1>
+        <p class="mm-page-subtitle">
+          Manage your approved author profiles and submit books for review.
+        </p>
+
+        <div id="portalContent">
+          <div class="mm-card">
+            <p class="mm-muted">Loading portal...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../admin/js/supabase.js"></script>
+  <script src="js/portal-navigation.js"></script>
+
+  <script>
+    async function initPortal() {
+      await loadAuthorPortalShell("dashboard");
+
+      const target = document.getElementById("portalContent");
+
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const session = sessionData?.session;
+
+      if (!session) {
+        window.location.href = "../login.html";
+        return;
+      }
+
+      const email = session.user.email;
+
+      const { data: account, error: accountError } = await supabaseClient
+        .from("author_accounts")
+        .select("*")
+        .eq("email", email)
+        .limit(1);
+
+      if (accountError) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Unable to load account</h2>
+            <p class="mm-muted">${accountError.message}</p>
+          </div>
+        `;
+        return;
+      }
+
+      const authorAccount = account && account.length ? account[0] : null;
+
+      if (!authorAccount) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>No author account found</h2>
+            <p class="mm-muted">We could not find an approved author account for ${email}.</p>
+          </div>
+        `;
+        return;
+      }
+
+      setPortalTopbarUser(session.user, authorAccount);
+
+      const { data: links, error: linksError } = await supabaseClient
+        .from("account_authors")
+        .select("author_id, relationship")
+        .eq("account_id", authorAccount.account_id);
+
+      if (linksError) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Unable to load author profiles</h2>
+            <p class="mm-muted">${linksError.message}</p>
+          </div>
+        `;
+        return;
+      }
+
+      const authorIds = (links || []).map(link => link.author_id);
+
+      if (!authorIds.length) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>No linked author profiles</h2>
+            <p class="mm-muted">Your account exists, but no author profiles are linked yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const { data: authors, error: authorsError } = await supabaseClient
+        .from("authors")
+        .select("AUTHOR_ID, AUTHOR_NAME, GENRES")
+        .in("AUTHOR_ID", authorIds);
+
+      if (authorsError) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Unable to load authors</h2>
+            <p class="mm-muted">${authorsError.message}</p>
+          </div>
+        `;
+        return;
+      }
+
+      target.innerHTML = `
+        <div class="mm-grid mm-grid-2">
+          ${(authors || []).map(author => `
+            <article class="mm-card">
+              <span class="mm-eyebrow">Author Profile</span>
+              <h2>${author.AUTHOR_NAME}</h2>
+              <p class="mm-muted">${author.GENRES || "No genres listed"}</p>
+
+              <div class="mm-btn-row">
+                <a class="mm-btn" href="submit-book.html?author_id=${encodeURIComponent(author.AUTHOR_ID)}">
+                  Submit Book
+                </a>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    initPortal();
+  </script>
+</body>
+</html>

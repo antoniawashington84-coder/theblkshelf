@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Event Details – Mate Masie</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --text: #fff8f0;
+      --muted: #e3d2c0;
+      --soft: #c9b7a5;
+      --accent: #d8a35d;
+      --line: rgba(255,255,255,0.18);
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+        url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page {
+      padding: 2.5rem 0 4rem;
+    }
+
+    .event-form-card {
+      background: linear-gradient(180deg, #3f2e23, #241d17);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 28px;
+      padding: 2rem;
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.42rem 0.88rem;
+      border: 1px solid rgba(216,163,93,0.24);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 0.98;
+      margin: 0.9rem 0 0.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 56rem;
+      font-size: 1.05rem;
+      margin: 0 0 1.8rem;
+    }
+
+    .form-section {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 22px;
+      background: rgba(15,12,10,0.45);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .form-section h2 {
+      margin: 0 0 1rem;
+      color: #f2c994;
+      font-size: 1.35rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .form-grid.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: bold;
+    }
+
+    .field {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: #17100c;
+      color: var(--text);
+      font: inherit;
+    }
+
+    textarea.field {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .field::placeholder {
+      color: var(--soft);
+    }
+
+    .field:focus {
+      outline: 3px solid #f2c994;
+      border-color: #f2c994;
+    }
+
+    .pill-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.5rem;
+}
+
+.pill-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(216,163,93,0.08);
+  border: 1px solid rgba(216,163,93,0.22);
+  color: var(--muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pill-check input {
+  accent-color: var(--accent);
+}
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .checkbox-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+    .check-card {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.75rem;
+      border-radius: 14px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.18);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .check-card input {
+      accent-color: var(--accent);
+    }
+
+    .conditional-section {
+      display: none;
+    }
+
+    .conditional-section.active {
+      display: block;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .submit-btn {
+      border: none;
+      cursor: pointer;
+      padding: 0.75rem 1.3rem;
+      background: #d8a35d;
+      color: #120e0b;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      background: #e6b06a;
+      transform: translateY(-1px);
+    }
+
+    .form-note {
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.22);
+      color: var(--muted);
+    }
+
+    .success-message.active {
+      display: block;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 2.2rem;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .review-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.review-field.full {
+  grid-column: 1 / -1;
+}
+
+.review-label {
+  color: var(--soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.review-value {
+  min-height: 52px;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.review-long-value {
+  min-height: 100px;
+  align-items: flex-start;
+}
+
+    @media (max-width: 850px) {
+      .form-grid,
+      .form-grid.three,
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        background:
+          linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+          url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
+
+      header {
+        padding: 1.3rem 0 1.7rem;
+      }
+
+      .event-form-card {
+        padding: 1.15rem;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="event-form-card">
+      <span class="mm-eyebrow">Pending Review</span>
+
+<h1 class="mm-page-title" id="pageTitle">
+  Review Event
+</h1>
+
+<p class="mm-page-subtitle">
+Review the submission, compare it against The BLK Shelf standards, then approve, request more information, or deny.
+</p>
+
+<div class="mm-btn-row" style="margin-bottom:1rem;">
+  <a class="mm-btn mm-btn-secondary" href="review-queue.html">
+    ← Back to Review Queue
+  </a>
+</div>
+
+      <div id="reviewEventContent">
+
+  <section class="form-section">
+    <h2>Event Basics</h2>
+
+    <div class="form-grid">
+      <div class="review-field">
+        <span class="review-label">Event Name</span>
+        <div class="review-value" id="reviewEventName"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Event Types</span>
+        <div class="review-value" id="reviewEventTypes"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Short Description</span>
+        <div class="review-value" id="reviewShortDescription"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Description</span>
+        <div class="review-value review-long-value" id="reviewDescription"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Date & Time</h2>
+
+    <div class="form-grid three">
+      <div class="review-field">
+        <span class="review-label">Start Date</span>
+        <div class="review-value" id="reviewStartDate"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">End Date</span>
+        <div class="review-value" id="reviewEndDate"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Time Zone</span>
+        <div class="review-value" id="reviewTimezone"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Start Time</span>
+        <div class="review-value" id="reviewStartTime"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">End Time</span>
+        <div class="review-value" id="reviewEndTime"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Repeats</span>
+        <div class="review-value" id="reviewRepeatFrequency"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Location</h2>
+
+    <div class="form-grid">
+      <div class="review-field">
+        <span class="review-label">Event Format</span>
+        <div class="review-value" id="reviewEventFormat"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Venue</span>
+        <div class="review-value" id="reviewVenueName"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Street Address</span>
+        <div class="review-value" id="reviewStreetAddress"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">City</span>
+        <div class="review-value" id="reviewCity"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">State</span>
+        <div class="review-value" id="reviewState"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">ZIP Code</span>
+        <div class="review-value" id="reviewZipCode"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Country</span>
+        <div class="review-value" id="reviewCountry"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Virtual Link</span>
+        <div class="review-value" id="reviewVirtualLink"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Tickets & Vendors</h2>
+
+    <div class="form-grid">
+      <div class="review-field">
+        <span class="review-label">Free Event</span>
+        <div class="review-value" id="reviewFreeEvent"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Ticket Price</span>
+        <div class="review-value" id="reviewTicketPrice"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Registration Link</span>
+        <div class="review-value" id="reviewRegistrationLink"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Event Website</span>
+        <div class="review-value" id="reviewEventWebsite"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Vendors Available</span>
+        <div class="review-value" id="reviewVendorAvailable"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Vendor Fee</span>
+        <div class="review-value" id="reviewVendorFee"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Vendor Deadline</span>
+        <div class="review-value" id="reviewVendorDeadline"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Vendor Application</span>
+        <div class="review-value" id="reviewVendorApplicationLink"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Discoverability</h2>
+
+    <div class="form-grid">
+      <div class="review-field full">
+        <span class="review-label">Audiences</span>
+        <div class="review-value" id="reviewAudiences"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Genres</span>
+        <div class="review-value" id="reviewGenres"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Event Focus</span>
+        <div class="review-value" id="reviewEventFocus"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Featured Authors</span>
+        <div class="review-value" id="reviewFeaturedAuthors"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Family Friendly</span>
+        <div class="review-value" id="reviewFamilyFriendly"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Additional Details</h2>
+
+    <div class="form-grid">
+      <div class="review-field full">
+        <span class="review-label">Accessibility Notes</span>
+        <div class="review-value review-long-value" id="reviewAccessibilityNotes"></div>
+      </div>
+
+      <div class="review-field full">
+        <span class="review-label">Parking Notes</span>
+        <div class="review-value review-long-value" id="reviewParkingNotes"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Organizer</h2>
+
+    <div class="form-grid">
+      <div class="review-field">
+        <span class="review-label">Organizer Name</span>
+        <div class="review-value" id="reviewOrganizerName"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Organizer Email</span>
+        <div class="review-value" id="reviewOrganizerEmail"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Organizer Website</span>
+        <div class="review-value" id="reviewOrganizerWebsite"></div>
+      </div>
+
+      <div class="review-field">
+        <span class="review-label">Organizer Social</span>
+        <div class="review-value" id="reviewOrganizerSocial"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-section">
+    <h2>Event Flyer</h2>
+
+    <div
+      id="eventFlyerPreview"
+      style="
+        width:320px;
+        max-width:100%;
+        aspect-ratio:3/4;
+        border-radius:18px;
+        overflow:hidden;
+        border:1px solid rgba(255,255,255,.18);
+        background:#17100c;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      "
+    >
+      <span class="form-note">No flyer</span>
+    </div>
+  </section>
+
+  <section class="form-section">
+  <h2>Reviewer Decision</h2>
+
+  <div class="form-grid">
+    <div class="review-field full">
+      <label for="reviewerNotes">Reviewer Notes</label>
+
+      <textarea
+        class="field"
+        id="reviewerNotes"
+        rows="6"
+        placeholder="Visible only to administrators."
+      ></textarea>
+    </div>
+  </div>
+</section>
+
+  <div class="form-actions">
+    <button class="mm-btn" id="approveButton" type="button">
+      Approve
+    </button>
+
+    <button class="mm-btn mm-btn-secondary" id="needsInfoButton" type="button">
+      Needs Info
+    </button>
+
+    <button class="mm-btn mm-btn-danger" id="denyButton" type="button">
+      Deny
+    </button>
+
+    <span class="form-note" id="reviewNote"></span>
+  </div>
+  <section class="form-section">
+  <h2>Review History</h2>
+
+  <div id="eventHistory">
+    <p class="form-note">Loading history...</p>
+  </div>
+</section>
+</div>
+            </div>
+      </section>
+    </main>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/navigation.js"></script>
+
+<script>
+
+  let currentEvent = null;
+
+const params = new URLSearchParams(location.search);
+let eventId = params.get("id");
+
+async function initAdminEventPage() {
+  await loadMateMasieShell("review-queue");
+
+  const auth = await requireAdmin();
+  if (!auth) return;
+
+  setTopbarUser(auth.user, auth.profile);
+
+  await loadEvent();
+}
+
+function displayValue(id, value) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    (Array.isArray(value) && !value.length)
+  ) {
+    element.textContent = "—";
+    return;
+  }
+
+  element.textContent = Array.isArray(value)
+    ? value.join(", ")
+    : String(value);
+}
+
+function displayBoolean(id, value) {
+  displayValue(id, value === true ? "Yes" : "No");
+}
+
+function displayLink(id, value) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  if (!value) {
+    element.textContent = "—";
+    return;
+  }
+
+  element.innerHTML = `
+    <a
+      href="${escapeHtml(value)}"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      ${escapeHtml(value)}
+    </a>
+  `;
+}
+
+function displayDate(id, value) {
+  if (!value) {
+    displayValue(id, null);
+    return;
+  }
+
+  const date = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+
+  displayValue(
+    id,
+    Number.isNaN(date.getTime())
+      ? value
+      : date.toLocaleDateString("en-US")
+  );
+}
+
+function displayTime(id, value) {
+  if (!value) {
+    displayValue(id, null);
+    return;
+  }
+
+  const match = String(value).match(/^(\d{1,2}):(\d{2})/);
+
+  if (!match) {
+    displayValue(id, value);
+    return;
+  }
+
+  const date = new Date();
+  date.setHours(Number(match[1]), Number(match[2]), 0, 0);
+
+  displayValue(
+    id,
+    date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit"
+    })
+  );
+}
+
+async function loadEvent() {
+  if (!eventId) {
+    document.getElementById("pageTitle").textContent =
+      "Review Event";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("event_submissions")
+    .select("*")
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
+
+  currentEvent = data;
+
+  console.log(currentEvent);
+
+  document.getElementById("pageTitle").textContent =
+    currentEvent.event_name || "Event Details";
+
+    renderEventReview(currentEvent);
+
+await loadEventHistory();
+   
+}
+
+function getEventFlyerUrl(event) {
+  if (event?.flyer_storage_path) {
+    return `https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/event-flyers/${String(event.flyer_storage_path)
+  .split("/")
+  .map(encodeURIComponent)
+  .join("/")}`;
+  }
+
+  return event?.flyer_image_url || "";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderEventReview(event) {
+  displayValue("reviewEventName", event.event_name);
+  displayValue(
+    "reviewEventTypes",
+    event.event_types?.length
+      ? event.event_types
+      : event.event_type
+  );
+  displayValue("reviewShortDescription", event.short_description);
+  displayValue("reviewDescription", event.description);
+
+  displayDate("reviewStartDate", event.start_date);
+  displayDate("reviewEndDate", event.end_date);
+  displayTime("reviewStartTime", event.start_time);
+  displayTime("reviewEndTime", event.end_time);
+  displayValue("reviewTimezone", event.timezone);
+  displayValue("reviewRepeatFrequency", event.repeat_frequency);
+
+  displayValue("reviewEventFormat", event.event_format);
+  displayValue("reviewVenueName", event.venue_name);
+  displayValue("reviewStreetAddress", event.street_address);
+  displayValue("reviewCity", event.city);
+  displayValue("reviewState", event.state);
+  displayValue("reviewZipCode", event.zip_code);
+  displayValue("reviewCountry", event.country);
+  displayLink("reviewVirtualLink", event.virtual_link);
+
+  displayBoolean("reviewFreeEvent", event.free_event);
+  displayValue("reviewTicketPrice", event.ticket_price);
+  displayLink("reviewRegistrationLink", event.registration_link);
+  displayLink("reviewEventWebsite", event.event_website);
+
+  displayBoolean("reviewVendorAvailable", event.vendor_available);
+  displayValue("reviewVendorFee", event.vendor_fee);
+  displayDate("reviewVendorDeadline", event.vendor_deadline);
+  displayLink(
+    "reviewVendorApplicationLink",
+    event.vendor_application_link
+  );
+
+  displayValue("reviewAudiences", event.audiences);
+  displayValue("reviewGenres", event.genres);
+  displayValue("reviewEventFocus", event.event_focus);
+  displayValue("reviewFeaturedAuthors", event.featured_authors);
+  displayBoolean("reviewFamilyFriendly", event.family_friendly);
+
+  displayValue(
+    "reviewAccessibilityNotes",
+    event.accessibility_notes
+  );
+  displayValue("reviewParkingNotes", event.parking_notes);
+
+  displayValue("reviewOrganizerName", event.organizer_name);
+  displayValue("reviewOrganizerEmail", event.organizer_email);
+  displayLink("reviewOrganizerWebsite", event.organizer_website);
+  displayValue("reviewOrganizerSocial", event.organizer_social);
+
+  const preview = document.getElementById("eventFlyerPreview");
+  const imageUrl = getEventFlyerUrl(event);
+
+  preview.innerHTML = imageUrl
+    ? `
+      <img
+        src="${escapeHtml(imageUrl)}"
+        alt="${escapeHtml(
+          `${event.event_name || "Event"} flyer`
+        )}"
+        style="
+          width:100%;
+          height:100%;
+          object-fit:contain;
+          background:#111;
+        "
+      >
+    `
+    : `<span class="form-note">No flyer</span>`;
+}
+
+async function updateSubmissionStatus(status) {
+
+  const notes =
+    document.getElementById("reviewerNotes").value.trim();
+
+  const { error } = await supabaseClient
+    .from("event_submissions")
+    .update({
+      submission_status: status,
+      reviewer_notes: notes,
+      reviewed_at: new Date().toISOString()
+    })
+    .eq("id", eventId);
+
+  if (error) throw error;
+}
+
+async function logEventHistory(action, changes = {}) {
+
+  const {
+    data: { user }
+  } = await supabaseClient.auth.getUser();
+
+  const historyChanges = {
+    action: {
+      old: currentEvent?.submission_status || null,
+      new: action
+    },
+    ...changes
+  };
+
+  const { error } = await supabaseClient
+  .from("event_edit_history")
+  .insert({
+    event_id: null,
+    event_submission_id: currentEvent?.id || null,
+    edited_by: user?.id || null,
+    editor_name:
+      user?.email ||
+      user?.user_metadata?.full_name ||
+      "Unknown editor",
+    changes: historyChanges,
+    edited_at: new Date().toISOString()
+  });
+
+  if (error) {
+    console.error("Event history failed:", error);
+  }
+
+}
+
+function createEventSlug(eventName) {
+  const baseSlug = String(eventName || "event")
+    .toLowerCase()
+    .trim()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${baseSlug}-${Date.now()}`;
+}
+
+function getApprovedFlyerPath(pendingPath) {
+  const cleanPath = String(pendingPath || "")
+    .replace(/^\/+/, "")
+    .replace(/^pending\//, "");
+
+  return cleanPath
+    ? `approved/${cleanPath}`
+    : "";
+}
+
+async function moveEventFlyerToApproved() {
+  const pendingPath = currentEvent.flyer_storage_path;
+
+  if (!pendingPath) {
+    return {
+      flyerStoragePath: null,
+      eventImageUrl:
+        currentEvent.event_image_url ||
+        currentEvent.flyer_image_url ||
+        null
+    };
+  }
+
+  const cleanPendingPath = decodeURIComponent(
+  String(pendingPath)
+    .trim()
+    .replace(
+      /^https?:\/\/[^/]+\/storage\/v1\/object\/public\/event-flyers\//,
+      ""
+    )
+    .replace(/^\/+/, "")
+    .replace(/^event-flyers\//, "")
+);
+
+const approvedPath =
+  getApprovedFlyerPath(cleanPendingPath);
+
+console.log("Flyer source path:", cleanPendingPath);
+console.log("Flyer approved path:", approvedPath);
+
+  const fileName =
+  cleanPendingPath.split("/").pop();
+
+const { data: pendingFiles, error: listError } =
+  await supabaseClient.storage
+    .from("event-flyers")
+    .list("pending", {
+      search: fileName,
+      limit: 100
+    });
+
+if (listError) {
+  throw new Error(
+    `The pending flyer folder could not be checked: ${listError.message}`
+  );
+}
+
+console.log("Matching pending flyers:", pendingFiles);
+
+const matchingFile =
+  (pendingFiles || []).find(file => file.name === fileName);
+
+if (!matchingFile) {
+  throw new Error(
+    `The flyer is not present in event-flyers/pending. Expected file: ${fileName}`
+  );
+}
+
+const { data: flyerBlob, error: downloadError } =
+  await supabaseClient.storage
+    .from("event-flyers")
+    .download(cleanPendingPath);
+
+if (downloadError) {
+  throw new Error(
+    `The pending flyer could not be downloaded: ${downloadError.message}`
+  );
+}
+
+const { error: uploadError } =
+  await supabaseClient.storage
+    .from("event-flyers")
+    .upload(
+      approvedPath,
+      flyerBlob,
+      {
+        upsert: false,
+        contentType:
+          matchingFile.metadata?.mimetype ||
+          flyerBlob.type ||
+          "application/octet-stream"
+      }
+    );
+
+if (uploadError) {
+  throw new Error(
+    `The approved flyer could not be created: ${uploadError.message}`
+  );
+}
+
+  const { data: publicUrlData } =
+    supabaseClient.storage
+      .from("event-flyers")
+      .getPublicUrl(approvedPath);
+
+  const { error: removeError } =
+    await supabaseClient.storage
+      .from("event-flyers")
+      .remove([cleanPendingPath]);
+
+  if (removeError) {
+    console.error(
+      "Approved flyer copied, but pending flyer could not be deleted:",
+      removeError
+    );
+  }
+
+  return {
+    flyerStoragePath: approvedPath,
+    eventImageUrl:
+      publicUrlData?.publicUrl || null
+  };
+}
+
+async function approveSubmission() {
+
+  if (!currentEvent) {
+    throw new Error("Submission not loaded.");
+  }
+
+  if (currentEvent.submission_status !== "pending") {
+    throw new Error("This submission has already been reviewed.");
+  }
+
+    const flyerResult =
+    await moveEventFlyerToApproved();
+
+  const {
+    data: { user },
+    error: userError
+  } = await supabaseClient.auth.getUser();
+
+  if (userError) {
+    throw userError;
+  }
+
+  if (!user) {
+    throw new Error("Your admin session could not be verified.");
+  }
+
+  const approvedAt = new Date().toISOString();
+
+  const liveEvent = {
+    event_name: currentEvent.event_name,
+    slug: createEventSlug(currentEvent.event_name),
+
+    event_type: currentEvent.event_type,
+    event_types: currentEvent.event_types,
+    short_description: currentEvent.short_description,
+    description: currentEvent.description,
+
+    start_date: currentEvent.start_date,
+    end_date: currentEvent.end_date,
+    start_time: currentEvent.start_time,
+    end_time: currentEvent.end_time,
+    timezone: currentEvent.timezone,
+    repeat_frequency: currentEvent.repeat_frequency,
+
+    event_format: currentEvent.event_format,
+    venue_name: currentEvent.venue_name,
+    street_address: currentEvent.street_address,
+    city: currentEvent.city,
+    state: currentEvent.state,
+    zip_code: currentEvent.zip_code,
+    country: currentEvent.country,
+    virtual_link: currentEvent.virtual_link,
+
+    free_event: currentEvent.free_event,
+    ticket_price: currentEvent.ticket_price,
+    registration_link: currentEvent.registration_link,
+    event_website: currentEvent.event_website,
+
+    vendor_available: currentEvent.vendor_available,
+    vendor_fee: currentEvent.vendor_fee,
+    vendor_deadline: currentEvent.vendor_deadline,
+    vendor_application_link:
+      currentEvent.vendor_application_link,
+
+    audiences: currentEvent.audiences,
+    genres: currentEvent.genres,
+    event_focus: currentEvent.event_focus,
+    featured_authors: currentEvent.featured_authors,
+    family_friendly: currentEvent.family_friendly,
+
+    accessibility_notes: currentEvent.accessibility_notes,
+    parking_notes: currentEvent.parking_notes,
+
+    organizer_name: currentEvent.organizer_name,
+    organizer_email: currentEvent.organizer_email,
+    organizer_website: currentEvent.organizer_website,
+    organizer_social: currentEvent.organizer_social,
+
+    flyer_storage_path: flyerResult.flyerStoragePath,
+    event_image_url: flyerResult.eventImageUrl,
+
+    approved_at: approvedAt,
+    approved_by: user.id
+  };
+
+  const {
+  data: existingEvent,
+  error: existingEventError
+} = await supabaseClient
+  .from("events")
+  .select("id")
+  .eq("submission_id", currentEvent.id)
+  .maybeSingle();
+
+if (existingEventError) {
+  throw existingEventError;
+}
+
+if (existingEvent) {
+  throw new Error(
+    "This submission has already been approved."
+  );
+}
+
+liveEvent.submission_id = currentEvent.id;
+
+const { data: createdEvent, error: insertError } =
+  await supabaseClient
+    .from("events")
+    .insert(liveEvent)
+    .select()
+    .single();
+
+if (insertError) {
+  throw insertError;
+}
+
+    console.log("Created live event:", createdEvent);
+
+  const reviewerNotes =
+    document.getElementById("reviewerNotes").value.trim();
+
+  const {
+  data: updatedSubmission,
+  error: submissionUpdateError
+} = await supabaseClient
+  .from("event_submissions")
+  .update({
+    submission_status: "approved",
+    reviewer_notes: reviewerNotes,
+    reviewed_at: approvedAt,
+    flyer_storage_path: flyerResult.flyerStoragePath,
+    event_image_url: flyerResult.eventImageUrl
+  })
+  .eq("id", eventId)
+  .eq("submission_status", "pending")
+  .select("id, submission_status")
+  .single();
+
+if (submissionUpdateError) {
+  throw submissionUpdateError;
+}
+
+if (!updatedSubmission) {
+  throw new Error(
+    "The event was created, but the submission status was not updated."
+  );
+}
+
+  currentEvent = {
+  ...currentEvent,
+  submission_status: "approved",
+  reviewer_notes: reviewerNotes,
+  reviewed_at: approvedAt,
+  flyer_storage_path: flyerResult.flyerStoragePath,
+  event_image_url: flyerResult.eventImageUrl
+};
+
+await logEventHistory("approved", {
+  submission_status: "approved",
+  reviewer_notes: reviewerNotes
+});
+
+}
+
+async function loadEventHistory() {
+
+  const container =
+    document.getElementById("eventHistory");
+
+  const { data, error } =
+  await supabaseClient
+    .from("event_edit_history")
+    .select("*")
+    .eq("event_submission_id", currentEvent.id)
+    .order("edited_at", {
+      ascending: false
+    });
+
+  if (error) {
+    console.error(error);
+
+    container.innerHTML =
+      "<p class='form-note'>Unable to load history.</p>";
+
+    return;
+  }
+
+  if (!data.length) {
+
+    container.innerHTML =
+      "<p class='form-note'>No history yet.</p>";
+
+    return;
+
+  }
+
+  container.innerHTML = data.map(entry => `
+
+    <div class="mm-card" style="margin-bottom:1rem;">
+
+      <strong>
+  ${escapeHtml(
+    entry.changes?.action?.new ||
+    "updated"
+  )}
+</strong>
+
+      <div class="form-note">
+  ${new Date(entry.edited_at).toLocaleString()}
+</div>
+
+      <pre style="
+        margin-top:.75rem;
+        white-space:pre-wrap;
+        overflow-wrap:anywhere;
+      ">${escapeHtml(
+        JSON.stringify(
+          entry.changes,
+          null,
+          2
+        )
+      )}</pre>
+
+    </div>
+
+  `).join("");
+
+}
+
+document
+.getElementById("needsInfoButton")
+.addEventListener("click", async () => {
+
+  const note =
+  document.getElementById("reviewNote");
+
+const reviewerNotes =
+  document.getElementById("reviewerNotes").value.trim();
+
+if (!reviewerNotes) {
+  note.textContent =
+    "Enter reviewer notes before requesting more information.";
+  return;
+}
+
+try {
+
+    await updateSubmissionStatus("needs_info");
+
+await logEventHistory("needs_info", {
+  submission_status: "needs_info",
+  reviewer_notes: reviewerNotes
+});
+
+note.textContent =
+  "Submission marked Needs Info.";
+
+setTimeout(() => {
+  location.href = "review-queue.html";
+}, 800);
+
+  } catch (error) {
+
+    console.error(error);
+
+    note.textContent =
+      error.message;
+
+  }
+
+});
+
+document
+.getElementById("denyButton")
+.addEventListener("click", async () => {
+
+  const note =
+  document.getElementById("reviewNote");
+
+const reviewerNotes =
+  document.getElementById("reviewerNotes").value.trim();
+
+if (!reviewerNotes) {
+  note.textContent =
+    "Enter a reason before denying the submission.";
+  return;
+}
+
+if (!confirm("Deny this event submission?")) {
+  return;
+}
+
+try {
+
+    await updateSubmissionStatus("denied");
+
+await logEventHistory("denied", {
+  submission_status: "denied",
+  reviewer_notes: reviewerNotes
+});
+
+note.textContent =
+  "Submission denied.";
+
+setTimeout(() => {
+  location.href = "review-queue.html";
+}, 800);
+
+  } catch (error) {
+
+    console.error(error);
+
+    note.textContent =
+      error.message;
+
+  }
+
+});
+
+document
+  .getElementById("approveButton")
+  .addEventListener("click", async () => {
+
+    const note =
+      document.getElementById("reviewNote");
+
+    note.textContent = "";
+
+    if (!confirm("Approve this event?")) {
+      return;
+    }
+
+    try {
+
+      await approveSubmission();
+
+      note.textContent = "Event approved.";
+
+      setTimeout(() => {
+        location.href = "review-queue.html";
+      }, 800);
+
+    } catch (error) {
+
+      console.error(error);
+
+      note.textContent = error.message;
+
+    }
+
+  });
+
+initAdminEventPage();
+
+
+</script>
+
+</body>
+</html>

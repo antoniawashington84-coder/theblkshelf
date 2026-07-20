@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Review Author – Mate Masie</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+
+  <style>
+    .review-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .review-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 22px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.16);
+      display: grid;
+      place-items: center;
+      color: var(--accent-light);
+      font-size: 4rem;
+      font-weight: bold;
+    }
+
+    .review-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .review-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .review-field {
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(23,16,12,0.65);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .review-label {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .review-value {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .review-section {
+      margin-top: 1rem;
+    }
+
+    .review-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .review-status-pill{
+    display:inline-block;
+    padding:.45rem .75rem;
+    border-radius:999px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+}
+
+.review-status-pill.pending{
+    background:rgba(111,83,36,.55);
+    color:#f5d89d;
+}
+
+.review-status-pill.needs-info{
+    background:rgba(36,69,111,.55);
+    color:#b7d8ff;
+}
+
+.review-status-pill.approved{
+    background:rgba(53,86,61,.65);
+    color:#c8f2ce;
+}
+
+.review-status-pill.denied{
+    background:rgba(107,48,44,.65);
+    color:#ffd1cb;
+}
+
+    .btn-danger {
+      background: #8f3d2f;
+      color: #fff8f0;
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .btn-warning {
+      background: #d8a35d;
+      color: #120e0b;
+    }
+
+    .btn-success {
+  background: linear-gradient(180deg, #4d7a56, #35563d);
+  color: #fff8f0;
+  border: 1px solid rgba(123, 188, 138, 0.35);
+}
+
+.btn-success:hover {
+  background: linear-gradient(180deg, #5d8d67, #406849);
+  box-shadow: 0 8px 22px rgba(53, 86, 61, 0.45);
+}
+
+.btn-success:active {
+  transform: translateY(1px);
+}
+
+    textarea.admin-notes {
+      width: 100%;
+      min-height: 130px;
+      padding: 0.95rem;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.22);
+      background: rgba(23,16,12,0.92);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .review-link {
+      color: var(--accent-light);
+      font-weight: bold;
+      word-break: break-word;
+    }
+
+    .status-banner {
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 16px;
+      background: rgba(230,176,106,0.1);
+      border: 1px solid rgba(230,176,106,0.25);
+      color: var(--accent-light);
+      font-weight: bold;
+    }
+
+    .bio-scroll-box {
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.copy-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+
+.copy-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform .15s ease;
+}
+
+.copy-icon-btn:hover {
+  transform: scale(1.15);
+}
+
+.copy-icon-btn:active {
+  transform: scale(.95);
+}
+
+    .review-mini-card {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 16px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.review-nav-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.review-nav-bottom a {
+  text-align: center;
+}
+
+.btn-secondary {
+  background: #241d17;
+  color: var(--text);
+  border-color: rgba(255,255,255,0.28);
+}
+
+    @media (max-width: 900px) {
+      .review-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .review-detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        
+
+        <div style="height: 1rem;"></div>
+
+        <span class="mm-eyebrow">Author Review</span>
+        <h1 class="mm-page-title" id="pageTitle">Review Author</h1>
+        <p class="mm-page-subtitle">
+          Review this author application before approving, denying, or requesting more information.
+        </p>
+
+        <div id="reviewContent">
+          <div class="mm-card">
+            <p class="mm-muted">Loading author submission...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/schema.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/navigation.js"></script>
+
+  <script>
+    const SUPABASE_STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+    let currentSubmission = null;
+    let reviewList = [];
+let currentIndex = -1;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "Unknown date";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Unknown date";
+
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function formatAge(value) {
+  if (!value) return "Unknown age";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown age";
+
+  const diffDays = Math.floor((new Date() - date) / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  return `${diffDays} days ago`;
+}
+
+function generateId(prefix) {
+  const now = new Date();
+
+  const stamp =
+    now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    String(now.getDate()).padStart(2, "0") +
+    String(now.getHours()).padStart(2, "0") +
+    String(now.getMinutes()).padStart(2, "0") +
+    String(now.getSeconds()).padStart(2, "0");
+
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+  return `${prefix}${stamp}${random}`;
+}
+
+function normalizeStatus(value) {
+  const status = String(value || "pending").toLowerCase().trim();
+
+  if (status === "needs_info") return "needs-info";
+  if (status === "approved") return "approved";
+  if (status === "denied") return "denied";
+  return "pending";
+}
+
+function displayStatus(value) {
+  const status = String(value || "pending").toLowerCase().trim();
+
+  if (status === "needs_info") return "Needs Info";
+  if (status === "approved") return "Approved";
+  if (status === "denied") return "Denied";
+  return "Pending Review";
+}
+
+    function normalizeDriveImageUrl(url) {
+      if (!url) return "";
+
+      const value = String(url).trim();
+
+      const fileMatch = value.match(/\/file\/d\/([^/]+)/);
+      if (fileMatch && fileMatch[1]) {
+        return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w700`;
+      }
+
+      const idMatch = value.match(/[?&]id=([^&]+)/);
+      if (idMatch && idMatch[1]) {
+        return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w700`;
+      }
+
+      return value;
+    }
+
+    function getSubmissionImage(item) {
+      if (item.author_photo_path) {
+        return `${SUPABASE_STORAGE_BASE}/author-submissions/${encodeURIComponent(item.author_photo_path)}`;
+      }
+
+      if (item.legacy_headshot_url) {
+        return normalizeDriveImageUrl(item.legacy_headshot_url);
+      }
+
+      return "";
+    }
+
+    function field(label, value) {
+      return `
+        <div class="review-field">
+          <span class="review-label">${escapeHtml(label)}</span>
+          <div class="review-value">${value ? escapeHtml(value) : "—"}</div>
+        </div>
+      `;
+    }
+
+    function copyableField(label, value, id) {
+  return `
+    <div class="review-field">
+      <span class="review-label">${escapeHtml(label)}</span>
+
+      <div class="copy-field">
+        <span id="${id}" class="review-value">
+          ${escapeHtml(value || "—")}
+        </span>
+
+        ${
+          value
+            ? `<button
+                 class="copy-icon-btn"
+                 type="button"
+                 title="Copy ${escapeHtml(label)}"
+                 onclick="copyText('${id}')">
+                 📋
+               </button>`
+            : ""
+        }
+      </div>
+    </div>
+  `;
+}
+
+    function linkField(label, value) {
+      if (!value) return field(label, "");
+
+      return `
+        <div class="review-field">
+          <span class="review-label">${escapeHtml(label)}</span>
+          <a class="review-link" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
+            ${escapeHtml(value)}
+          </a>
+        </div>
+      `;
+    }
+
+    async function loadReviewList(currentId) {
+  const { data, error } = await supabaseClient
+    .from("author_submissions")
+    .select("id")
+    .in("submission_status", ["pending", "needs_info"])
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    reviewList = [];
+    currentIndex = -1;
+    return;
+  }
+
+  reviewList = data || [];
+  currentIndex = reviewList.findIndex(item => String(item.id) === String(currentId));
+}
+
+    async function loadSubmission() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const target = document.getElementById("reviewContent");
+
+      if (!id) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Missing submission ID</h2>
+            <p class="mm-muted">Return to the Review Queue and choose an author submission.</p>
+          </div>
+        `;
+        return;
+      }
+
+      await loadReviewList(id);
+
+      const { data, error } = await supabaseClient
+        .from("author_submissions")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error || !data) {
+        console.error(error);
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Unable to load submission</h2>
+            <p class="mm-muted">${escapeHtml(error?.message || "No submission found.")}</p>
+          </div>
+        `;
+        return;
+      }
+
+      currentSubmission = data;
+      renderSubmission(data);
+    }
+
+    async function copyText(id) {
+  const value = document.getElementById(id)?.textContent?.trim();
+
+  if (!value) return;
+
+  try {
+    await navigator.clipboard.writeText(value);
+
+    const note = document.getElementById("actionNote");
+    if (note) note.textContent = "Copied to clipboard.";
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+    function getReviewNavHtml() {
+  const previous = currentIndex > 0 ? reviewList[currentIndex - 1] : null;
+  const next = currentIndex >= 0 && currentIndex < reviewList.length - 1
+    ? reviewList[currentIndex + 1]
+    : null;
+
+  return `
+    <div class="review-nav-bottom">
+      ${
+        previous
+          ? `<a class="mm-btn btn-secondary" href="review-author.html?id=${encodeURIComponent(previous.id)}">← Previous</a>`
+          : `<span></span>`
+      }
+
+      <a class="mm-btn btn-secondary" href="review-queue.html">Back to Queue</a>
+
+      ${
+        next
+          ? `<a class="mm-btn btn-secondary" href="review-author.html?id=${encodeURIComponent(next.id)}">Next →</a>`
+          : `<span></span>`
+      }
+    </div>
+  `;
+}
+
+    function renderSubmission(item) {
+      const target = document.getElementById("reviewContent");
+      const name = item.pen_name || item.author_name || "Unnamed Author";
+      const image = getSubmissionImage(item);
+      const submitted = formatDate(item.created_at);
+      const age = formatAge(item.created_at);
+      const initial = name.charAt(0).toUpperCase() || "A";
+
+      document.getElementById("pageTitle").textContent = name;
+
+      const photoHtml = image
+        ? `<div class="review-photo">
+             <img src="${escapeHtml(image)}" alt="${escapeHtml(name)}" onerror="this.closest('.review-photo').innerHTML='${escapeHtml(initial)}'">
+           </div>`
+        : `<div class="review-photo">${escapeHtml(initial)}</div>`;
+
+      target.innerHTML = `
+        <div class="status-banner">
+          Current Status: ${escapeHtml(item.submission_status || "pending")}
+        </div>
+
+        <div class="review-layout">
+          <aside class="mm-card">
+            ${photoHtml}
+
+            <div class="review-section">
+              <h2>${escapeHtml(name)}</h2>
+              <p class="mm-muted">${escapeHtml(item.genres || "No genres listed")}</p>
+            </div>
+
+<div class="review-mini-card">
+  <span class="review-label">Source</span>
+  <div class="review-value">${escapeHtml(item.submission_source || "—")}</div>
+</div>
+
+<div class="review-mini-card">
+  <span class="review-label">Status</span>
+  <div class="review-value">
+    <span class="review-status-pill ${normalizeStatus(item.submission_status)}">
+      ${displayStatus(item.submission_status)}
+    </span>
+  </div>
+</div>
+
+<div class="review-mini-card">
+  <span class="review-label">Submitted</span>
+  <div class="review-value">${escapeHtml(submitted)} • ${escapeHtml(age)}</div>
+</div>
+
+          </aside>
+
+          <section>
+            <div class="mm-card">
+              <h2>Submission Details</h2>
+
+              <div class="review-detail-grid">
+                ${copyableField(
+    "Submission ID",
+    item.submission_id,
+    "submissionIdText"
+)}
+                ${field("Submitted", submitted)}
+                ${copyableField(
+    "Email",
+    item.email,
+    "submissionEmail"
+)}
+                ${field("Pen Name", name)}
+              </div>
+            </div>
+
+            <div class="mm-card review-section">
+  <h2>Author Bio</h2>
+  <div class="bio-scroll-box">
+    ${escapeHtml(item.bio || "No bio provided.")}
+  </div>
+</div>
+
+            <div class="mm-card review-section">
+              <h2>Online Presence</h2>
+
+              <div class="review-detail-grid">
+                ${linkField("Website", item.website)}
+                ${linkField("Amazon", item.amazon)}
+                ${linkField("Instagram", item.instagram)}
+                ${linkField("TikTok", item.tiktok)}
+                ${linkField("Facebook", item.facebook)}
+                ${linkField("Goodreads", item.goodreads)}
+              </div>
+            </div>
+
+            <div class="mm-card review-section">
+              <h2>Internal Notes</h2>
+              <textarea class="admin-notes" id="adminNotes" placeholder="Add private review notes...">${escapeHtml(item.admin_notes || "")}</textarea>
+
+              <div class="review-actions">
+  <button class="mm-btn btn-secondary" onclick="saveNotes()">
+    Save Notes
+  </button>
+
+  <button class="mm-btn btn-success" onclick="approveAuthorSubmission()">
+    <i class="fa-solid fa-check"></i> Approve
+  </button>
+
+  <button class="mm-btn btn-warning" onclick="saveStatus('needs_info')">
+    <i class="fa-solid fa-circle-question"></i> Needs Info
+  </button>
+
+  <button class="mm-btn btn-danger" onclick="saveStatus('denied')">
+    <i class="fa-solid fa-ban"></i> Deny
+  </button>
+</div>
+
+              <p class="mm-muted" id="actionNote" style="margin-top: 0.8rem;"></p>
+              
+            </div>
+            ${getReviewNavHtml()}
+          </section>
+        </div>
+      `;
+    }
+
+    async function saveNotes() {
+  if (!currentSubmission) return;
+
+  const note = document.getElementById("actionNote");
+  const adminNotes = document.getElementById("adminNotes").value;
+
+  note.textContent = "Saving notes...";
+
+  const { error } = await supabaseClient
+    .from("author_submissions")
+    .update({
+      admin_notes: adminNotes
+    })
+    .eq("id", currentSubmission.id);
+
+  if (error) {
+    console.error(error);
+    note.textContent = error.message || "Unable to save notes.";
+    return;
+  }
+
+  currentSubmission.admin_notes = adminNotes;
+  note.textContent = "Notes saved.";
+}
+
+async function approveAuthorSubmission() {
+  if (!currentSubmission) return;
+
+  if (!confirm("Approve this author and create their live author profile?")) return;
+
+  const note = document.getElementById("actionNote");
+  const adminNotes = document.getElementById("adminNotes").value;
+
+  try {
+    note.textContent = "Checking author profile...";
+
+    const authorId = await findOrCreateAuthor();
+
+note.textContent = "Processing author headshot...";
+
+await processAuthorHeadshot(authorId);
+
+note.textContent = "Creating author account link...";
+
+await createAuthorAccountLink(authorId);
+
+note.textContent = "Updating submission status...";
+
+await updateApprovedSubmission(authorId, adminNotes);
+
+    currentSubmission.submission_status = "approved";
+    currentSubmission.admin_notes = adminNotes;
+    currentSubmission.approved_author_id = authorId;
+
+    note.textContent = `Author approved and linked to ${authorId}.`;
+    renderSubmission(currentSubmission);
+
+  } catch (error) {
+    console.error(error);
+    note.textContent = error.message || "Approval failed.";
+  }
+}
+
+async function findOrCreateAuthor() {
+  const authorName = currentSubmission.pen_name || currentSubmission.author_name;
+
+  const existingAuthor = await supabaseClient
+    .from("authors")
+    .select("AUTHOR_ID")
+    .eq("EMAIL_ADDRESS", currentSubmission.email)
+    .eq("AUTHOR_NAME", authorName)
+    .limit(1);
+
+  if (existingAuthor.error) {
+    throw existingAuthor.error;
+  }
+
+  if (existingAuthor.data && existingAuthor.data.length) {
+    return existingAuthor.data[0].AUTHOR_ID;
+}
+
+  const authorId = generateId("BLKA");
+
+  const authorPayload = {
+    AUTHOR_ID: authorId,
+    AUTHOR_NAME: authorName,
+    EMAIL_ADDRESS: currentSubmission.email,
+    GENRES: currentSubmission.genres,
+    BIO: currentSubmission.bio,
+    WEBSITE: currentSubmission.website,
+    FACEBOOK: currentSubmission.facebook,
+    INSTAGRAM: currentSubmission.instagram,
+    TIKTOK: currentSubmission.tiktok,
+    AUTHORIMAGEPATH: null,
+    APPROVAL: "Approved"
+  };
+
+  const { error } = await supabaseClient
+    .from("authors")
+    .insert(authorPayload);
+
+  if (error) {
+    throw error;
+  }
+
+  return authorId;
+}
+
+async function processAuthorHeadshot(authorId) {
+  const existingAuthor = await supabaseClient
+    .from("authors")
+    .select("AUTHORIMAGEPATH")
+    .eq("AUTHOR_ID", authorId)
+    .limit(1);
+
+  if (existingAuthor.error) {
+    throw existingAuthor.error;
+  }
+
+  if (
+    existingAuthor.data &&
+    existingAuthor.data.length &&
+    existingAuthor.data[0].AUTHORIMAGEPATH
+) {
+    return existingAuthor.data[0].AUTHORIMAGEPATH;
+}
+
+  let fileBlob = null;
+  let extension = "jpg";
+
+  if (currentSubmission.author_photo_path) {
+    const pendingPath = currentSubmission.author_photo_path;
+    extension = pendingPath.split(".").pop() || "jpg";
+
+    const { data, error } = await supabaseClient.storage
+      .from("author-submissions")
+      .download(pendingPath);
+
+    if (error) throw error;
+
+    fileBlob = data;
+  } else if (currentSubmission.legacy_headshot_url) {
+  console.warn("Legacy Google Drive image must be processed server-side.");
+  return null;
+} else {
+  return null;
+}
+
+  const finalFileName = `${authorId}.${extension}`;
+
+  const { error: uploadError } = await supabaseClient.storage
+    .from("authors")
+    .upload(finalFileName, fileBlob, {
+      cacheControl: "3600",
+      upsert: true,
+      contentType: fileBlob.type || "image/jpeg"
+    });
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  const { error: updateAuthorError } = await supabaseClient
+    .from("authors")
+    .update({
+      AUTHORIMAGEPATH: finalFileName
+    })
+    .eq("AUTHOR_ID", authorId);
+
+  if (updateAuthorError) {
+    throw updateAuthorError;
+  }
+
+  if (currentSubmission.author_photo_path) {
+    const { error: deleteError } = await supabaseClient.storage
+      .from("author-submissions")
+      .remove([currentSubmission.author_photo_path]);
+
+    if (deleteError) {
+      console.warn("Author was approved, but pending image cleanup failed:", deleteError);
+    }
+  }
+
+  return finalFileName;
+}
+
+async function createAuthorAccountLink(authorId) {
+  const email = currentSubmission.email;
+  if (!email) throw new Error("Cannot create account link without an email address.");
+
+  const existingAccount = await supabaseClient
+  .from("author_accounts")
+  .select("account_id")
+  .eq("email", email)
+  .order("created_at", { ascending: false })
+  .limit(1);
+
+  let accountId;
+
+  if (existingAccount.error) {
+    throw existingAccount.error;
+  }
+
+  if (existingAccount.data && existingAccount.data.length) {
+  accountId = existingAccount.data[0].account_id;
+}
+
+else {
+    accountId = generateId("BLKP");
+
+    const { error: accountError } = await supabaseClient
+      .from("author_accounts")
+      .insert({
+        account_id: accountId,
+        email,
+        status: "pending"
+      });
+
+    if (accountError) throw accountError;
+  }
+
+  const existingLink = await supabaseClient
+    .from("account_authors")
+    .select("id")
+    .eq("account_id", accountId)
+    .eq("author_id", authorId)
+    .limit(1);
+
+  if (existingLink.error) {
+    throw existingLink.error;
+  }
+
+  if (!existingLink.data || existingLink.data.length === 0) {
+    const { error: linkError } = await supabaseClient
+      .from("account_authors")
+      .insert({
+        account_id: accountId,
+        author_id: authorId,
+        relationship: "owner"
+      });
+
+    if (linkError) throw linkError;
+  }
+
+  return accountId;
+}
+
+async function updateApprovedSubmission(authorId, adminNotes) {
+  const { error } = await supabaseClient
+    .from("author_submissions")
+    .update({
+      submission_status: "approved",
+      admin_notes: adminNotes,
+      reviewed_at: new Date().toISOString(),
+      approved_author_id: authorId
+    })
+    .eq("id", currentSubmission.id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+    async function saveStatus(status) {
+  if (!currentSubmission) return;
+
+  if (status === "approved" && !confirm("Approve this author submission?")) return;
+  if (status === "denied" && !confirm("Deny this author submission?")) return;
+
+  const note = document.getElementById("actionNote");
+      const adminNotes = document.getElementById("adminNotes").value;
+
+      note.textContent = "Saving...";
+
+      const { error } = await supabaseClient
+        .from("author_submissions")
+        .update({
+          submission_status: status,
+          admin_notes: adminNotes,
+          reviewed_at: new Date().toISOString()
+        })
+        .eq("id", currentSubmission.id);
+
+      if (error) {
+        console.error(error);
+        note.textContent = error.message || "Unable to save status.";
+        return;
+      }
+
+      note.textContent = `Saved as ${status}.`;
+      currentSubmission.submission_status = status;
+      currentSubmission.admin_notes = adminNotes;
+
+      renderSubmission(currentSubmission);
+    }
+
+    async function initPage() {
+      await loadMateMasieShell("review-queue");
+
+      const auth = await requireAdmin();
+      if (!auth) return;
+
+      setTopbarUser(auth.user, auth.profile);
+      loadSubmission();
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

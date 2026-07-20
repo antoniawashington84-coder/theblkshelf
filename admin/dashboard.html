@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Mate Masie Dashboard – The BLK Shelf</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <span class="mm-eyebrow">Stewardship Dashboard</span>
+        <h1 class="mm-page-title">Mate Masie</h1>
+        <p class="mm-page-subtitle">
+          Review submissions, preserve the collection, and manage the stories entrusted to The BLK Shelf.
+        </p>
+
+        <div class="mm-grid mm-grid-2">
+          <article class="mm-card">
+            <div class="mm-stat" id="pendingAuthorsCount">—</div>
+            <h3>Pending Authors</h3>
+            <p class="mm-muted">Author submissions waiting for review.</p>
+          </article>
+
+          <article class="mm-card">
+            <div class="mm-stat" id="pendingBooksCount">—</div>
+            <h3>Pending Books</h3>
+            <p class="mm-muted">Book submissions waiting for review.</p>
+          </article>
+
+          <article class="mm-card">
+            <div class="mm-stat" id="pendingEventsCount">—</div>
+            <h3>Pending Events</h3>
+            <p class="mm-muted">Event submissions waiting for approval.</p>
+          </article>
+
+          <article class="mm-card">
+  <div class="mm-stat" id="readerCount">0</div>
+  <h3>Reader Accounts</h3>
+  <p class="mm-muted">
+    Registered reader accounts once the reader portal launches.
+  </p>
+</article>
+        </div>
+
+        <div class="mm-card" style="margin-top:1rem;">
+  <h2>Platform Overview</h2>
+
+  <div class="mm-grid mm-grid-4" style="margin-top:1rem;">
+    <article class="mm-card">
+      <div class="mm-stat" id="totalAuthorsCount">—</div>
+      <h3>Live Authors</h3>
+      <p class="mm-muted">Authors currently listed on The BLK Shelf.</p>
+    </article>
+
+    <article class="mm-card">
+      <div class="mm-stat" id="totalBooksCount">—</div>
+      <h3>Live Books</h3>
+      <p class="mm-muted">Books currently available in the library.</p>
+    </article>
+
+    <article class="mm-card">
+      <div class="mm-stat" id="totalEventsCount">—</div>
+      <h3>Live Events</h3>
+      <p class="mm-muted">Approved events in the event directory.</p>
+    </article>
+
+    <article class="mm-card">
+      <div class="mm-stat" id="totalClicksCount">—</div>
+      <h3>Tracked Clicks</h3>
+      <p class="mm-muted">Reader interactions recorded across the site.</p>
+    </article>
+  </div>
+</div>
+
+<div class="mm-card" style="margin-top:1rem;">
+
+<h2>Submission Breakdown</h2>
+
+<table class="mm-table">
+
+<thead>
+
+<tr>
+
+<th>Category</th>
+
+<th>Pending</th>
+
+<th>Needs Info</th>
+
+<th>Approved</th>
+<th>Denied</th>
+
+</tr>
+
+</thead>
+
+<tbody id="submissionSummaryTable">
+
+<tr>
+
+<td colspan="5" class="mm-muted">
+
+Loading...
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="mm-card" style="margin-top:1rem;">
+
+<h2>Today's Snapshot</h2>
+
+<div class="mm-grid mm-grid-2">
+
+<article class="mm-card">
+
+<div class="mm-stat" id="todayAuthorsCount">—</div>
+
+<h3>Author Submissions</h3>
+
+<p class="mm-muted">
+Received today.
+</p>
+
+</article>
+
+<article class="mm-card">
+
+<div class="mm-stat" id="todayBooksCount">—</div>
+
+<h3>Book Submissions</h3>
+
+<p class="mm-muted">
+Received today.
+</p>
+
+</article>
+
+<article class="mm-card">
+
+<div class="mm-stat" id="todayEventsCount">—</div>
+
+<h3>Event Submissions</h3>
+
+<p class="mm-muted">
+Received today.
+</p>
+
+</article>
+
+<article class="mm-card">
+
+<div class="mm-stat" id="todayApprovalsCount">—</div>
+
+<h3>Approvals</h3>
+
+<p class="mm-muted">
+Completed today.
+</p>
+
+</article>
+
+</div>
+
+</div>
+
+        <div class="mm-card" style="margin-top:1rem;">
+
+  <h2>Recent Activity</h2>
+
+  <div id="recentActivityList">
+
+    <p class="mm-muted">
+      Loading activity...
+    </p>
+
+  </div>
+
+</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/navigation.js"></script>
+
+  <script>
+    async function loadDashboard() {
+      await loadMateMasieShell("dashboard");
+
+      const auth = await requireAdmin();
+      if (!auth) return;
+
+      setTopbarUser(auth.user, auth.profile);
+
+      const [
+  authorResult,
+  bookResult,
+  eventResult,
+  readerResult
+] = await Promise.all([
+
+  supabaseClient
+    .from("author_submissions")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in("submission_status", [
+      "pending",
+      "needs_info"
+    ]),
+
+  supabaseClient
+    .from("book_submissions")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in("submission_status", [
+      "pending",
+      "needs_info"
+    ]),
+
+  supabaseClient
+    .from("event_submissions")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in("submission_status", [
+      "pending",
+      "needs_info"
+    ]),
+
+  Promise.resolve({ count: 0 })
+
+]);
+
+document.getElementById(
+  "pendingAuthorsCount"
+).textContent =
+  authorResult.count ?? 0;
+
+document.getElementById(
+  "pendingBooksCount"
+).textContent =
+  bookResult.count ?? 0;
+
+document.getElementById(
+  "pendingEventsCount"
+).textContent =
+  eventResult.count ?? 0;
+
+document.getElementById(
+  "readerCount"
+).textContent =
+  readerResult.count ?? 0;
+
+  const [
+  totalAuthorsResult,
+  totalBooksResult,
+  totalEventsResult,
+  totalClicksResult
+] = await Promise.all([
+  supabaseClient
+    .from("authors")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("APPROVAL", "Approved"),
+
+  supabaseClient
+    .from("books")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("Book_Approval", "Approved"),
+
+  supabaseClient
+    .from("events")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in("event_status", [
+      "approved",
+      "published"
+    ]),
+
+  supabaseClient
+    .from("clicks")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+]);
+
+document.getElementById(
+  "totalAuthorsCount"
+).textContent =
+  totalAuthorsResult.count ?? 0;
+
+document.getElementById(
+  "totalBooksCount"
+).textContent =
+  totalBooksResult.count ?? 0;
+
+document.getElementById(
+  "totalEventsCount"
+).textContent =
+  totalEventsResult.count ?? 0;
+
+document.getElementById(
+  "totalClicksCount"
+).textContent =
+  totalClicksResult.count ?? 0;
+
+  const today =
+  new Date().toISOString().split("T")[0];
+
+const [
+  todayAuthors,
+  todayBooks,
+  todayEvents,
+  todayApprovals
+] = await Promise.all([
+
+  supabaseClient
+    .from("author_submissions")
+    .select("*", {
+      count:"exact",
+      head:true
+    })
+    .gte("created_at", today),
+
+  supabaseClient
+    .from("book_submissions")
+    .select("*", {
+      count:"exact",
+      head:true
+    })
+    .gte("created_at", today),
+
+  supabaseClient
+    .from("event_submissions")
+    .select("*", {
+      count:"exact",
+      head:true
+    })
+    .gte("created_at", today),
+
+  supabaseClient
+    .from("submission_log")
+    .select("*", {
+      count:"exact",
+      head:true
+    })
+    .eq("action","approved")
+    .gte("created_at", today)
+
+]);
+
+document.getElementById(
+  "todayAuthorsCount"
+).textContent =
+  todayAuthors.count ?? 0;
+
+document.getElementById(
+  "todayBooksCount"
+).textContent =
+  todayBooks.count ?? 0;
+
+document.getElementById(
+  "todayEventsCount"
+).textContent =
+  todayEvents.count ?? 0;
+
+document.getElementById(
+  "todayApprovalsCount"
+).textContent =
+  todayApprovals.count ?? 0;
+
+  const activityContainer =
+  document.getElementById(
+    "recentActivityList"
+  );
+
+const [
+  authorActivity,
+  bookActivity,
+  eventActivity
+] = await Promise.all([
+
+  supabaseClient
+    .from("author_submissions")
+    .select("author_name, submission_status, reviewed_at, created_at")
+    .order("reviewed_at", {
+      ascending: false,
+      nullsFirst: false
+    })
+    .limit(5),
+
+  supabaseClient
+    .from("book_submissions")
+    .select("title, submission_status, reviewed_at, created_at")
+    .order("reviewed_at", {
+      ascending: false,
+      nullsFirst: false
+    })
+    .limit(5),
+
+  supabaseClient
+    .from("event_submissions")
+    .select("event_name, submission_status, reviewed_at, created_at")
+    .order("reviewed_at", {
+      ascending: false,
+      nullsFirst: false
+    })
+    .limit(5)
+
+]);
+
+const activity = [];
+
+(authorActivity.data || []).forEach(item => {
+
+  activity.push({
+    name: item.author_name,
+    type: "Author",
+    status: item.submission_status,
+    date: item.reviewed_at || item.created_at
+  });
+
+});
+
+(bookActivity.data || []).forEach(item => {
+
+  activity.push({
+    name: item.title,
+    type: "Book",
+    status: item.submission_status,
+    date: item.reviewed_at || item.created_at
+  });
+
+});
+
+(eventActivity.data || []).forEach(item => {
+
+  activity.push({
+    name: item.event_name,
+    type: "Event",
+    status: item.submission_status,
+    date: item.reviewed_at || item.created_at
+  });
+
+});
+
+activity.sort(
+  (a, b) =>
+    new Date(b.date) -
+    new Date(a.date)
+);
+
+activityContainer.innerHTML =
+  activity
+    .slice(0, 10)
+    .map(item => `
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          padding:.75rem 0;
+          border-bottom:1px solid var(--line);
+        "
+      >
+
+        <div>
+
+          <strong>${item.type}</strong>
+
+          &mdash;
+
+          ${item.name}
+
+        </div>
+
+        <span class="review-status-pill ${item.status}">
+          ${item.status.replace("_"," ")}
+        </span>
+
+      </div>
+    `)
+    .join("");
+
+if (!activity.length) {
+
+  activityContainer.innerHTML =
+    `<p class="mm-muted">
+      No recent activity.
+    </p>`;
+
+}
+
+    const summary =
+  await supabaseClient
+    .from("dashboard_submission_summary")
+    .select("*");
+
+if (summary.error) {
+  console.error(
+    "Submission summary failed:",
+    summary.error
+  );
+
+  document.getElementById(
+    "submissionSummaryTable"
+  ).innerHTML = `
+    <tr>
+      <td colspan="5" class="mm-muted">
+        Unable to load submission breakdown.
+      </td>
+    </tr>
+  `;
+} else {
+  const grouped = {};
+
+  (summary.data || []).forEach(row => {
+    if (!grouped[row.category]) {
+      grouped[row.category] = {};
+    }
+
+    grouped[row.category][row.submission_status] =
+      Number(row.total) || 0;
+  });
+
+  document.getElementById(
+    "submissionSummaryTable"
+  ).innerHTML = [
+    "Authors",
+    "Books",
+    "Events"
+  ].map(category => `
+    <tr>
+      <td><strong>${category}</strong></td>
+      <td>${grouped[category]?.pending ?? 0}</td>
+      <td>${grouped[category]?.needs_info ?? 0}</td>
+<td>${grouped[category]?.approved ?? 0}</td>
+<td>${grouped[category]?.denied ?? 0}</td>
+    </tr>
+  `).join("");
+}
+
+    }
+
+    loadDashboard();
+
+  </script>
+</body>
+</html>

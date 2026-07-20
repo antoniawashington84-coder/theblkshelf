@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Book Submission – Author Portal</title>
+
+  <link rel="stylesheet" href="../admin/css/mate-masie.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .content-column {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    .cover-card img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.8rem;
+    }
+
+    .status-pill.pending { background: rgba(111,83,36,.75); color: #f5d89d; }
+    .status-pill.approved { background: rgba(53,86,61,.75); color: #c8f2ce; }
+    .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
+    .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .detail-field {
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(23,16,12,0.65);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .section-card {
+      margin-top: 1rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(230,176,106,0.12);
+      border: 1px solid rgba(230,176,106,0.25);
+      color: var(--accent-light);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 850px) {
+      .submission-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-card {
+        max-width: 260px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="content-column">
+          <span class="mm-eyebrow">Author Portal</span>
+          <h1 class="mm-page-title" id="pageTitle">Book Submission</h1>
+          <p class="mm-page-subtitle">
+            View your submitted book details and review status.
+          </p>
+
+          <div class="mm-btn-row">
+            <a class="mm-btn mm-btn-secondary" href="my-books.html">← Back to My Books</a>
+            <a class="mm-btn" id="editButton" href="#" style="display:none;">Edit Submission</a>
+          </div>
+
+          <div id="submissionContent">
+            <div class="mm-card">
+              <p class="mm-muted">Loading submission...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../admin/js/supabase.js"></script>
+  <script src="js/portal-navigation.js"></script>
+
+  <script>
+    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function normalizeStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "needs-info";
+      if (status === "approved") return "approved";
+      if (status === "denied") return "denied";
+      return "pending";
+    }
+
+    function displayStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "Needs Info";
+      if (status === "approved") return "Approved";
+      if (status === "denied") return "Denied";
+      return "Pending Review";
+    }
+
+    function getCoverUrl(path) {
+      if (!path) return "";
+      return `${STORAGE_BASE}/book-submissions/${encodeURIComponent(path)}`;
+    }
+
+    function field(label, value) {
+      return `
+        <div class="detail-field">
+          <span class="detail-label">${escapeHtml(label)}</span>
+          <div class="detail-value">${value ? escapeHtml(value) : "—"}</div>
+        </div>
+      `;
+    }
+
+    function tags(values) {
+      const list = Array.isArray(values) ? values : [];
+      if (!list.length) return `<p class="mm-muted">None listed.</p>`;
+
+      return `
+        <div class="tag-row">
+          ${list.map(value => `<span class="tag">${escapeHtml(value)}</span>`).join("")}
+        </div>
+      `;
+    }
+
+    function linkList(links) {
+      const entries = Object.entries(links || {}).filter(([_, value]) => value);
+
+      if (!entries.length) return `<p class="mm-muted">No retailer links listed.</p>`;
+
+      return `
+        <div class="detail-grid">
+          ${entries.map(([key, value]) => `
+            <div class="detail-field">
+              <span class="detail-label">${escapeHtml(key.replaceAll("_", " "))}</span>
+              <a class="detail-value" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
+                ${escapeHtml(value)}
+              </a>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    async function initSubmissionPage() {
+      await loadAuthorPortalShell("books");
+
+      const target = document.getElementById("submissionContent");
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      if (!id) {
+        target.innerHTML = `<div class="mm-card"><h2>Missing submission ID</h2></div>`;
+        return;
+      }
+
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const session = sessionData?.session;
+
+      if (!session) {
+        window.location.href = "../login.html";
+        return;
+      }
+
+      const email = session.user.email;
+
+      const { data: accounts, error: accountError } = await supabaseClient
+        .from("author_accounts")
+        .select("*")
+        .eq("email", email)
+        .limit(1);
+
+      if (accountError || !accounts?.length) {
+        target.innerHTML = `<div class="mm-card"><h2>No author account found.</h2></div>`;
+        return;
+      }
+
+      const account = accounts[0];
+      setPortalTopbarUser(session.user, account);
+
+      const { data: book, error: bookError } = await supabaseClient
+        .from("book_submissions")
+        .select("*")
+        .eq("id", id)
+        .eq("account_id", account.account_id)
+        .limit(1);
+
+      if (bookError || !book?.length) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>Submission not found</h2>
+            <p class="mm-muted">${escapeHtml(bookError?.message || "This submission could not be loaded.")}</p>
+          </div>
+        `;
+        return;
+      }
+
+      const item = book[0];
+      const statusClass = normalizeStatus(item.submission_status);
+      const coverUrl = getCoverUrl(item.cover_path);
+
+      document.getElementById("pageTitle").textContent = item.title || "Book Submission";
+
+      const editButton = document.getElementById("editButton");
+      if (["pending", "needs_info"].includes(String(item.submission_status || "pending"))) {
+        editButton.href = `edit-book.html?id=${encodeURIComponent(item.id)}`;
+        editButton.style.display = "inline-block";
+      }
+
+      target.innerHTML = `
+        <div class="submission-layout">
+          <aside class="mm-card cover-card">
+            ${
+              coverUrl
+                ? `<img src="${escapeHtml(coverUrl)}" alt="${escapeHtml(item.title)} cover">`
+                : `<div class="mm-muted">No cover</div>`
+            }
+
+            <span class="status-pill ${statusClass}">
+              ${displayStatus(item.submission_status)}
+            </span>
+          </aside>
+
+          <section>
+            <div class="mm-card">
+              <h2>Book Details</h2>
+
+              <div class="detail-grid">
+                ${field("Title", item.title)}
+                ${field("Author Profile", item.author_name)}
+                ${field("Submitted", formatDate(item.created_at))}
+                ${field("Release Date", formatDate(item.release_date))}
+                ${field("Primary Genre", item.primary_genre)}
+                ${field("Age Range", item.age_range)}
+                ${field("Spice Level", item.spice_level)}
+                ${field("Series", item.series_name ? `${item.series_name} #${item.series_number || ""}` : "")}
+                ${field("Word Count", item.word_count)}
+                ${field("Page Count", item.page_count)}
+              </div>
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Description</h2>
+              <p class="mm-muted">${escapeHtml(item.description || "No description provided.")}</p>
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Classification Tags</h2>
+
+              <h3>Subgenres</h3>
+              ${tags(item.sub_genres)}
+
+              <h3>Vibes</h3>
+              ${tags(item.vibes)}
+
+              <h3>Representation</h3>
+              ${tags(item.representation)}
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Retailer Links</h2>
+              ${linkList(item.retailer_links)}
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Audiobook</h2>
+              ${field("Has Audiobook", item.audio?.has_audiobook ? "Yes" : "No")}
+              ${field("Narrator(s)", item.audio?.narrators)}
+              ${item.audio?.link ? linkList({ audiobook: item.audio.link }) : ""}
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>BLK Shelf Kids</h2>
+              ${field("Kids / Youth Category", item.kids?.category)}
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Contributors</h2>
+              ${
+                Array.isArray(item.co_authors) && item.co_authors.length
+                  ? tags(item.co_authors.map(author => author.matched ? `✓ ${author.name}` : author.name))
+                  : `<p class="mm-muted">No additional contributors listed.</p>`
+              }
+            </div>
+
+            <div class="mm-card section-card">
+              <h2>Reviewer Notes</h2>
+              <p class="mm-muted">${escapeHtml(item.admin_notes || "No reviewer notes yet.")}</p>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    initSubmissionPage();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Review Author Update – Mate Masie</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .content-column {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    .cover-card img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.8rem;
+    }
+
+    .status-pill.pending { background: rgba(111,83,36,.75); color: #f5d89d; }
+    .status-pill.approved { background: rgba(53,86,61,.75); color: #c8f2ce; }
+    .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
+    .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .detail-field {
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(23,16,12,0.65);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .section-card {
+      margin-top: 1rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(230,176,106,0.12);
+      border: 1px solid rgba(230,176,106,0.25);
+      color: var(--accent-light);
+      font-size: 0.85rem;
+    }
+
+    .compact-review {
+  grid-template-columns: 280px 1fr;
+}
+
+.review-sidebar {
+  display: grid;
+  gap: 1rem;
+}
+
+.review-sidebar .section-card {
+  margin-top: 0;
+}
+
+.compact-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.compact-description {
+  max-height: 190px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.review-action-stack {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.review-action-stack .mm-btn {
+  flex: 1;
+  min-width: 170px;
+}
+
+.review-accordion {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.review-accordion summary {
+  cursor: pointer;
+  padding: 1rem;
+  color: var(--accent-light);
+  font-weight: bold;
+}
+
+.accordion-body {
+  padding: 0 1rem 1rem;
+}
+
+.admin-notes {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: rgba(23,16,12,0.92);
+  color: var(--text);
+  font: inherit;
+}
+
+.mm-btn.approve-btn {
+  background: #2f6b3f;
+  color: #fff8f0;
+  border-color: rgba(200,242,206,0.35);
+}
+
+.mm-btn.needs-info-btn {
+  background: #24456f;
+  color: #fff8f0;
+  border-color: rgba(183,216,255,0.35);
+}
+
+.mm-btn.deny-btn {
+  background: #6b302c;
+  color: #fff8f0;
+  border-color: rgba(255,209,203,0.35);
+}
+
+@media (max-width: 900px) {
+  .compact-review {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    @media (max-width: 850px) {
+      .submission-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-card {
+        max-width: 260px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.comparison-heading {
+  margin: 0 0 0.75rem;
+  color: var(--accent-light);
+  font-size: 1rem;
+}
+
+.comparison-field {
+  padding: 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(23,16,12,0.65);
+}
+
+.comparison-field.changed {
+  border-color: rgba(230,176,106,0.55);
+  background: rgba(230,176,106,0.09);
+}
+
+.comparison-field.unchanged {
+  opacity: 0.62;
+}
+
+.comparison-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.comparison-value {
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.cover-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 1rem;
+}
+
+.cover-comparison img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+@media (max-width: 800px) {
+  .comparison-grid,
+  .cover-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="content-column">
+          <span class="mm-eyebrow">Author Update Review</span>
+
+<h1 class="mm-page-title" id="pageTitle">
+  Author Update Request
+</h1>
+
+<p class="mm-page-subtitle">
+  Compare the current live author profile with the requested changes.
+</p>
+
+          <div class="mm-btn-row">
+  <button class="mm-btn mm-btn-secondary" id="prevSubmissionBtn" type="button">← Previous</button>
+  <a class="mm-btn mm-btn-secondary" href="review-queue.html">← Back to Review Queue</a>
+  <button class="mm-btn mm-btn-secondary" id="nextSubmissionBtn" type="button">Next →</button>
+</div>
+
+          <div id="submissionContent">
+            <div class="mm-card">
+              <p class="mm-muted">Loading submission...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/navigation.js"></script>
+
+  <script>
+  const STORAGE_BASE =
+    "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+  let currentUpdateRequest = null;
+  let currentLiveAuthor = null;
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function normalizeList(value) {
+    if (Array.isArray(value)) {
+      return value
+        .map(item => String(item || "").trim())
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b));
+    }
+
+    if (!value) {
+      return [];
+    }
+
+    return String(value)
+      .split(/[,;|]/)
+      .map(item => item.trim())
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  function normalizeValue(value, type = "default") {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "";
+    }
+
+    if (type === "list") {
+      return normalizeList(value).join(", ");
+    }
+
+    return String(value).trim();
+  }
+
+  function valuesMatch(
+    currentValue,
+    requestedValue,
+    type = "default"
+  ) {
+    if (type === "list") {
+      return JSON.stringify(
+        normalizeList(currentValue)
+      ) === JSON.stringify(
+        normalizeList(requestedValue)
+      );
+    }
+
+    return normalizeValue(currentValue) ===
+      normalizeValue(requestedValue);
+  }
+
+  function comparisonField(
+    label,
+    currentValue,
+    requestedValue,
+    type = "default"
+  ) {
+    const unchanged =
+      valuesMatch(
+        currentValue,
+        requestedValue,
+        type
+      );
+
+    const currentDisplay =
+      normalizeValue(
+        currentValue,
+        type
+      );
+
+    const requestedDisplay =
+      normalizeValue(
+        requestedValue,
+        type
+      );
+
+    return `
+      <div class="comparison-field ${
+        unchanged
+          ? "unchanged"
+          : "changed"
+      }">
+        <span class="comparison-label">
+          ${escapeHtml(label)}
+        </span>
+
+        <div class="comparison-grid">
+          <div>
+            <h4 class="comparison-heading">
+              Current
+            </h4>
+
+            <div class="comparison-value">
+              ${escapeHtml(
+                currentDisplay || "—"
+              )}
+            </div>
+          </div>
+
+          <div>
+            <h4 class="comparison-heading">
+              Requested
+            </h4>
+
+            <div class="comparison-value">
+              ${escapeHtml(
+                requestedDisplay || "—"
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function getLivePhotoUrl(author) {
+    const path =
+      author.AUTHORIMAGEPATH || "";
+
+    if (!path) {
+      return "";
+    }
+
+    if (
+      path.startsWith("http://") ||
+      path.startsWith("https://")
+    ) {
+      return path;
+    }
+
+    return `${STORAGE_BASE}/authors/${String(path)
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`;
+  }
+
+  function getRequestedPhotoUrl(request) {
+    const path =
+      request.replacement_photo_path || "";
+
+    if (!path) {
+      return "";
+    }
+
+    return `${STORAGE_BASE}/author-submissions/${String(path)
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`;
+  }
+
+  async function setupRequestNavigation(
+    currentId
+  ) {
+    const prevBtn =
+      document.getElementById(
+        "prevSubmissionBtn"
+      );
+
+    const nextBtn =
+      document.getElementById(
+        "nextSubmissionBtn"
+      );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "author_update_requests"
+        )
+        .select(
+          "id, created_at"
+        )
+        .in(
+          "request_status",
+          [
+            "pending",
+            "needs_info"
+          ]
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+    if (
+      error ||
+      !data?.length
+    ) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    const index =
+      data.findIndex(
+        item =>
+          item.id === currentId
+      );
+
+    const previous =
+      index > 0
+        ? data[index - 1]
+        : null;
+
+    const next =
+      index >= 0 &&
+      index < data.length - 1
+        ? data[index + 1]
+        : null;
+
+    prevBtn.disabled =
+      !previous;
+
+    nextBtn.disabled =
+      !next;
+
+    if (previous) {
+      prevBtn.onclick = () => {
+        window.location.href =
+          `review-author-update.html?id=${encodeURIComponent(
+            previous.id
+          )}`;
+      };
+    }
+
+    if (next) {
+      nextBtn.onclick = () => {
+        window.location.href =
+          `review-author-update.html?id=${encodeURIComponent(
+            next.id
+          )}`;
+      };
+    }
+  }
+
+  async function initAuthorUpdateReview() {
+    await loadMateMasieShell(
+      "review-queue"
+    );
+
+    const auth =
+      await requireAdmin();
+
+    if (!auth) {
+      return;
+    }
+
+    setTopbarUser(
+      auth.user,
+      auth.profile
+    );
+
+    const target =
+      document.getElementById(
+        "submissionContent"
+      );
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const id =
+      params.get("id");
+
+    if (!id) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>
+            Missing update request ID
+          </h2>
+        </div>
+      `;
+
+      return;
+    }
+
+    const {
+      data: request,
+      error: requestError
+    } =
+      await supabaseClient
+        .from(
+          "author_update_requests"
+        )
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+
+    if (
+      requestError ||
+      !request
+    ) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>
+            Author update request not found
+          </h2>
+
+          <p class="mm-muted">
+            ${escapeHtml(
+              requestError?.message ||
+              "This request could not be loaded."
+            )}
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    const {
+      data: liveAuthor,
+      error: liveAuthorError
+    } =
+      await supabaseClient
+        .from("authors")
+        .select("*")
+        .eq(
+          "AUTHOR_ID",
+          request.author_id
+        )
+        .maybeSingle();
+
+    if (
+      liveAuthorError ||
+      !liveAuthor
+    ) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>
+            Live author profile not found
+          </h2>
+
+          <p class="mm-muted">
+            ${escapeHtml(
+              liveAuthorError?.message ||
+              "The author connected to this request could not be loaded."
+            )}
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    await setupRequestNavigation(
+      request.id
+    );
+
+    currentUpdateRequest =
+      request;
+
+    currentLiveAuthor =
+      liveAuthor;
+
+    const proposed =
+      request.proposed_data || {};
+
+    document.getElementById(
+      "pageTitle"
+    ).textContent =
+      proposed.author_name ||
+      liveAuthor.AUTHOR_NAME ||
+      "Author Update Request";
+
+    const livePhoto =
+      getLivePhotoUrl(
+        liveAuthor
+      );
+
+    const requestedPhoto =
+      getRequestedPhotoUrl(
+        request
+      );
+
+    target.innerHTML = `
+      <div class="mm-card">
+        <h2>Request Information</h2>
+
+        <div class="detail-grid">
+          <div class="detail-field">
+            <span class="detail-label">
+              Author
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.author_name ||
+                liveAuthor.AUTHOR_NAME ||
+                "Unknown Author"
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Request ID
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.request_id ||
+                "—"
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Author ID
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.author_id ||
+                "—"
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Status
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.request_status ||
+                "pending"
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Photo Comparison</h2>
+
+        <div class="cover-comparison">
+          <div>
+            <h3 class="comparison-heading">
+              Current Photo
+            </h3>
+
+            ${
+              livePhoto
+                ? `
+                  <img
+                    src="${escapeHtml(
+                      livePhoto
+                    )}"
+                    alt="Current author photo"
+                  >
+                `
+                : `
+                  <p class="mm-muted">
+                    No current author photo found.
+                  </p>
+                `
+            }
+          </div>
+
+          <div>
+            <h3 class="comparison-heading">
+              Requested Photo
+            </h3>
+
+            ${
+              requestedPhoto
+                ? `
+                  <img
+                    src="${escapeHtml(
+                      requestedPhoto
+                    )}"
+                    alt="Requested replacement author photo"
+                  >
+                `
+                : `
+                  <p class="mm-muted">
+                    No replacement photo requested.
+                  </p>
+                `
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Requested Profile Changes</h2>
+
+        <div style="display:grid; gap:.8rem;">
+          ${comparisonField(
+            "Author Name",
+            liveAuthor.AUTHOR_NAME,
+            proposed.author_name
+          )}
+
+          ${comparisonField(
+            "Email Address",
+            liveAuthor.EMAIL_ADDRESS,
+            proposed.email_address
+          )}
+
+          ${comparisonField(
+            "Genres",
+            liveAuthor.GENRES,
+            proposed.genres,
+            "list"
+          )}
+
+          ${comparisonField(
+            "Biography",
+            liveAuthor.BIO,
+            proposed.bio
+          )}
+
+          ${comparisonField(
+            "Website",
+            liveAuthor.WEBSITE,
+            proposed.website
+          )}
+
+          ${comparisonField(
+            "Amazon Author Page",
+            liveAuthor.AMAZON,
+            proposed.amazon
+          )}
+
+          ${comparisonField(
+            "Instagram",
+            liveAuthor.INSTAGRAM,
+            proposed.instagram
+          )}
+
+          ${comparisonField(
+            "TikTok",
+            liveAuthor.TIKTOK,
+            proposed.tiktok
+          )}
+
+          ${comparisonField(
+            "Facebook",
+            liveAuthor.FACEBOOK,
+            proposed.facebook
+          )}
+
+          ${comparisonField(
+            "Goodreads",
+            liveAuthor.GOODREADS,
+            proposed.goodreads
+          )}
+
+          ${comparisonField(
+            "Substack",
+            liveAuthor.SUBSTACK,
+            proposed.substack
+          )}
+
+          ${comparisonField(
+            "Other Socials",
+            liveAuthor.OTHER_SOCIALS,
+            proposed.other_socials
+          )}
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Admin Actions</h2>
+
+        <textarea
+          class="admin-notes"
+          id="adminNotes"
+          placeholder="Add internal review notes..."
+        >${escapeHtml(
+          request.reviewer_notes || ""
+        )}</textarea>
+
+        <div class="review-action-stack">
+  <button
+    class="mm-btn approve-btn"
+    id="approveUpdateBtn"
+    type="button"
+    onclick="approveAuthorUpdate()"
+  >
+    Approve
+  </button>
+
+  <button
+    class="mm-btn needs-info-btn"
+    type="button"
+    onclick="saveAuthorUpdateStatus('needs_info')"
+  >
+    Needs Info
+  </button>
+
+  <button
+    class="mm-btn deny-btn"
+    type="button"
+    onclick="saveAuthorUpdateStatus('denied')"
+  >
+    Deny
+  </button>
+</div>
+
+<p
+  class="mm-muted"
+  id="actionNote"
+></p>
+      </div>
+    `;
+  }
+
+  function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+function getFileExtension(path) {
+  const fileName =
+    String(path || "")
+      .split("/")
+      .pop() || "";
+
+  const extension =
+    fileName.includes(".")
+      ? fileName.split(".").pop()
+      : "jpg";
+
+  return extension
+    .replace(/[^a-z0-9]/gi, "")
+    .toLowerCase() || "jpg";
+}
+
+async function moveRequestedPhotoToLiveStorage(
+  request,
+  liveAuthor
+) {
+  const pendingPath =
+    request.replacement_photo_path;
+
+  if (!pendingPath) {
+    return {
+      newPhotoPath: null,
+      pendingPath: null
+    };
+  }
+
+  const {
+    data: photoBlob,
+    error: downloadError
+  } =
+    await supabaseClient.storage
+      .from("author-submissions")
+      .download(pendingPath);
+
+  if (downloadError) {
+    throw new Error(
+      `Unable to read the replacement photo: ${downloadError.message}`
+    );
+  }
+
+  const extension =
+    getFileExtension(pendingPath);
+
+  const authorName =
+    request.proposed_data?.author_name ||
+    liveAuthor.AUTHOR_NAME ||
+    "author";
+
+  const newPhotoPath =
+    `${liveAuthor.AUTHOR_ID}-` +
+    `${slugify(authorName)}-` +
+    `${Date.now()}.${extension}`;
+
+  const {
+    error: uploadError
+  } =
+    await supabaseClient.storage
+      .from("authors")
+      .upload(
+        newPhotoPath,
+        photoBlob,
+        {
+          cacheControl: "3600",
+          upsert: false,
+          contentType:
+            photoBlob.type ||
+            `image/${extension}`
+        }
+      );
+
+  if (uploadError) {
+    throw new Error(
+      `Unable to upload the replacement photo: ${uploadError.message}`
+    );
+  }
+
+  return {
+    newPhotoPath,
+    pendingPath
+  };
+}
+
+async function safelyDeleteAuthorPhoto(
+  bucket,
+  path
+) {
+  if (!path) {
+    return;
+  }
+
+  const { error } =
+    await supabaseClient.storage
+      .from(bucket)
+      .remove([path]);
+
+  if (error) {
+    console.warn(
+      `Unable to delete ${bucket}/${path}:`,
+      error.message
+    );
+  }
+}
+
+async function saveAuthorUpdateStatus(
+  status
+) {
+  if (!currentUpdateRequest) {
+    return;
+  }
+
+  if (
+    status === "denied" &&
+    !confirm(
+      "Deny this author profile update request?"
+    )
+  ) {
+    return;
+  }
+
+  const note =
+    document.getElementById(
+      "actionNote"
+    );
+
+  const adminNotes =
+    document.getElementById(
+      "adminNotes"
+    ).value.trim();
+
+  note.textContent =
+    "Saving...";
+
+  const {
+    data: userData
+  } =
+    await supabaseClient.auth
+      .getUser();
+
+  const { error } =
+    await supabaseClient
+      .from("author_update_requests")
+      .update({
+        request_status:
+          status,
+
+        reviewer_notes:
+          adminNotes,
+
+        reviewed_by:
+          userData?.user?.id ||
+          null,
+
+        reviewed_at:
+          new Date().toISOString(),
+
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq(
+        "id",
+        currentUpdateRequest.id
+      );
+
+  if (error) {
+    console.error(error);
+
+    note.textContent =
+      error.message ||
+      "Unable to update the request.";
+
+    return;
+  }
+
+  /*
+    A denied replacement photo is no longer needed.
+    Needs Info keeps the photo available for later review.
+  */
+  if (
+    status === "denied" &&
+    currentUpdateRequest
+      .replacement_photo_path
+  ) {
+    await safelyDeleteAuthorPhoto(
+      "author-submissions",
+      currentUpdateRequest
+        .replacement_photo_path
+    );
+  }
+
+  note.textContent =
+    status === "needs_info"
+      ? "Saved as Needs Info."
+      : "Author update request denied.";
+
+  setTimeout(() => {
+    window.location.href =
+      "review-queue.html";
+  }, 700);
+}
+
+async function approveAuthorUpdate() {
+  if (
+    !currentUpdateRequest ||
+    !currentLiveAuthor
+  ) {
+    return;
+  }
+
+  if (
+    !confirm(
+      "Approve this update and apply it to the live author profile?"
+    )
+  ) {
+    return;
+  }
+
+  const note =
+    document.getElementById(
+      "actionNote"
+    );
+
+  const approveButton =
+    document.getElementById(
+      "approveUpdateBtn"
+    );
+
+  const adminNotes =
+    document.getElementById(
+      "adminNotes"
+    ).value.trim();
+
+  const oldPhotoPath =
+    currentLiveAuthor.AUTHORIMAGEPATH ||
+    null;
+
+  let newPhotoPath =
+    null;
+
+  let pendingPath =
+    null;
+
+  approveButton.disabled = true;
+  approveButton.textContent =
+    "Approving...";
+
+  note.textContent =
+    "Applying approved changes...";
+
+  try {
+    const photoResult =
+      await moveRequestedPhotoToLiveStorage(
+        currentUpdateRequest,
+        currentLiveAuthor
+      );
+
+    newPhotoPath =
+      photoResult.newPhotoPath;
+
+    pendingPath =
+      photoResult.pendingPath;
+
+    const {
+      error: approvalError
+    } =
+      await supabaseClient.rpc(
+        "approve_author_update_request",
+        {
+          p_request_id:
+            currentUpdateRequest.id,
+
+          p_reviewer_notes:
+            adminNotes,
+
+          p_new_photo_path:
+            newPhotoPath
+        }
+      );
+
+    if (approvalError) {
+      if (newPhotoPath) {
+        await safelyDeleteAuthorPhoto(
+          "authors",
+          newPhotoPath
+        );
+      }
+
+      throw approvalError;
+    }
+
+    /*
+      The authors row now points to the new photo.
+      Only now is deleting the old photo safe.
+    */
+    if (
+      newPhotoPath &&
+      oldPhotoPath &&
+      oldPhotoPath !== newPhotoPath
+    ) {
+      await safelyDeleteAuthorPhoto(
+        "authors",
+        oldPhotoPath
+      );
+    }
+
+    if (pendingPath) {
+      await safelyDeleteAuthorPhoto(
+        "author-submissions",
+        pendingPath
+      );
+    }
+
+    note.textContent =
+      "Author profile update approved and applied.";
+
+    setTimeout(() => {
+      window.location.href =
+        "review-queue.html";
+    }, 800);
+
+  } catch (error) {
+    console.error(error);
+
+    note.textContent =
+      error.message ||
+      "Unable to approve this update.";
+
+    approveButton.disabled = false;
+    approveButton.textContent =
+      "Approve";
+  }
+}
+
+  initAuthorUpdateReview();
+</script>
+</body>
+</html>

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Events – Mate Masie</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .events-column {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .events-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .events-controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) repeat(3, 180px);
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .event-control {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.22);
+      background: rgba(23,16,12,0.92);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .event-control:focus {
+      outline: 3px solid var(--accent-light);
+      border-color: var(--accent-light);
+    }
+
+    .event-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .event-summary-card {
+      padding: 1rem;
+      border-radius: 16px;
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .event-summary-value {
+      display: block;
+      color: var(--accent-light);
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .event-summary-label {
+      color: var(--soft);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .events-list {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+
+    .event-card {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 190px;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .event-image {
+      width: 150px;
+      min-height: 190px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.24);
+      border: 1px solid rgba(255,255,255,0.14);
+      display: grid;
+      place-items: center;
+      color: var(--accent-light);
+      font-size: 2rem;
+    }
+
+    .event-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 190px;
+      object-fit: contain;
+      background: rgba(0,0,0,0.24);
+      display: block;
+    }
+
+    .event-content {
+      min-width: 0;
+    }
+
+    .event-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .event-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.32rem 0.58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .event-badge.approved,
+    .event-badge.published,
+    .event-badge.live {
+      background: rgba(53,86,61,0.65);
+      color: #c8f2ce;
+    }
+
+    .event-badge.pending {
+      background: rgba(111,83,36,0.65);
+      color: #f5d89d;
+    }
+
+    .event-badge.denied,
+    .event-badge.rejected {
+      background: rgba(107,48,44,0.65);
+      color: #ffd1cb;
+    }
+
+    .event-badge.featured {
+      background: rgba(216,163,93,0.16);
+      color: var(--accent-light);
+      border-color: rgba(216,163,93,0.34);
+    }
+
+    .event-badge.partner {
+      background: rgba(36,69,111,0.55);
+      color: #b7d8ff;
+    }
+
+    .event-title {
+      margin: 0 0 0.45rem;
+      color: var(--text);
+      font-size: 1.35rem;
+      line-height: 1.15;
+    }
+
+    .event-description {
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .event-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem 1rem;
+    }
+
+    .event-meta {
+      color: var(--soft);
+      font-size: 0.88rem;
+      overflow-wrap: anywhere;
+    }
+
+    .event-meta i {
+      width: 18px;
+      color: var(--accent-light);
+      margin-right: 0.25rem;
+    }
+
+    .event-actions {
+      display: grid;
+      align-content: start;
+      gap: 0.6rem;
+    }
+
+    .event-actions .mm-btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .events-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    @media (max-width: 1000px) {
+      .events-controls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .event-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .event-card {
+        grid-template-columns: 120px 1fr;
+      }
+
+      .event-image {
+        width: 120px;
+        min-height: 160px;
+      }
+
+      .event-image img {
+        min-height: 160px;
+      }
+
+      .event-actions {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 650px) {
+      .events-controls,
+      .event-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .event-card {
+        grid-template-columns: 1fr;
+      }
+
+      .event-image {
+        width: 100%;
+        min-height: 220px;
+        max-height: 360px;
+      }
+
+      .event-image img {
+        min-height: 220px;
+        max-height: 360px;
+      }
+
+      .event-meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .event-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="events-column">
+          <div class="events-header">
+            <div>
+              <span class="mm-eyebrow">Event Management</span>
+
+              <h1 class="mm-page-title">Events</h1>
+
+              <p class="mm-page-subtitle">
+                Manage upcoming, past, virtual, in-person, featured, and partner events.
+              </p>
+            </div>
+
+            <a class="mm-btn" href="admin-event.html?mode=create">
+              <i class="fa-solid fa-plus"></i>
+              Create Event
+            </a>
+          </div>
+
+          <div class="events-controls">
+            <input
+              class="event-control"
+              id="eventSearch"
+              type="search"
+              placeholder="Search events, organizers, cities, or genres..."
+            >
+
+            <select class="event-control" id="dateFilter">
+              <option value="upcoming">Upcoming</option>
+              <option value="past">Past</option>
+              <option value="all">All Dates</option>
+            </select>
+
+            <select class="event-control" id="statusFilter">
+              <option value="all">All Statuses</option>
+            </select>
+
+            <select class="event-control" id="formatFilter">
+              <option value="all">All Formats</option>
+              <option value="in-person">In Person</option>
+              <option value="virtual">Virtual</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+          </div>
+
+          <div class="event-summary">
+            <div class="event-summary-card">
+              <span class="event-summary-value" id="totalEventCount">—</span>
+              <span class="event-summary-label">Total Events</span>
+            </div>
+
+            <div class="event-summary-card">
+              <span class="event-summary-value" id="upcomingEventCount">—</span>
+              <span class="event-summary-label">Upcoming</span>
+            </div>
+
+            <div class="event-summary-card">
+              <span class="event-summary-value" id="featuredEventCount">—</span>
+              <span class="event-summary-label">Featured</span>
+            </div>
+
+            <div class="event-summary-card">
+              <span class="event-summary-value" id="pendingEventCount">—</span>
+              <span class="event-summary-label">Pending</span>
+            </div>
+          </div>
+
+          <div class="events-list" id="eventsList">
+            <div class="mm-card">
+              <p class="mm-muted">Loading events...</p>
+            </div>
+          </div>
+
+          <div class="events-pagination" id="eventsPagination"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/navigation.js"></script>
+
+  <script>
+    const STORAGE_BASE =
+      "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+    let allEvents = [];
+    let currentPage = 1;
+
+    const EVENTS_PER_PAGE = 25;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizeSearch(value) {
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function parseDate(value) {
+      if (!value) return null;
+
+      const raw = String(value).trim();
+      const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+      if (dateOnly) {
+        return new Date(
+          Number(dateOnly[1]),
+          Number(dateOnly[2]) - 1,
+          Number(dateOnly[3])
+        );
+      }
+
+      const date = new Date(raw);
+
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function formatDate(value) {
+      const date = parseDate(value);
+
+      if (!date) return "Date not listed";
+
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function formatTime(value) {
+      if (!value) return "";
+
+      const raw = String(value).trim();
+
+      const match = raw.match(/^(\d{1,2}):(\d{2})/);
+
+      if (!match) return raw;
+
+      const date = new Date();
+      date.setHours(Number(match[1]), Number(match[2]), 0, 0);
+
+      return date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function normalizeBoolean(value) {
+      if (value === true) return true;
+
+      const normalized = String(value || "")
+        .trim()
+        .toLowerCase();
+
+      return ["true", "yes", "1", "y"].includes(normalized);
+    }
+
+    function normalizeStatus(value) {
+      return String(value || "unknown")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_]+/g, "-");
+    }
+
+    function getEventImage(item) {
+      if (item.flyer_storage_path) {
+        return `${STORAGE_BASE}/event-flyers/${encodeURIComponent(item.flyer_storage_path)}`;
+      }
+
+      if (item.event_image_url) {
+        return item.event_image_url;
+      }
+
+      if (item.flyer_image_url) {
+        return item.flyer_image_url;
+      }
+
+      return "";
+    }
+
+    function getEventFormat(item) {
+      return String(item.event_format || "").trim();
+    }
+
+    function getEventLocation(item) {
+      const format = getEventFormat(item).toLowerCase();
+
+      if (format === "virtual") {
+        return "Virtual Event";
+      }
+
+      return [
+        item.venue_name,
+        item.city,
+        item.state
+      ]
+        .filter(Boolean)
+        .join(", ");
+    }
+
+    function isUpcoming(item) {
+      const endDate = parseDate(item.end_date || item.start_date);
+
+      if (!endDate) return true;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      return endDate >= today;
+    }
+
+    function populateStatusFilter() {
+      const select = document.getElementById("statusFilter");
+
+      const statuses = [...new Set(
+        allEvents
+          .map(item => String(item.event_status || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b));
+
+      select.innerHTML = `
+        <option value="all">All Statuses</option>
+
+        ${statuses.map(status => `
+          <option value="${escapeHtml(status)}">
+            ${escapeHtml(status)}
+          </option>
+        `).join("")}
+      `;
+    }
+
+    function updateSummary() {
+      document.getElementById("totalEventCount").textContent =
+        allEvents.length;
+
+      document.getElementById("upcomingEventCount").textContent =
+        allEvents.filter(isUpcoming).length;
+
+      document.getElementById("featuredEventCount").textContent =
+        allEvents.filter(item => normalizeBoolean(item.featured_event)).length;
+
+      document.getElementById("pendingEventCount").textContent =
+        allEvents.filter(item =>
+          normalizeStatus(item.event_status) === "pending"
+        ).length;
+    }
+
+    function getFilteredEvents() {
+      const searchValue = normalizeSearch(
+        document.getElementById("eventSearch").value
+      );
+
+      const dateFilter =
+        document.getElementById("dateFilter").value;
+
+      const statusFilter =
+        document.getElementById("statusFilter").value;
+
+      const formatFilter =
+        document.getElementById("formatFilter").value;
+
+      let events = [...allEvents];
+
+      if (searchValue) {
+        events = events.filter(item => {
+          const searchableText = normalizeSearch([
+            item.event_name,
+            item.short_description,
+            item.description,
+            item.event_type,
+            item.event_types,
+            item.organizer_name,
+            item.organizer_email,
+            item.city,
+            item.state,
+            item.country,
+            item.venue_name,
+            item.genres,
+            item.audiences,
+            item.event_focus,
+            item.featured_authors
+          ].join(" "));
+
+          return searchableText.includes(searchValue);
+        });
+      }
+
+      if (dateFilter === "upcoming") {
+        events = events.filter(isUpcoming);
+      }
+
+      if (dateFilter === "past") {
+        events = events.filter(item => !isUpcoming(item));
+      }
+
+      if (statusFilter !== "all") {
+        events = events.filter(item =>
+          String(item.event_status || "") === statusFilter
+        );
+      }
+
+      if (formatFilter !== "all") {
+        events = events.filter(item =>
+          normalizeSearch(getEventFormat(item))
+            .replace(/\s+/g, "-") === formatFilter
+        );
+      }
+
+      events.sort((a, b) => {
+        const aDate = parseDate(a.start_date)?.getTime() || 0;
+        const bDate = parseDate(b.start_date)?.getTime() || 0;
+
+        if (dateFilter === "past") {
+          return bDate - aDate;
+        }
+
+        return aDate - bDate;
+      });
+
+      return events;
+    }
+
+    function renderEvents() {
+      const target = document.getElementById("eventsList");
+      const filteredEvents = getFilteredEvents();
+
+      const totalPages = Math.max(
+        1,
+        Math.ceil(filteredEvents.length / EVENTS_PER_PAGE)
+      );
+
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const start = (currentPage - 1) * EVENTS_PER_PAGE;
+      const visibleEvents = filteredEvents.slice(
+        start,
+        start + EVENTS_PER_PAGE
+      );
+
+      if (!visibleEvents.length) {
+        target.innerHTML = `
+          <div class="mm-card empty-state">
+            <h2>No events found</h2>
+            <p class="mm-muted">
+              Nothing matches the current search and filters.
+            </p>
+          </div>
+        `;
+
+        renderPagination(0, 1);
+        return;
+      }
+
+      target.innerHTML = visibleEvents.map(item => {
+        const image = getEventImage(item);
+        const status = normalizeStatus(item.event_status);
+        const location = getEventLocation(item);
+
+        const startDate = formatDate(item.start_date);
+        const endDate = formatDate(item.end_date);
+
+        const dateLabel =
+          item.end_date &&
+          String(item.end_date).slice(0, 10) !==
+          String(item.start_date).slice(0, 10)
+            ? `${startDate} – ${endDate}`
+            : startDate;
+
+        const startTime = formatTime(item.start_time);
+        const endTime = formatTime(item.end_time);
+
+        const timeLabel =
+          startTime && endTime
+            ? `${startTime} – ${endTime}`
+            : startTime || endTime || "Time not listed";
+
+        return `
+          <article class="mm-card event-card">
+            <div class="event-image">
+              ${
+                image
+                  ? `
+                    <img
+                      src="${escapeHtml(image)}"
+                      alt="${escapeHtml(
+                        item.event_image_alt ||
+                        `${item.event_name || "Event"} flyer`
+                      )}"
+                      loading="lazy"
+                      onerror="this.outerHTML='<i class=&quot;fa-solid fa-calendar-days&quot;></i>'"
+                    >
+                  `
+                  : `<i class="fa-solid fa-calendar-days"></i>`
+              }
+            </div>
+
+            <div class="event-content">
+              <div class="event-badges">
+                <span class="event-badge ${escapeHtml(status)}">
+                  ${escapeHtml(item.event_status || "Unknown Status")}
+                </span>
+
+                ${
+                  item.event_format
+                    ? `
+                      <span class="event-badge">
+                        ${escapeHtml(item.event_format)}
+                      </span>
+                    `
+                    : ""
+                }
+
+                ${
+                  normalizeBoolean(item.featured_event)
+                    ? `<span class="event-badge featured">Featured</span>`
+                    : ""
+                }
+
+                ${
+                  normalizeBoolean(item.partner_event)
+                    ? `<span class="event-badge partner">Partner</span>`
+                    : ""
+                }
+
+                ${
+                  normalizeBoolean(item.free_event)
+                    ? `<span class="event-badge">Free</span>`
+                    : ""
+                }
+              </div>
+
+              <h2 class="event-title">
+                ${escapeHtml(item.event_name || "Untitled Event")}
+              </h2>
+
+              <p class="event-description">
+                ${escapeHtml(
+                  item.short_description ||
+                  item.description ||
+                  "No description provided."
+                )}
+              </p>
+
+              <div class="event-meta-grid">
+                <div class="event-meta">
+                  <i class="fa-regular fa-calendar"></i>
+                  ${escapeHtml(dateLabel)}
+                </div>
+
+                <div class="event-meta">
+                  <i class="fa-regular fa-clock"></i>
+                  ${escapeHtml(timeLabel)}
+                </div>
+
+                <div class="event-meta">
+                  <i class="fa-solid fa-location-dot"></i>
+                  ${escapeHtml(location || "Location not listed")}
+                </div>
+
+                <div class="event-meta">
+                  <i class="fa-solid fa-user"></i>
+                  ${escapeHtml(item.organizer_name || "Organizer not listed")}
+                </div>
+
+                <div class="event-meta">
+                  <i class="fa-solid fa-tag"></i>
+                  ${escapeHtml(
+                    item.event_type ||
+                    item.event_types ||
+                    "Event type not listed"
+                  )}
+                </div>
+
+                <div class="event-meta">
+                  <i class="fa-solid fa-arrow-up-wide-short"></i>
+                  Priority: ${escapeHtml(item.priority ?? "—")}
+                </div>
+              </div>
+            </div>
+
+            <div class="event-actions">
+              <a
+                class="mm-btn"
+                href="admin-event.html?id=${encodeURIComponent(item.id)}"
+              >
+                View / Edit
+              </a>
+
+              <a
+                class="mm-btn mm-btn-secondary"
+                href="../event.html?id=${encodeURIComponent(item.id)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Public Preview
+              </a>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      renderPagination(filteredEvents.length, totalPages);
+    }
+
+    function renderPagination(totalItems, totalPages) {
+      const target = document.getElementById("eventsPagination");
+
+      if (totalItems <= EVENTS_PER_PAGE) {
+        target.innerHTML = "";
+        return;
+      }
+
+      target.innerHTML = `
+        <button
+          class="mm-btn mm-btn-secondary"
+          id="previousEventsPage"
+          type="button"
+          ${currentPage <= 1 ? "disabled" : ""}
+        >
+          ← Previous
+        </button>
+
+        <span class="mm-muted">
+          Page ${currentPage} of ${totalPages}
+        </span>
+
+        <button
+          class="mm-btn mm-btn-secondary"
+          id="nextEventsPage"
+          type="button"
+          ${currentPage >= totalPages ? "disabled" : ""}
+        >
+          Next →
+        </button>
+      `;
+
+      document
+        .getElementById("previousEventsPage")
+        ?.addEventListener("click", () => {
+          currentPage -= 1;
+          renderEvents();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+      document
+        .getElementById("nextEventsPage")
+        ?.addEventListener("click", () => {
+          currentPage += 1;
+          renderEvents();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    function setupControls() {
+      document
+        .getElementById("eventSearch")
+        .addEventListener("input", () => {
+          currentPage = 1;
+          renderEvents();
+        });
+
+      document
+        .getElementById("dateFilter")
+        .addEventListener("change", () => {
+          currentPage = 1;
+          renderEvents();
+        });
+
+      document
+        .getElementById("statusFilter")
+        .addEventListener("change", () => {
+          currentPage = 1;
+          renderEvents();
+        });
+
+      document
+        .getElementById("formatFilter")
+        .addEventListener("change", () => {
+          currentPage = 1;
+          renderEvents();
+        });
+    }
+
+    async function loadEvents() {
+      const target = document.getElementById("eventsList");
+
+      let events = [];
+      let from = 0;
+      const batchSize = 1000;
+
+      while (true) {
+        const { data, error } = await supabaseClient
+          .from("events")
+          .select("*")
+          .order("start_date", { ascending: true })
+          .range(from, from + batchSize - 1);
+
+        if (error) {
+          target.innerHTML = `
+            <div class="mm-card">
+              <h2>Unable to load events</h2>
+              <p class="mm-muted">
+                ${escapeHtml(error.message)}
+              </p>
+            </div>
+          `;
+
+          throw error;
+        }
+
+        events = events.concat(data || []);
+
+        if (!data || data.length < batchSize) break;
+
+        from += batchSize;
+      }
+
+      allEvents = events;
+
+      populateStatusFilter();
+      updateSummary();
+      renderEvents();
+    }
+
+    async function initPage() {
+      await loadMateMasieShell("events");
+
+      const auth = await requireAdmin();
+      if (!auth) return;
+
+      setTopbarUser(auth.user, auth.profile);
+
+      setupControls();
+
+      try {
+        await loadEvents();
+      } catch (error) {
+        console.error("Events manager failed:", error);
+      }
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

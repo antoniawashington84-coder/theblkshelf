@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Event Details – Mate Masie</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --text: #fff8f0;
+      --muted: #e3d2c0;
+      --soft: #c9b7a5;
+      --accent: #d8a35d;
+      --line: rgba(255,255,255,0.18);
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      line-height: 1.6;
+      background:
+        linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+        url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page {
+      padding: 2.5rem 0 4rem;
+    }
+
+    .event-form-card {
+      background: linear-gradient(180deg, #3f2e23, #241d17);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 28px;
+      padding: 2rem;
+      box-shadow:
+        0 12px 30px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 0.42rem 0.88rem;
+      border: 1px solid rgba(216,163,93,0.24);
+      border-radius: 999px;
+      background: rgba(216,163,93,0.08);
+      color: #f2cb98;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.3rem);
+      line-height: 0.98;
+      margin: 0.9rem 0 0.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      color: var(--muted);
+      max-width: 56rem;
+      font-size: 1.05rem;
+      margin: 0 0 1.8rem;
+    }
+
+    .form-section {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 22px;
+      background: rgba(15,12,10,0.45);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .form-section h2 {
+      margin: 0 0 1rem;
+      color: #f2c994;
+      font-size: 1.35rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .form-grid.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: bold;
+    }
+
+    .field {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.25);
+      background: #17100c;
+      color: var(--text);
+      font: inherit;
+    }
+
+    textarea.field {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .field::placeholder {
+      color: var(--soft);
+    }
+
+    .field:focus {
+      outline: 3px solid #f2c994;
+      border-color: #f2c994;
+    }
+
+    .pill-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.5rem;
+}
+
+.pill-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  padding: 0.55rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(216,163,93,0.08);
+  border: 1px solid rgba(216,163,93,0.22);
+  color: var(--muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.pill-check input {
+  accent-color: var(--accent);
+}
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .checkbox-grid.two {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+    .check-card {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.75rem;
+      border-radius: 14px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.18);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .check-card input {
+      accent-color: var(--accent);
+    }
+
+    .conditional-section {
+      display: none;
+    }
+
+    .conditional-section.active {
+      display: block;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .submit-btn {
+      border: none;
+      cursor: pointer;
+      padding: 0.75rem 1.3rem;
+      background: #d8a35d;
+      color: #120e0b;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: 0.2s ease;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      background: #e6b06a;
+      transform: translateY(-1px);
+    }
+
+    .form-note {
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1rem 1.1rem;
+      border-radius: 18px;
+      background: rgba(216,163,93,0.08);
+      border: 1px solid rgba(216,163,93,0.22);
+      color: var(--muted);
+    }
+
+    .success-message.active {
+      display: block;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 2.2rem;
+      color: var(--soft);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 850px) {
+      .form-grid,
+      .form-grid.three,
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        background:
+          linear-gradient(rgba(15, 12, 10, 0.5), rgba(15, 12, 10, 0.5)),
+          url("https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png");
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
+
+      header {
+        padding: 1.3rem 0 1.7rem;
+      }
+
+      .event-form-card {
+        padding: 1.15rem;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 2.35rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="event-form-card">
+      <span class="mm-eyebrow">Event Management</span>
+
+<h1 class="mm-page-title" id="pageTitle">Event Details</h1>
+
+<p class="mm-page-subtitle">
+  Create or edit an approved event.
+</p>
+
+<div class="mm-btn-row" style="margin-bottom:1rem;">
+  <a class="mm-btn mm-btn-secondary" href="events.html">
+    ← Back to Events
+  </a>
+</div>
+
+      <form id="adminEventForm">
+
+<section class="form-section" style="margin-top:1rem;">
+  <h2>Admin Settings</h2>
+
+  <div class="form-grid">
+    <div class="form-field">
+      <label for="eventStatus">Event Status</label>
+
+      <select class="field" id="eventStatus" name="event_status">
+        <option value="">Select status</option>
+        <option value="draft">Draft</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="published">Published</option>
+        <option value="archived">Archived</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="eventPriority">Priority</label>
+
+      <input
+        class="field"
+        id="eventPriority"
+        name="priority"
+        type="number"
+        step="1"
+        placeholder="0"
+      >
+    </div>
+
+    <div class="form-field full">
+      <label for="shortDescription">Short Description</label>
+
+      <textarea
+        class="field"
+        id="shortDescription"
+        name="short_description"
+        style="min-height:100px;"
+        placeholder="Short card or preview description"
+      ></textarea>
+    </div>
+
+    <div class="form-field full">
+      <label for="eventImageAlt">Event Image Alt Text</label>
+
+      <input
+        class="field"
+        id="eventImageAlt"
+        name="event_image_alt"
+        type="text"
+        placeholder="Describe the flyer for accessibility"
+      >
+    </div>
+
+    <div class="form-field full">
+      <div class="pill-options">
+        <label class="pill-check">
+          <input
+            type="checkbox"
+            name="featured_event"
+            value="true"
+          >
+          Featured Event
+        </label>
+
+        <label class="pill-check">
+          <input
+            type="checkbox"
+            name="partner_event"
+            value="true"
+          >
+          Partner Event
+        </label>
+      </div>
+    </div>
+  </div>
+</section>
+
+        <section class="form-section">
+          <h2>Event Basics</h2>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="eventName">Event Name</label>
+              <input class="field" id="eventName" name="event_name" type="text">
+            </div>
+
+            <div class="form-field full">
+  <label>Event Type</label>
+  <div class="pill-options">
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Author Signing"> Author Signing</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Author Meetup"> Author Meetup</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Book Festival"> Book Festival</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Book Fair"> Book Fair</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Convention"> Convention</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Workshop"> Workshop</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Panel"> Panel</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Writing Conference"> Writing Conference</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Literary Festival"> Literary Festival</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Book Club"> Book Club</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Reader Meetup"> Reader Meetup</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Vendor Market"> Vendor Market</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Virtual Event"> Virtual Event</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Community Event"> Community Event</label>
+    <label class="pill-check"><input type="checkbox" name="event_types" value="Other"> Other</label>
+  </div>
+</div>
+
+            <div class="form-field full">
+              <label for="description">Event Description</label>
+              <textarea class="field" id="description" name="description"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Date & Time</h2>
+
+          <div class="form-grid three">
+            <div class="form-field">
+              <label for="startDate">Start Date</label>
+              <input class="field" id="startDate" name="start_date" type="date">
+            </div>
+
+            <div class="form-field">
+              <label for="endDate">End Date</label>
+              <input class="field" id="endDate" name="end_date" type="date">
+            </div>
+
+            <div class="form-field">
+              <label for="timezone">Time Zone</label>
+              <input class="field" id="timezone" name="timezone" type="text" placeholder="Eastern, Central, etc.">
+            </div>
+
+            <div class="form-field">
+              <label for="startTime">Start Time</label>
+              <input class="field" id="startTime" name="start_time" type="time">
+            </div>
+
+            <div class="form-field">
+              <label for="endTime">End Time</label>
+              <input class="field" id="endTime" name="end_time" type="time">
+            </div>
+
+            <div class="form-field full">
+  <label>Does this event repeat?</label>
+  <div class="pill-options">
+  <label class="pill-check">
+    <input type="radio" name="repeat_frequency" value="No" checked>
+    No
+  </label>
+
+  <label class="pill-check">
+    <input type="radio" name="repeat_frequency" value="Weekly">
+    Weekly
+  </label>
+
+  <label class="pill-check">
+    <input type="radio" name="repeat_frequency" value="Monthly">
+    Monthly
+  </label>
+
+  <label class="pill-check">
+    <input type="radio" name="repeat_frequency" value="Annually">
+    Annually
+  </label>
+</div>
+</div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Location</h2>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="eventFormat">Event Format</label>
+              <select class="field" id="eventFormat" name="event_format">
+                <option value="">Select format</option>
+                <option>In-Person</option>
+                <option>Virtual</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="venueName">Venue Name</label>
+              <input class="field" id="venueName" name="venue_name" type="text">
+            </div>
+
+            <div class="form-field full">
+              <label for="streetAddress">Street Address</label>
+              <input class="field" id="streetAddress" name="street_address" type="text">
+            </div>
+
+            <div class="form-field">
+              <label for="city">City</label>
+              <input class="field" id="city" name="city" type="text">
+            </div>
+
+            <div class="form-field">
+              <label for="state">State</label>
+              <input class="field" id="state" name="state" type="text">
+            </div>
+
+            <div class="form-field">
+              <label for="zipCode">ZIP Code</label>
+              <input class="field" id="zipCode" name="zip_code" type="text">
+            </div>
+
+            <div class="form-field">
+              <label for="country">Country</label>
+              <input class="field" id="country" name="country" type="text" value="United States">
+            </div>
+
+            <div class="form-field full conditional-section" id="virtualLinkWrap">
+              <label for="virtualLink">Virtual Event Link</label>
+              <input class="field" id="virtualLink" name="virtual_link" type="url">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Tickets & Links</h2>
+
+          <div class="form-grid">
+            <div class="form-field">
+  <label for="ticketPrice">Ticket Price / Range</label>
+  <input class="field" id="ticketPrice" name="ticket_price" type="text" placeholder="$10, $25–$50, sliding scale">
+
+  <div style="margin-top:0.75rem;">
+    <label class="pill-check">
+      <input type="checkbox" name="free_event" value="true">
+      Free Event
+    </label>
+  </div>
+</div>
+
+            <div class="form-field">
+              <label for="registrationLink">Ticket / Registration Link</label>
+              <input class="field" id="registrationLink" name="registration_link" type="url">
+            </div>
+
+            <div class="form-field full">
+              <label for="eventWebsite">Official Event Website</label>
+              <input class="field" id="eventWebsite" name="event_website" type="url">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Vendor Opportunities</h2>
+
+          <div class="form-grid">
+            <div class="form-field full">
+  <label>Are vendors being accepted?</label>
+  <div class="pill-options">
+  <label class="pill-check">
+    <input type="radio" name="vendor_available" value="false" checked>
+    No
+  </label>
+
+  <label class="pill-check">
+    <input type="radio" name="vendor_available" value="true">
+    Yes
+  </label>
+</div>
+</div>
+
+            <div class="form-field conditional-section" id="vendorDeadlineWrap">
+              <label for="vendorDeadline">Vendor Deadline</label>
+              <input class="field" id="vendorDeadline" name="vendor_deadline" type="date">
+            </div>
+
+            <div class="form-field conditional-section" id="vendorFeeWrap">
+              <label for="vendorFee">Vendor Fee / Range</label>
+              <input class="field" id="vendorFee" name="vendor_fee" type="text">
+            </div>
+
+            <div class="form-field full conditional-section" id="vendorLinkWrap">
+              <label for="vendorApplicationLink">Vendor Application Link</label>
+              <input class="field" id="vendorApplicationLink" name="vendor_application_link" type="url">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Discoverability</h2>
+
+          <label>Audience</label>
+          <div class="pill-options" id="audienceOptions">
+  <label class="pill-check"><input type="checkbox" name="audiences" value="Children"> Children</label>
+  <label class="pill-check"><input type="checkbox" name="audiences" value="Middle Grade"> Middle Grade</label>
+  <label class="pill-check"><input type="checkbox" name="audiences" value="Young Adult"> Young Adult</label>
+  <label class="pill-check"><input type="checkbox" name="audiences" value="Adult"> Adult</label>
+  <label class="pill-check"><input type="checkbox" name="audiences" value="All Ages" id="allAgesCheckbox"> All Ages</label>
+</div>
+
+          <br>
+
+          <label>Genres</label>
+          <div class="pill-options">
+  <label class="pill-check"><input type="checkbox" name="genres" value="Romance"> Romance</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Fantasy"> Fantasy</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Science Fiction"> Science Fiction</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Mystery"> Mystery</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Thriller"> Thriller</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Poetry"> Poetry</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="Nonfiction"> Nonfiction</label>
+  <label class="pill-check"><input type="checkbox" name="genres" value="General"> General</label>
+</div>
+
+          <br>
+
+          <label>Event Focus</label>
+          <div class="pill-options">
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Black Authors"> Black Authors</label>
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Indie Authors"> Indie Authors</label>
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Readers"> Readers</label>
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Writers"> Writers</label>
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Vendors"> Vendors</label>
+  <label class="pill-check"><input type="checkbox" name="event_focus" value="Families"> Families</label>
+</div>
+        </section>
+
+        <section class="form-section">
+          <h2>Additional Details</h2>
+
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="featuredAuthors">Featured Authors Appearing</label>
+              <input class="field" id="featuredAuthors" name="featured_authors" type="text" placeholder="Separate names with commas">
+            </div>
+
+            <div class="form-field full">
+              <label for="accessibilityNotes">Accessibility Notes</label>
+              <textarea class="field" id="accessibilityNotes" name="accessibility_notes"></textarea>
+            </div>
+
+            <div class="form-field full">
+              <label for="parkingNotes">Parking Notes</label>
+              <textarea class="field" id="parkingNotes" name="parking_notes"></textarea>
+            </div>
+
+            <label class="pill-check">
+  <input type="checkbox" name="family_friendly" value="true">
+  Family Friendly
+</label>
+          </div>
+        </section>
+
+        <section class="form-section">
+  <h2>Event Flyer</h2>
+
+  <div class="form-grid">
+
+    <div class="form-field">
+      <label>Current Flyer</label>
+
+      <div
+        id="eventFlyerPreview"
+        style="
+          width:260px;
+          max-width:100%;
+          aspect-ratio:3/4;
+          border-radius:18px;
+          overflow:hidden;
+          border:1px solid rgba(255,255,255,.18);
+          background:#17100c;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+        ">
+        <span class="form-note">No flyer</span>
+      </div>
+    </div>
+
+    <div class="form-field">
+
+      <label for="replaceFlyer">
+        Replace Flyer
+      </label>
+
+      <input
+        class="field"
+        id="replaceFlyer"
+        type="file"
+        accept="image/*">
+
+      <p class="form-note" style="margin-top:0.75rem;">
+  The selected flyer will be uploaded when you click Save Event.
+</p>
+
+    </div>
+
+  </div>
+</section>
+
+        <section class="form-section">
+          <h2>Organizer Information</h2>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="organizerName">Organizer Name</label>
+              <input class="field" id="organizerName" name="organizer_name" type="text">
+            </div>
+
+            <div class="form-field">
+              <label for="organizerEmail">Organizer Email</label>
+              <input class="field" id="organizerEmail" name="organizer_email" type="email">
+            </div>
+
+            <div class="form-field">
+              <label for="organizerWebsite">Organizer Website</label>
+              <input class="field" id="organizerWebsite" name="organizer_website" type="url">
+            </div>
+
+            <div class="form-field">
+              <label for="organizerSocial">Organizer Social Media</label>
+              <input class="field" id="organizerSocial" name="organizer_social" type="text">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+  <h2>Edit History</h2>
+
+  <div id="eventHistory">
+    <p class="form-note">Loading history...</p>
+  </div>
+</section>
+
+        <div class="form-actions">
+  <button class="mm-btn" id="saveEventButton" type="submit">
+    Save Event
+  </button>
+
+  <button
+    class="mm-btn mm-btn-secondary"
+    id="resetEventButton"
+    type="button"
+  >
+    Reset Changes
+  </button>
+
+  <span class="form-note" id="saveNote"></span>
+</div>
+
+      </form>
+            </div>
+      </section>
+    </main>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/navigation.js"></script>
+
+<script>
+
+  let currentEvent = null;
+
+const params = new URLSearchParams(location.search);
+let eventId = params.get("id");
+
+function getCheckedValues(name) {
+  return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+    .map(input => input.value);
+}
+
+function toggleConditionalFields() {
+  const eventFormat = document.getElementById("eventFormat").value;
+
+  const hasVirtual =
+    eventFormat === "Virtual" ||
+    eventFormat === "Hybrid";
+
+  const vendorAvailable =
+    document.querySelector('input[name="vendor_available"]:checked')?.value === "true";
+
+  document.getElementById("virtualLinkWrap").classList.toggle("active", hasVirtual);
+
+  document.getElementById("vendorDeadlineWrap").classList.toggle("active", vendorAvailable);
+  document.getElementById("vendorFeeWrap").classList.toggle("active", vendorAvailable);
+  document.getElementById("vendorLinkWrap").classList.toggle("active", vendorAvailable);
+}
+
+function handleAudienceLogic(event) {
+  const allAges = document.getElementById("allAgesCheckbox");
+  const audienceBoxes = document.querySelectorAll('input[name="audiences"]');
+
+  if (event.target === allAges && allAges.checked) {
+    audienceBoxes.forEach(box => {
+      if (box !== allAges) box.checked = false;
+    });
+  }
+
+  if (event.target !== allAges && event.target.name === "audiences" && event.target.checked) {
+    allAges.checked = false;
+  }
+}
+
+function normalizeForCompare(value) {
+  if (Array.isArray(value)) {
+    return [...value]
+      .map(item => String(item).trim())
+      .filter(Boolean)
+      .sort();
+  }
+
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  if (typeof value === "boolean" || typeof value === "number") {
+    return value;
+  }
+
+  return String(value).trim();
+}
+
+function getChangedEventFields(original, updated) {
+  const changes = {};
+
+  Object.entries(updated).forEach(([field, newValue]) => {
+    if (["updated_at", "created_at"].includes(field)) return;
+
+    const oldValue = original?.[field];
+
+    const normalizedOld = normalizeForCompare(oldValue);
+    const normalizedNew = normalizeForCompare(newValue);
+
+    if (
+      JSON.stringify(normalizedOld) !==
+      JSON.stringify(normalizedNew)
+    ) {
+      changes[field] = {
+        old: oldValue ?? null,
+        new: newValue ?? null
+      };
+    }
+  });
+
+  return changes;
+}
+
+function collectEventData() {
+  const form = document.getElementById("adminEventForm");
+  const formData = new FormData(form);
+
+  return {
+    event_name: formData.get("event_name")?.trim() || "",
+    event_type: getCheckedValues("event_types")[0] || null,
+    event_types: getCheckedValues("event_types"),
+
+    description: formData.get("description")?.trim() || "",
+
+short_description:
+  formData.get("short_description")?.trim() || null,
+
+    start_date: formData.get("start_date") || null,
+    end_date: formData.get("end_date") || null,
+    start_time: formData.get("start_time") || null,
+    end_time: formData.get("end_time") || null,
+    timezone: formData.get("timezone")?.trim() || null,
+
+    event_format: formData.get("event_format") || null,
+
+    venue_name: formData.get("venue_name")?.trim() || null,
+    street_address: formData.get("street_address")?.trim() || null,
+    city: formData.get("city")?.trim() || null,
+    state: formData.get("state")?.trim() || null,
+    zip_code: formData.get("zip_code")?.trim() || null,
+    country: formData.get("country")?.trim() || "United States",
+
+    virtual_link: formData.get("virtual_link")?.trim() || null,
+
+    ticket_price: formData.get("ticket_price")?.trim() || null,
+    registration_link: formData.get("registration_link")?.trim() || null,
+    event_website: formData.get("event_website")?.trim() || null,
+
+    vendor_available:
+      formData.get("vendor_available") === "true",
+
+    vendor_application_link:
+      formData.get("vendor_application_link")?.trim() || null,
+
+    vendor_fee:
+      formData.get("vendor_fee")?.trim() || null,
+
+    vendor_deadline:
+      formData.get("vendor_deadline") || null,
+
+    audiences: getCheckedValues("audiences"),
+    genres: getCheckedValues("genres"),
+    event_focus: getCheckedValues("event_focus"),
+
+    featured_authors:
+      formData.get("featured_authors")?.trim() || null,
+
+    family_friendly:
+      formData.get("family_friendly") === "true",
+
+    free_event:
+      formData.get("free_event") === "true",
+
+    accessibility_notes:
+      formData.get("accessibility_notes")?.trim() || null,
+
+    parking_notes:
+      formData.get("parking_notes")?.trim() || null,
+
+    organizer_name:
+      formData.get("organizer_name")?.trim() || "",
+
+    organizer_email:
+      formData.get("organizer_email")?.trim() || "",
+
+    organizer_website:
+      formData.get("organizer_website")?.trim() || null,
+
+    organizer_social:
+      formData.get("organizer_social")?.trim() || null,
+
+    repeat_frequency:
+      formData.get("repeat_frequency") || "No",
+
+      event_status:
+  formData.get("event_status") ||
+  currentEvent?.event_status ||
+  "draft",
+
+featured_event:
+  formData.get("featured_event") === "true",
+
+partner_event:
+  formData.get("partner_event") === "true",
+
+priority:
+  formData.get("priority") === ""
+    ? null
+    : Number(formData.get("priority")),
+
+event_image_alt:
+  formData.get("event_image_alt")?.trim() || null,
+
+    updated_at: new Date().toISOString()
+  };
+}
+
+document.getElementById("eventFormat")
+  .addEventListener("change", toggleConditionalFields);
+
+document.querySelectorAll('input[name="vendor_available"]').forEach(input => {
+  input.addEventListener("change", toggleConditionalFields);
+});
+
+document.querySelectorAll('input[name="audiences"]').forEach(input => {
+  input.addEventListener("change", handleAudienceLogic);
+});
+
+document
+  .getElementById("adminEventForm")
+  .addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const saveButton =
+      document.getElementById("saveEventButton");
+
+    const saveNote =
+      document.getElementById("saveNote");
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+    saveNote.textContent = "";
+
+    const payload = collectEventData();
+
+    const changes = getChangedEventFields(
+  currentEvent || {},
+  payload
+);
+
+const replacementFlyer =
+  document.getElementById("replaceFlyer")?.files?.[0];
+
+let newFlyerPath = null;
+let oldFlyerPath = currentEvent?.flyer_storage_path || null;
+
+try {
+  if (replacementFlyer) {
+    if (!currentEvent?.id && !eventId) {
+      // A new event must be created before its permanent flyer path can use the event ID.
+      payload.created_at = new Date().toISOString();
+      payload.event_status = payload.event_status || "draft";
+
+      const { data: createdEvent, error: createError } = await supabaseClient
+        .from("events")
+        .insert(payload)
+        .select("*")
+        .single();
+
+      if (createError) throw createError;
+
+      currentEvent = createdEvent;
+      eventId = createdEvent.id;
+
+      window.history.replaceState(
+        {},
+        "",
+        `admin-event.html?id=${encodeURIComponent(eventId)}`
+      );
+    }
+
+    newFlyerPath = await uploadReplacementEventFlyer(
+      replacementFlyer,
+      currentEvent
+    );
+
+    const publicUrl =
+      `https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/event-flyers/${newFlyerPath
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/")}`;
+
+    payload.flyer_storage_path = newFlyerPath;
+    payload.event_image_url = publicUrl;
+  }
+
+  let savedEvent;
+
+      if (eventId) {
+        const { data, error } = await supabaseClient
+          .from("events")
+          .update(payload)
+          .eq("id", eventId)
+          .select("*")
+          .single();
+
+        if (error) throw error;
+
+        savedEvent = data;
+      } 
+      
+      else {
+  payload.created_at = new Date().toISOString();
+  payload.event_status = payload.event_status || "draft";
+
+  const { data, error } = await supabaseClient
+    .from("events")
+    .insert(payload)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  savedEvent = data;
+  eventId = data.id;
+
+  window.history.replaceState(
+    {},
+    "",
+    `admin-event.html?id=${encodeURIComponent(eventId)}`
+  );
+}
+
+      currentEvent = savedEvent;
+
+      if (newFlyerPath) {
+  changes.flyer_storage_path = {
+    old: oldFlyerPath,
+    new: newFlyerPath
+  };
+}
+
+if (Object.keys(changes).length) {
+  const { data: userData } =
+    await supabaseClient.auth.getUser();
+
+  const user = userData?.user;
+
+  const { error: historyError } = await supabaseClient
+    .from("event_edit_history")
+    .insert({
+      event_id: currentEvent.id,
+      edited_by: user?.id || null,
+      editor_name:
+        user?.email ||
+        user?.user_metadata?.full_name ||
+        "Unknown editor",
+      changes
+    });
+
+  if (historyError) {
+    console.error(
+      "Event audit history failed:",
+      historyError
+    );
+  }
+}
+
+if (
+  oldFlyerPath &&
+  newFlyerPath &&
+  oldFlyerPath !== newFlyerPath
+) {
+  await deleteOldEventFlyer(oldFlyerPath);
+}
+
+const flyerInput = document.getElementById("replaceFlyer");
+
+if (flyerInput) {
+  flyerInput.value = "";
+}
+
+document.getElementById("pageTitle").textContent =
+  currentEvent.event_name || "Event Details";
+
+saveNote.textContent = "Event saved successfully.";
+
+populateEventForm(currentEvent);
+
+await loadEventHistory();
+
+    } catch (error) {
+      console.error("Event save failed:", error);
+
+      saveNote.textContent =
+        error.message || "Unable to save event.";
+    } finally {
+      saveButton.disabled = false;
+      saveButton.textContent = "Save Event";
+    }
+  });
+
+  document
+  .getElementById("resetEventButton")
+  .addEventListener("click", () => {
+    if (currentEvent) {
+      populateEventForm(currentEvent);
+    } else {
+      document.getElementById("adminEventForm").reset();
+      toggleConditionalFields();
+    }
+
+    document.getElementById("saveNote").textContent = "";
+  });
+
+async function initAdminEventPage() {
+  await loadMateMasieShell("events");
+
+  const auth = await requireAdmin();
+  if (!auth) return;
+
+  setTopbarUser(auth.user, auth.profile);
+
+  await loadEvent();
+
+toggleConditionalFields();
+}
+
+async function loadEvent() {
+  if (!eventId) {
+    document.getElementById("pageTitle").textContent =
+      "Create Event";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
+
+  currentEvent = data;
+
+  console.log(currentEvent);
+
+  document.getElementById("pageTitle").textContent =
+    currentEvent.event_name || "Event Details";
+
+    populateEventForm(currentEvent);
+
+    await loadEventHistory();
+   
+}
+
+async function loadEventHistory() {
+
+  const container =
+    document.getElementById("eventHistory");
+
+  if (!eventId) {
+    container.innerHTML =
+      "<p class='form-note'>Save the event to begin tracking edit history.</p>";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("event_edit_history")
+    .select("*")
+    .eq("event_id", eventId)
+    .order("edited_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+
+    container.innerHTML =
+      "<p class='form-note'>Unable to load history.</p>";
+
+    return;
+  }
+
+  if (!data.length) {
+    container.innerHTML =
+      "<p class='form-note'>No edits have been recorded.</p>";
+
+    return;
+  }
+
+  container.innerHTML = data.map(renderHistoryCard).join("");
+}
+
+function renderHistoryCard(history) {
+
+  const when =
+    new Date(history.edited_at).toLocaleString();
+
+  const changes =
+    Object.entries(history.changes || {})
+      .map(([field, value]) => `
+        <tr>
+          <td style="vertical-align:top;"><strong>${field}</strong></td>
+          <td>${escapeHtml(String(value.old ?? ""))}</td>
+          <td>${escapeHtml(String(value.new ?? ""))}</td>
+        </tr>
+      `)
+      .join("");
+
+  return `
+    <div
+      style="
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:16px;
+        padding:1rem;
+        margin-bottom:1rem;
+      ">
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:.75rem;
+        ">
+
+        <strong>${escapeHtml(history.editor_name || "Unknown")}</strong>
+
+        <span class="form-note">
+          ${when}
+        </span>
+
+      </div>
+
+      <table
+        style="
+          width:100%;
+          border-collapse:collapse;
+        ">
+
+        <thead>
+          <tr>
+            <th align="left">Field</th>
+            <th align="left">Old</th>
+            <th align="left">New</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${changes}
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+function getEventFlyerUrl(event) {
+  if (event?.flyer_storage_path) {
+    return `https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/event-flyers/${String(event.flyer_storage_path)
+  .split("/")
+  .map(encodeURIComponent)
+  .join("/")}`;
+  }
+
+  return event?.event_image_url || event?.flyer_image_url || "";
+}
+
+async function uploadReplacementEventFlyer(file, event) {
+  if (!file) {
+    throw new Error("Choose an image first.");
+  }
+
+  const extension =
+    file.name.split(".").pop()?.toLowerCase() || "jpg";
+
+  const baseName = slugify(
+    event?.event_name || event?.id || "event-flyer"
+  );
+
+  const fileName =
+  `approved/${event.id}-${baseName}-${Date.now()}.${extension}`;
+
+  const { error } = await supabaseClient.storage
+    .from("event-flyers")
+    .upload(fileName, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (error) throw error;
+
+  return fileName;
+}
+
+async function deleteOldEventFlyer(path) {
+  if (!path) return;
+
+  const { error } = await supabaseClient.storage
+    .from("event-flyers")
+    .remove([path]);
+
+  if (error) {
+    console.warn(
+      "Old event flyer could not be deleted:",
+      error.message
+    );
+  }
+}
+
+function populateEventForm(event) {
+  const form = document.getElementById("adminEventForm");
+  if (!form || !event) return;
+
+  const setValue = (name, value) => {
+    const field = form.elements[name];
+    if (!field) return;
+
+    field.value = value ?? "";
+  };
+
+  const setCheckedValues = (name, values) => {
+    const selected = Array.isArray(values)
+      ? values
+      : String(values || "")
+          .split(",")
+          .map(value => value.trim())
+          .filter(Boolean);
+
+    form.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(input => {
+      input.checked = selected.includes(input.value);
+    });
+  };
+
+  const setRadioValue = (name, value) => {
+    form.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(input => {
+      input.checked = String(input.value) === String(value ?? "");
+    });
+  };
+
+  const setBooleanCheckbox = (name, value) => {
+    const input = form.querySelector(`input[name="${CSS.escape(name)}"]`);
+    if (!input) return;
+
+    input.checked =
+      value === true ||
+      String(value || "").toLowerCase() === "true" ||
+      String(value || "").toLowerCase() === "yes";
+  };
+
+  setValue("event_name", event.event_name);
+  setValue("description", event.description);
+  setValue("event_status", event.event_status);
+setValue("priority", event.priority);
+setValue("short_description", event.short_description);
+setValue("event_image_alt", event.event_image_alt);
+
+setBooleanCheckbox("featured_event", event.featured_event);
+setBooleanCheckbox("partner_event", event.partner_event);
+  setValue("start_date", event.start_date?.slice(0, 10));
+  setValue("end_date", event.end_date?.slice(0, 10));
+  setValue("start_time", event.start_time?.slice(0, 5));
+  setValue("end_time", event.end_time?.slice(0, 5));
+  setValue("timezone", event.timezone);
+  setValue("event_format", event.event_format);
+
+  setValue("venue_name", event.venue_name);
+  setValue("street_address", event.street_address);
+  setValue("city", event.city);
+  setValue("state", event.state);
+  setValue("zip_code", event.zip_code);
+  setValue("country", event.country);
+  setValue("virtual_link", event.virtual_link);
+
+  setValue("ticket_price", event.ticket_price);
+  setValue("registration_link", event.registration_link);
+  setValue("event_website", event.event_website);
+
+  setValue("vendor_deadline", event.vendor_deadline?.slice(0, 10));
+  setValue("vendor_fee", event.vendor_fee);
+  setValue("vendor_application_link", event.vendor_application_link);
+
+  setValue("featured_authors", event.featured_authors);
+  setValue("accessibility_notes", event.accessibility_notes);
+  setValue("parking_notes", event.parking_notes);
+
+  setValue("organizer_name", event.organizer_name);
+  setValue("organizer_email", event.organizer_email);
+  setValue("organizer_website", event.organizer_website);
+  setValue("organizer_social", event.organizer_social);
+
+  setCheckedValues(
+    "event_types",
+    event.event_types?.length ? event.event_types : [event.event_type].filter(Boolean)
+  );
+
+  setCheckedValues("audiences", event.audiences);
+  setCheckedValues("genres", event.genres);
+  setCheckedValues("event_focus", event.event_focus);
+
+  setRadioValue(
+    "repeat_frequency",
+    event.repeat_frequency || "No"
+  );
+
+  setRadioValue(
+    "vendor_available",
+    event.vendor_available ? "true" : "false"
+  );
+
+  setBooleanCheckbox("family_friendly", event.family_friendly);
+  setBooleanCheckbox("free_event", event.free_event);
+
+  const preview =
+  document.getElementById("eventFlyerPreview");
+
+const imageUrl = getEventFlyerUrl(event);
+
+if (imageUrl) {
+
+  preview.innerHTML = `
+  <img
+    src="${escapeHtml(imageUrl)}"
+    alt="${escapeHtml(
+      event.event_image_alt ||
+      `${event.event_name || "Event"} flyer`
+    )}"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      background:#111;
+    "
+  >
+`;
+
+} else {
+
+  preview.innerHTML =
+    `<span class="form-note">No flyer</span>`;
+
+}
+
+  toggleConditionalFields();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+initAdminEventPage();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Review Book Update – Mate Masie</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .content-column {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    .cover-card img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.8rem;
+    }
+
+    .status-pill.pending { background: rgba(111,83,36,.75); color: #f5d89d; }
+    .status-pill.approved { background: rgba(53,86,61,.75); color: #c8f2ce; }
+    .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
+    .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .detail-field {
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(23,16,12,0.65);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .section-card {
+      margin-top: 1rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(230,176,106,0.12);
+      border: 1px solid rgba(230,176,106,0.25);
+      color: var(--accent-light);
+      font-size: 0.85rem;
+    }
+
+    .compact-review {
+  grid-template-columns: 280px 1fr;
+}
+
+.review-sidebar {
+  display: grid;
+  gap: 1rem;
+}
+
+.review-sidebar .section-card {
+  margin-top: 0;
+}
+
+.compact-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.compact-description {
+  max-height: 190px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.review-action-stack {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.review-action-stack .mm-btn {
+  flex: 1;
+  min-width: 170px;
+}
+
+.review-accordion {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.review-accordion summary {
+  cursor: pointer;
+  padding: 1rem;
+  color: var(--accent-light);
+  font-weight: bold;
+}
+
+.accordion-body {
+  padding: 0 1rem 1rem;
+}
+
+.admin-notes {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: rgba(23,16,12,0.92);
+  color: var(--text);
+  font: inherit;
+}
+
+.mm-btn.approve-btn {
+  background: #2f6b3f;
+  color: #fff8f0;
+  border-color: rgba(200,242,206,0.35);
+}
+
+.mm-btn.needs-info-btn {
+  background: #24456f;
+  color: #fff8f0;
+  border-color: rgba(183,216,255,0.35);
+}
+
+.mm-btn.deny-btn {
+  background: #6b302c;
+  color: #fff8f0;
+  border-color: rgba(255,209,203,0.35);
+}
+
+@media (max-width: 900px) {
+  .compact-review {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    @media (max-width: 850px) {
+      .submission-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-card {
+        max-width: 260px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.comparison-heading {
+  margin: 0 0 0.75rem;
+  color: var(--accent-light);
+  font-size: 1rem;
+}
+
+.comparison-field {
+  padding: 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(23,16,12,0.65);
+}
+
+.comparison-field.changed {
+  border-color: rgba(230,176,106,0.55);
+  background: rgba(230,176,106,0.09);
+}
+
+.comparison-field.unchanged {
+  opacity: 0.62;
+}
+
+.comparison-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.comparison-value {
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.cover-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 220px));
+  gap: 1rem;
+}
+
+.cover-comparison img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+@media (max-width: 800px) {
+  .comparison-grid,
+  .cover-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="content-column">
+          <span class="mm-eyebrow">Book Update Review</span>
+
+<h1 class="mm-page-title" id="pageTitle">
+  Book Update Request
+</h1>
+
+<p class="mm-page-subtitle">
+  Compare the current live book with the requested changes.
+</p>
+
+          <div class="mm-btn-row">
+  <button class="mm-btn mm-btn-secondary" id="prevSubmissionBtn" type="button">← Previous</button>
+  <a class="mm-btn mm-btn-secondary" href="review-queue.html">← Back to Review Queue</a>
+  <button class="mm-btn mm-btn-secondary" id="nextSubmissionBtn" type="button">Next →</button>
+</div>
+
+          <div id="submissionContent">
+            <div class="mm-card">
+              <p class="mm-muted">Loading submission...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/navigation.js"></script>
+
+  <script>
+  const STORAGE_BASE =
+    "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+    let currentUpdateRequest = null;
+let currentLiveBook = null;
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function formatLabel(value) {
+  return String(value || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, letter =>
+      letter.toUpperCase()
+    );
+}
+
+function normalizeValue(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return "";
+  }
+
+  if (Array.isArray(value)) {
+    if (!value.length) {
+      return "";
+    }
+
+    return value
+      .map(item => {
+        if (
+          item &&
+          typeof item === "object"
+        ) {
+          return item.name ||
+            item.author_name ||
+            JSON.stringify(item);
+        }
+
+        return String(item);
+      })
+      .join(", ");
+  }
+
+  if (typeof value === "object") {
+    const entries =
+      Object.entries(value)
+        .filter(
+          ([, itemValue]) =>
+            itemValue !== null &&
+            itemValue !== undefined &&
+            itemValue !== ""
+        );
+
+    if (!entries.length) {
+      return "";
+    }
+
+    return entries
+      .map(([key, itemValue]) => {
+        const displayValue =
+          typeof itemValue === "boolean"
+            ? itemValue
+              ? "Yes"
+              : "No"
+            : Array.isArray(itemValue)
+              ? itemValue.join(", ")
+              : String(itemValue);
+
+        return `${formatLabel(key)}: ${displayValue}`;
+      })
+      .join("\n");
+  }
+
+  return String(value);
+}
+
+  function normalizeForComparison(value) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+    return "";
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map(item =>
+        typeof item === "object"
+          ? normalizeForComparison(item)
+          : String(item).trim()
+      )
+      .sort((a, b) =>
+        String(a).localeCompare(String(b))
+      );
+  }
+
+  if (typeof value === "object") {
+    return Object.keys(value)
+      .sort()
+      .reduce((result, key) => {
+        result[key] =
+          normalizeForComparison(value[key]);
+
+        return result;
+      }, {});
+  }
+
+  return String(value).trim();
+}
+
+function normalizeDateValue(value) {
+  if (!value) return "";
+
+  const raw = String(value).trim();
+
+  const match = raw.match(
+    /^(\d{4})-(\d{2})-(\d{2})/
+  );
+
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? raw
+    : date.toISOString().slice(0, 10);
+}
+
+function normalizeListValue(value) {
+  let list = [];
+
+  if (Array.isArray(value)) {
+    list = value;
+  } else if (
+    typeof value === "string" &&
+    value.trim()
+  ) {
+    list = value
+      .split(/[,;|]/)
+      .map(item => item.trim());
+  }
+
+  return list
+    .map(item =>
+      String(item || "")
+        .normalize("NFKC")
+        .replace(/\uFE0F/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase()
+    )
+    .filter(Boolean)
+    .sort();
+}
+
+function normalizeContributorValue(value) {
+  if (!value) return [];
+
+  let list = value;
+
+  if (typeof value === "string") {
+    try {
+      list = JSON.parse(value);
+    } catch {
+      list = value.split(/[,;|]/);
+    }
+  }
+
+  if (!Array.isArray(list)) {
+    return [];
+  }
+
+  return list
+    .map(item => {
+      if (
+        item &&
+        typeof item === "object"
+      ) {
+        return String(
+          item.name ||
+          item.author_name ||
+          ""
+        );
+      }
+
+      return String(item || "");
+    })
+    .map(name =>
+      name
+        .normalize("NFKC")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase()
+    )
+    .filter(Boolean)
+    .sort();
+}
+
+function valuesMatch(
+  currentValue,
+  requestedValue,
+  comparisonType = "default"
+) {
+  if (comparisonType === "date") {
+    return normalizeDateValue(currentValue) ===
+      normalizeDateValue(requestedValue);
+  }
+
+  if (comparisonType === "list") {
+    return JSON.stringify(
+      normalizeListValue(currentValue)
+    ) === JSON.stringify(
+      normalizeListValue(requestedValue)
+    );
+  }
+
+  if (comparisonType === "contributors") {
+    return JSON.stringify(
+      normalizeContributorValue(currentValue)
+    ) === JSON.stringify(
+      normalizeContributorValue(requestedValue)
+    );
+  }
+
+  return JSON.stringify(
+    normalizeForComparison(currentValue)
+  ) === JSON.stringify(
+    normalizeForComparison(requestedValue)
+  );
+}
+
+  function comparisonField(
+  label,
+  currentValue,
+  requestedValue,
+  comparisonType = "default"
+) {
+  const unchanged =
+    valuesMatch(
+      currentValue,
+      requestedValue,
+      comparisonType
+    );
+
+  const currentDisplay =
+    normalizeValue(currentValue);
+
+  const requestedDisplay =
+    normalizeValue(requestedValue);
+
+  return `
+    <div class="comparison-field ${
+      unchanged
+        ? "unchanged"
+        : "changed"
+    }">
+      <span class="comparison-label">
+        ${escapeHtml(label)}
+      </span>
+
+      <div class="comparison-grid">
+        <div>
+          <h4 class="comparison-heading">
+            Current
+          </h4>
+
+          <div class="comparison-value">
+            ${escapeHtml(
+              currentDisplay || "—"
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h4 class="comparison-heading">
+            Requested
+          </h4>
+
+          <div class="comparison-value">
+            ${escapeHtml(
+              requestedDisplay || "—"
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+  function currentRetailerLinks(book) {
+    return {
+      website:
+        book.Website_Link || "",
+
+      amazon:
+        book.Amazon_Link || "",
+
+      barnes_noble:
+        book.BN_Link || "",
+
+      bookfunnel:
+        book.Bookfunnel_Link || "",
+
+      kobo:
+        book.Kobo_Link || "",
+
+      apple_books:
+        book.Apple_Books_Link || "",
+
+      other:
+        book.Other_Link || ""
+    };
+  }
+
+  function currentAudio(book) {
+    return {
+      has_audiobook:
+        String(
+          book.Has_Audiobook || ""
+        ).toLowerCase() === "yes" ||
+        String(
+          book.Available_Formats || ""
+        ).includes("Audiobook"),
+
+      narrators:
+        book.Audiobook_Narrators || "",
+
+      link:
+        book.Audiobook_Link || ""
+    };
+  }
+
+  function currentKids(book) {
+    return {
+      category:
+        book.Kids_Category || ""
+    };
+  }
+
+  function getLiveCoverUrl(book) {
+    if (!book.CoverImagePath) {
+      return "";
+    }
+
+    return `${STORAGE_BASE}/covers/${String(
+      book.CoverImagePath
+    )
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`;
+  }
+
+  function getRequestedCoverUrl(request) {
+    if (!request.replacement_cover_path) {
+      return "";
+    }
+
+    return `${STORAGE_BASE}/book-submissions/${String(
+      request.replacement_cover_path
+    )
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`;
+  }
+
+  async function setupRequestNavigation(currentId) {
+    const prevBtn =
+      document.getElementById(
+        "prevSubmissionBtn"
+      );
+
+    const nextBtn =
+      document.getElementById(
+        "nextSubmissionBtn"
+      );
+
+    const { data, error } =
+      await supabaseClient
+        .from("book_update_requests")
+        .select("id, created_at")
+        .in(
+          "request_status",
+          [
+            "pending",
+            "needs_info"
+          ]
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+    if (error || !data?.length) {
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    const index =
+      data.findIndex(
+        item =>
+          item.id === currentId
+      );
+
+    const previous =
+      index > 0
+        ? data[index - 1]
+        : null;
+
+    const next =
+      index >= 0 &&
+      index < data.length - 1
+        ? data[index + 1]
+        : null;
+
+    prevBtn.disabled =
+      !previous;
+
+    nextBtn.disabled =
+      !next;
+
+    if (previous) {
+      prevBtn.onclick = () => {
+        window.location.href =
+          `review-book-update.html?id=${encodeURIComponent(
+            previous.id
+          )}`;
+      };
+    }
+
+    if (next) {
+      nextBtn.onclick = () => {
+        window.location.href =
+          `review-book-update.html?id=${encodeURIComponent(
+            next.id
+          )}`;
+      };
+    }
+  }
+
+  async function initBookUpdateReview() {
+    await loadMateMasieShell(
+      "review-queue"
+    );
+
+    const auth =
+      await requireAdmin();
+
+    if (!auth) {
+      return;
+    }
+
+    setTopbarUser(
+      auth.user,
+      auth.profile
+    );
+
+    const target =
+      document.getElementById(
+        "submissionContent"
+      );
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const id =
+      params.get("id");
+
+    if (!id) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>Missing update request ID</h2>
+        </div>
+      `;
+
+      return;
+    }
+
+    const {
+      data: request,
+      error: requestError
+    } =
+      await supabaseClient
+        .from("book_update_requests")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+
+    if (
+      requestError ||
+      !request
+    ) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>Update request not found</h2>
+
+          <p class="mm-muted">
+            ${escapeHtml(
+              requestError?.message ||
+              "This update request could not be loaded."
+            )}
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    const {
+      data: liveBook,
+      error: liveBookError
+    } =
+      await supabaseClient
+        .from("books")
+        .select("*")
+        .eq(
+          "Book_ID",
+          request.book_id
+        )
+        .maybeSingle();
+
+    if (
+      liveBookError ||
+      !liveBook
+    ) {
+      target.innerHTML = `
+        <div class="mm-card">
+          <h2>Live book not found</h2>
+
+          <p class="mm-muted">
+            ${escapeHtml(
+              liveBookError?.message ||
+              "The live book connected to this request could not be loaded."
+            )}
+          </p>
+        </div>
+      `;
+
+      return;
+    }
+
+    await setupRequestNavigation(
+      request.id
+    );
+
+    currentUpdateRequest = request;
+currentLiveBook = liveBook;
+
+const proposed =
+  request.proposed_data || {};
+
+    document.getElementById(
+      "pageTitle"
+    ).textContent =
+      proposed.title ||
+      liveBook.Title ||
+      "Book Update Request";
+
+    const liveCover =
+      getLiveCoverUrl(
+        liveBook
+      );
+
+    const requestedCover =
+      getRequestedCoverUrl(
+        request
+      );
+
+    target.innerHTML = `
+      <div class="mm-card">
+        <h2>Request Information</h2>
+
+        <div class="detail-grid">
+          <div class="detail-field">
+            <span class="detail-label">
+              Author
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.author_name ||
+                liveBook.Author_Name ||
+                "Unknown Author"
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Request ID
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.request_id
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Book ID
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.book_id
+              )}
+            </div>
+          </div>
+
+          <div class="detail-field">
+            <span class="detail-label">
+              Status
+            </span>
+
+            <div class="detail-value">
+              ${escapeHtml(
+                request.request_status
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Cover Comparison</h2>
+
+        <div class="cover-comparison">
+          <div>
+            <h3 class="comparison-heading">
+              Current Cover
+            </h3>
+
+            ${
+              liveCover
+                ? `
+                  <img
+                    src="${escapeHtml(
+                      liveCover
+                    )}"
+                    alt="Current cover"
+                  >
+                `
+                : `
+                  <p class="mm-muted">
+                    No current cover found.
+                  </p>
+                `
+            }
+          </div>
+
+          <div>
+            <h3 class="comparison-heading">
+              Requested Cover
+            </h3>
+
+            ${
+              requestedCover
+                ? `
+                  <img
+                    src="${escapeHtml(
+                      requestedCover
+                    )}"
+                    alt="Requested replacement cover"
+                  >
+                `
+                : `
+                  <p class="mm-muted">
+                    No replacement cover requested.
+                  </p>
+                `
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Requested Changes</h2>
+
+        <div style="display:grid; gap:.8rem;">
+          ${comparisonField(
+            "Title",
+            liveBook.Title,
+            proposed.title
+          )}
+
+          ${comparisonField(
+            "Description",
+            liveBook.Description,
+            proposed.description
+          )}
+
+          ${comparisonField(
+  "Release Date",
+  liveBook["Release/Expected_Release_Date"],
+  proposed.release_date,
+  "date"
+)}
+
+          ${comparisonField(
+            "Primary Genre",
+            liveBook.Genre,
+            proposed.primary_genre
+          )}
+
+          ${comparisonField(
+  "Subgenres",
+  liveBook.Subgenres ||
+    liveBook.Sub_Genres ||
+    liveBook.sub_genres,
+  proposed.sub_genres,
+  "list"
+)}
+
+          ${comparisonField(
+  "Vibes",
+  liveBook.Vibes || liveBook.vibes,
+  proposed.vibes,
+  "list"
+)}
+
+
+          ${comparisonField(
+            "Spice Level",
+            liveBook.Spice_Level,
+            proposed.spice_level
+          )}
+
+          ${comparisonField(
+            "Age Range",
+            liveBook.Age_Range,
+            proposed.age_range
+          )}
+
+          ${comparisonField(
+  "Representation",
+  liveBook.Representation ||
+    liveBook.representation,
+  proposed.representation,
+  "list"
+)}
+
+          ${comparisonField(
+            "Series Name",
+            liveBook.Series_Name,
+            proposed.series_name
+          )}
+
+          ${comparisonField(
+            "Series Number",
+            liveBook.Series_Number,
+            proposed.series_number
+          )}
+
+          ${comparisonField(
+  "Available Formats",
+  liveBook.Available_Formats ||
+    liveBook.available_formats,
+  proposed.available_formats,
+  "list"
+)}
+
+          ${comparisonField(
+            "Retailer Links",
+            currentRetailerLinks(
+              liveBook
+            ),
+            proposed.retailer_links
+          )}
+
+          ${comparisonField(
+            "Word Count",
+            liveBook.Word_Count,
+            proposed.word_count
+          )}
+
+          ${comparisonField(
+            "Page Count",
+            liveBook.Page_Count,
+            proposed.page_count
+          )}
+
+          ${comparisonField(
+            "Audiobook",
+            currentAudio(
+              liveBook
+            ),
+            proposed.audio
+          )}
+
+          ${comparisonField(
+            "BLK Shelf Kids",
+            currentKids(
+              liveBook
+            ),
+            proposed.kids
+          )}
+
+          ${comparisonField(
+  "Contributors",
+  liveBook.Contributors,
+  proposed.co_authors,
+  "contributors"
+)}
+        </div>
+      </div>
+
+      <div class="mm-card section-card">
+        <h2>Admin Actions</h2>
+
+        <textarea
+          class="admin-notes"
+          id="adminNotes"
+          placeholder="Add internal review notes..."
+        >${escapeHtml(
+          request.reviewer_notes || ""
+        )}</textarea>
+
+        <div class="review-action-stack">
+  <button
+    class="mm-btn approve-btn"
+    id="approveUpdateBtn"
+    type="button"
+    onclick="approveBookUpdate()"
+  >
+    Approve
+  </button>
+
+  <button
+    class="mm-btn needs-info-btn"
+    type="button"
+    onclick="saveBookUpdateStatus('needs_info')"
+  >
+    Needs Info
+  </button>
+
+  <button
+    class="mm-btn deny-btn"
+    type="button"
+    onclick="saveBookUpdateStatus('denied')"
+  >
+    Deny
+  </button>
+</div>
+
+<p
+  class="mm-muted"
+  id="actionNote"
+></p>
+      </div>
+    `;
+  }
+
+  function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+function getFileExtension(path) {
+  const fileName =
+    String(path || "")
+      .split("/")
+      .pop() || "";
+
+  const extension =
+    fileName.includes(".")
+      ? fileName.split(".").pop()
+      : "jpg";
+
+  return extension
+    .replace(/[^a-z0-9]/gi, "")
+    .toLowerCase() || "jpg";
+}
+
+async function moveRequestedCoverToLiveStorage(
+  request,
+  liveBook
+) {
+  const pendingPath =
+    request.replacement_cover_path;
+
+  if (!pendingPath) {
+    return {
+      newCoverPath: null,
+      pendingPath: null
+    };
+  }
+
+  const {
+    data: coverBlob,
+    error: downloadError
+  } =
+    await supabaseClient.storage
+      .from("book-submissions")
+      .download(pendingPath);
+
+  if (downloadError) {
+    throw new Error(
+      `Unable to read the replacement cover: ${downloadError.message}`
+    );
+  }
+
+  const extension =
+    getFileExtension(pendingPath);
+
+  const newCoverPath =
+    `${liveBook.Book_ID}-` +
+    `${slugify(
+      request.proposed_data?.title ||
+      liveBook.Title ||
+      "book-cover"
+    )}-` +
+    `${Date.now()}.${extension}`;
+
+  const {
+    error: uploadError
+  } =
+    await supabaseClient.storage
+      .from("covers")
+      .upload(
+        newCoverPath,
+        coverBlob,
+        {
+          cacheControl: "3600",
+          upsert: false,
+          contentType:
+            coverBlob.type ||
+            `image/${extension}`
+        }
+      );
+
+  if (uploadError) {
+    throw new Error(
+      `Unable to upload the replacement cover: ${uploadError.message}`
+    );
+  }
+
+  return {
+    newCoverPath,
+    pendingPath
+  };
+}
+
+async function safelyDeleteCover(
+  bucket,
+  path
+) {
+  if (!path) {
+    return;
+  }
+
+  const { error } =
+    await supabaseClient.storage
+      .from(bucket)
+      .remove([path]);
+
+  if (error) {
+    console.warn(
+      `Unable to delete ${bucket}/${path}:`,
+      error.message
+    );
+  }
+}
+
+async function saveBookUpdateStatus(status) {
+  if (!currentUpdateRequest) {
+    return;
+  }
+
+  if (
+    status === "denied" &&
+    !confirm(
+      "Deny this book update request?"
+    )
+  ) {
+    return;
+  }
+
+  const note =
+    document.getElementById(
+      "actionNote"
+    );
+
+  const adminNotes =
+    document.getElementById(
+      "adminNotes"
+    ).value.trim();
+
+  note.textContent =
+    "Saving...";
+
+  const {
+    data: userData
+  } =
+    await supabaseClient.auth
+      .getUser();
+
+  const { error } =
+    await supabaseClient
+      .from("book_update_requests")
+      .update({
+        request_status:
+          status,
+
+        reviewer_notes:
+          adminNotes,
+
+        reviewed_by:
+          userData?.user?.id ||
+          null,
+
+        reviewed_at:
+          new Date().toISOString(),
+
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq(
+        "id",
+        currentUpdateRequest.id
+      );
+
+  if (error) {
+    console.error(error);
+
+    note.textContent =
+      error.message ||
+      "Unable to update the request.";
+
+    return;
+  }
+
+  note.textContent =
+    status === "needs_info"
+      ? "Saved as Needs Info."
+      : "Update request denied.";
+
+  setTimeout(() => {
+    window.location.href =
+      "review-queue.html";
+  }, 700);
+}
+
+async function approveBookUpdate() {
+  if (
+    !currentUpdateRequest ||
+    !currentLiveBook
+  ) {
+    return;
+  }
+
+  if (
+    !confirm(
+      "Approve this update and apply it to the live book?"
+    )
+  ) {
+    return;
+  }
+
+  const note =
+    document.getElementById(
+      "actionNote"
+    );
+
+  const approveButton =
+    document.getElementById(
+      "approveUpdateBtn"
+    );
+
+  const adminNotes =
+    document.getElementById(
+      "adminNotes"
+    ).value.trim();
+
+  const oldCoverPath =
+    currentLiveBook.CoverImagePath ||
+    null;
+
+  let newCoverPath =
+    null;
+
+  let pendingPath =
+    null;
+
+  approveButton.disabled = true;
+  approveButton.textContent =
+    "Approving...";
+
+  note.textContent =
+    "Applying approved changes...";
+
+  try {
+    const coverResult =
+      await moveRequestedCoverToLiveStorage(
+        currentUpdateRequest,
+        currentLiveBook
+      );
+
+    newCoverPath =
+      coverResult.newCoverPath;
+
+    pendingPath =
+      coverResult.pendingPath;
+
+    const { error: approvalError } =
+      await supabaseClient.rpc(
+        "approve_book_update_request",
+        {
+          p_request_id:
+            currentUpdateRequest.id,
+
+          p_reviewer_notes:
+            adminNotes,
+
+          p_new_cover_path:
+            newCoverPath
+        }
+      );
+
+    if (approvalError) {
+      if (newCoverPath) {
+        await safelyDeleteCover(
+          "covers",
+          newCoverPath
+        );
+      }
+
+      throw approvalError;
+    }
+
+    /*
+      The database is now pointing to the new cover.
+      Only now is it safe to delete the old cover.
+    */
+    if (
+      newCoverPath &&
+      oldCoverPath &&
+      oldCoverPath !== newCoverPath
+    ) {
+      await safelyDeleteCover(
+        "covers",
+        oldCoverPath
+      );
+    }
+
+    if (pendingPath) {
+      await safelyDeleteCover(
+        "book-submissions",
+        pendingPath
+      );
+    }
+
+    note.textContent =
+      "Book update approved and applied.";
+
+    setTimeout(() => {
+      window.location.href =
+        "review-queue.html";
+    }, 800);
+
+  } catch (error) {
+    console.error(error);
+
+    note.textContent =
+      error.message ||
+      "Unable to approve this update.";
+
+    approveButton.disabled = false;
+    approveButton.textContent =
+      "Approve";
+  }
+}
+
+  initBookUpdateReview();
+</script>
+</body>
+</html>

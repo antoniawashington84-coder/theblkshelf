@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Books – Author Portal</title>
+
+  <link rel="stylesheet" href="../admin/css/mate-masie.css">
+
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+/>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    .content-column {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .bookshelf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.author-select-title {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+  padding: 0.35rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid rgba(230,176,106,0.35);
+  background: rgba(23,16,12,0.75);
+  color: var(--accent-light);
+  font: inherit;
+  font-size: inherit;
+  font-weight: bold;
+}
+
+    .bookshelf {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 18%),
+    linear-gradient(180deg, #2a1d14 0%, #1d140f 100%);
+  border: 10px solid #2b1d13;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03), 0 24px 70px rgba(0,0,0,0.45);
+  padding: 0.5rem 0;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.shelf-row {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 0.8rem;
+  padding: 2rem 1rem 1.1rem;
+  min-height: 285px;
+  flex-wrap: nowrap;
+}
+
+.shelf-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 20px;
+  background: linear-gradient(180deg, #7b5230 0%, #5e3b21 45%, #3f2716 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.08), inset 0 -6px 10px rgba(0,0,0,0.35), 0 -8px 20px rgba(0,0,0,0.28);
+  z-index: 1;
+}
+
+.shelf-row > * {
+  position: relative;
+  z-index: 2;
+}
+
+.portal-book {
+  width: 145px;
+  flex: 0 0 145px;
+}
+
+.portal-book-card {
+  background: linear-gradient(180deg, rgba(29,23,19,0.98), rgba(20,15,12,0.98));
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+
+.portal-cover-wrap {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+.portal-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.portal-book-info {
+  display: none;
+}
+
+.portal-status-ribbon {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  z-index: 3;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.55rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(18,14,11,0.78);
+  border: 1px solid rgba(230,176,106,0.35);
+}
+
+.portal-status-ribbon.pending { color: #f5d89d; }
+.portal-status-ribbon.approved { color: #c8f2ce; }
+.portal-status-ribbon.needs-info { color: #b7d8ff; }
+.portal-status-ribbon.denied { color: #ffd1cb; }
+
+.portal-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.65rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.88), rgba(0,0,0,0.35), transparent);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.portal-book:hover .portal-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.portal-overlay-title {
+  font-size: 0.78rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.portal-overlay-meta {
+  font-size: 0.68rem;
+  color: rgba(255,248,240,0.75);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.28rem 0.45rem;
+  border-radius: 7px;
+  font-size: 0.58rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.pending {
+  background: rgba(111,83,36,.75);
+  color: #f5d89d;
+}
+
+.status-pill.approved {
+  background: rgba(53,86,61,.75);
+  color: #c8f2ce;
+}
+
+.status-pill.needs-info {
+  background: rgba(36,69,111,.75);
+  color: #b7d8ff;
+}
+
+.status-pill.denied {
+  background: rgba(107,48,44,.75);
+  color: #ffd1cb;
+}
+
+.book-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.book-action {
+  padding: 0.5rem;
+  text-align: center;
+  color: var(--text);
+  text-decoration: none;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  font-size: 0.95rem;
+}
+
+.book-action:last-child {
+  border-right: none;
+}
+
+.book-action:hover {
+  background: rgba(230,176,106,0.12);
+  color: var(--accent-light);
+}
+
+@media (max-width: 760px) {
+  .shelf-row {
+    gap: 0.45rem;
+    padding: 1.2rem 0.5rem 0.85rem;
+    min-height: 185px;
+  }
+
+  .portal-book {
+    width: 82px;
+    flex-basis: 82px;
+  }
+
+  .portal-book-info {
+    display: none;
+  }
+
+  .book-action {
+    font-size: 0.8rem;
+    padding: 0.4rem;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="content-column">
+          <div class="bookshelf-header">
+  <div>
+    <span class="mm-eyebrow">Author Portal</span>
+
+    <h1 class="mm-page-title">
+      <span id="bookshelfTitle">My Bookshelf</span>
+    </h1>
+
+    <p class="mm-page-subtitle">
+      Track your BLK Shelf book submissions and review status.
+    </p>
+  </div>
+
+  <a class="mm-btn" id="submitForAuthorBtn" href="submit-book.html">
+    Submit New Book
+  </a>
+</div>
+
+          <div id="booksContent" class="bookshelf">
+            <div class="mm-card">
+              <p class="mm-muted">Loading your books...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../admin/js/supabase.js"></script>
+  <script src="js/portal-navigation.js"></script>
+
+  <script>
+
+    let allBooks = [];
+let linkedAuthors = [];
+let selectedAuthorId = "";
+    
+    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "Unknown date";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "Unknown date";
+
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function normalizeStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "needs-info";
+      if (status === "approved") return "approved";
+      if (status === "denied") return "denied";
+      return "pending";
+    }
+
+    function displayStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "Needs Info";
+      if (status === "approved") return "Approved";
+      if (status === "denied") return "Denied";
+      return "Pending Review";
+    }
+
+    function getCoverUrl(path) {
+      if (!path) return "";
+      return `${STORAGE_BASE}/book-submissions/${encodeURIComponent(path)}`;
+    }
+
+    function chunkBooks(items, size = 5) {
+  const chunks = [];
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size));
+  }
+  return chunks;
+}
+
+function renderBookshelfForAuthor() {
+  const target = document.getElementById("booksContent");
+  const submitBtn = document.getElementById("submitForAuthorBtn");
+
+  const visibleBooks = selectedAuthorId
+    ? allBooks.filter(book => book.author_id === selectedAuthorId)
+    : allBooks;
+
+  submitBtn.href = selectedAuthorId
+    ? `submit-book.html?author_id=${encodeURIComponent(selectedAuthorId)}`
+    : "submit-book.html";
+
+  if (!visibleBooks.length) {
+    target.innerHTML = `
+      <div class="mm-card">
+        <h2>No books for this pen name yet</h2>
+        <p class="mm-muted">Submit the first book under this author profile.</p>
+        <a class="mm-btn" href="${submitBtn.href}">Submit New Book</a>
+      </div>
+    `;
+    return;
+  }
+
+  const rows = chunkBooks(visibleBooks, 5);
+
+  target.innerHTML = rows.map(row => `
+    <div class="shelf-row">
+      ${row.map(book => {
+        const statusClass = normalizeStatus(book.submission_status);
+        const coverUrl = getCoverUrl(book.cover_path);
+        const initial = (book.title || "B").charAt(0).toUpperCase();
+
+        return `
+          <article class="portal-book">
+            <div class="portal-book-card">
+              <div class="portal-cover-wrap">
+                <span class="portal-status-ribbon ${statusClass}">
+                  ${displayStatus(book.submission_status)}
+                </span>
+
+                ${
+                  coverUrl
+                    ? `<img class="portal-cover" src="${escapeHtml(coverUrl)}" alt="${escapeHtml(book.title)} cover" onerror="this.closest('.portal-cover-wrap').innerHTML='${escapeHtml(initial)}'">`
+                    : escapeHtml(initial)
+                }
+
+                <div class="portal-overlay">
+                  <div class="portal-overlay-title">${escapeHtml(book.title || "Untitled")}</div>
+                  <div class="portal-overlay-meta">Submitted ${formatDate(book.created_at)}</div>
+                </div>
+              </div>
+
+              <div class="book-actions">
+                <a class="book-action" title="View Submission" href="book-submission.html?id=${encodeURIComponent(book.id)}">
+                  <i class="fa-solid fa-eye"></i>
+                </a>
+
+                <a class="book-action" title="Edit Submission" href="edit-book.html?id=${encodeURIComponent(book.id)}">
+                  <i class="fa-solid fa-pen"></i>
+                </a>
+
+                <a class="book-action" title="Review Status" href="book-submission.html?id=${encodeURIComponent(book.id)}">
+                  <i class="fa-solid fa-circle-info"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `).join("");
+}
+
+    async function initMyBooks() {
+      await loadAuthorPortalShell("books");
+
+      const target = document.getElementById("booksContent");
+
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      const session = sessionData?.session;
+
+      if (!session) {
+        window.location.href = "../login.html";
+        return;
+      }
+
+      const email = session.user.email;
+
+      const { data: accounts, error: accountError } = await supabaseClient
+        .from("author_accounts")
+        .select("*")
+        .eq("email", email)
+        .limit(1);
+
+      if (accountError) {
+        target.innerHTML = `<div class="mm-card"><p class="mm-muted">${accountError.message}</p></div>`;
+        return;
+      }
+
+      const account = accounts?.[0];
+
+      if (!account) {
+        target.innerHTML = `<div class="mm-card"><h2>No author account found.</h2></div>`;
+        return;
+      }
+
+      setPortalTopbarUser(session.user, account);
+
+      const { data: links, error: linksError } = await supabaseClient
+  .from("account_authors")
+  .select("author_id")
+  .eq("account_id", account.account_id);
+
+if (linksError) {
+  target.innerHTML = `<div class="mm-card"><p class="mm-muted">${linksError.message}</p></div>`;
+  return;
+}
+
+const authorIds = (links || []).map(link => link.author_id);
+
+const { data: authors, error: authorsError } = await supabaseClient
+  .from("authors")
+  .select("AUTHOR_ID, AUTHOR_NAME")
+  .in("AUTHOR_ID", authorIds);
+
+if (authorsError) {
+  target.innerHTML = `<div class="mm-card"><p class="mm-muted">${authorsError.message}</p></div>`;
+  return;
+}
+
+linkedAuthors = authors || [];
+
+if (linkedAuthors.length === 1) {
+  selectedAuthorId = linkedAuthors[0].AUTHOR_ID;
+  document.getElementById("bookshelfTitle").textContent =
+    `${linkedAuthors[0].AUTHOR_NAME}'s Bookshelf`;
+} else if (linkedAuthors.length > 1) {
+  selectedAuthorId = linkedAuthors[0].AUTHOR_ID;
+
+  document.getElementById("bookshelfTitle").innerHTML = `
+    <select class="author-select-title" id="authorShelfSelect">
+      ${linkedAuthors.map(author => `
+        <option value="${author.AUTHOR_ID}">
+          ${escapeHtml(author.AUTHOR_NAME)}
+        </option>
+      `).join("")}
+    </select>
+    Bookshelf
+  `;
+
+  document.getElementById("authorShelfSelect").addEventListener("change", event => {
+    selectedAuthorId = event.target.value;
+    renderBookshelfForAuthor();
+  });
+}
+
+      const { data: books, error: booksError } = await supabaseClient
+        .from("book_submissions")
+        .select("*")
+        .eq("account_id", account.account_id)
+        .order("created_at", { ascending: false });
+
+      if (booksError) {
+        target.innerHTML = `<div class="mm-card"><p class="mm-muted">${booksError.message}</p></div>`;
+        return;
+      }
+
+      if (!books || !books.length) {
+        target.innerHTML = `
+          <div class="mm-card">
+            <h2>No book submissions yet</h2>
+            <p class="mm-muted">Submit your first book for review.</p>
+            <a class="mm-btn" href="submit-book.html">Submit New Book</a>
+          </div>
+        `;
+        return;
+      }
+
+      allBooks = books || [];
+renderBookshelfForAuthor();
+    }
+
+    initMyBooks();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>View Author – Mate Masie</title>
+
+  <link rel="stylesheet" href="css/mate-masie.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .content-column {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    .cover-card {
+  text-align: center;
+}
+
+.cover-card img {
+  width: 100%;
+max-width: 220px;
+height: auto;
+object-fit: contain;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.25);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
+}
+
+.cover-replace-field {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  text-align: left;
+}
+
+.cover-replace-field input[type="file"] {
+  cursor: pointer;
+}
+
+.cover-help {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+}
+
+    .status-pill {
+      display: inline-block;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.8rem;
+    }
+
+    .status-pill.pending { background: rgba(111,83,36,.75); color: #f5d89d; }
+    .status-pill.approved { background: rgba(53,86,61,.75); color: #c8f2ce; }
+    .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
+    .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+    }
+
+    .detail-field {
+      padding: 0.9rem;
+      border-radius: 16px;
+      background: rgba(23,16,12,0.65);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .detail-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
+.detail-input:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.detail-select,
+.detail-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
+.detail-select:focus,
+.detail-textarea:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.detail-textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.check-card {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 58px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.check-card input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.check-card span {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.option-panel {
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(23,16,12,0.55);
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+
+.option-panel summary {
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  color: var(--accent-light);
+  font-weight: bold;
+}
+
+.option-panel-body {
+  padding: 0 1rem 1rem;
+}
+
+.option-help {
+  margin: 0 0 0.75rem;
+  color: var(--soft);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.6;
+}
+
+.detail-textarea:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.tag-edit-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
+    .section-card {
+      margin-top: 1rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(230,176,106,0.12);
+      border: 1px solid rgba(230,176,106,0.25);
+      color: var(--accent-light);
+      font-size: 0.85rem;
+    }
+
+    .compact-review {
+  grid-template-columns: 280px 1fr;
+}
+
+.review-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.compact-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.compact-description {
+  max-height: 190px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+}
+
+.review-action-stack {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.book-action-panel h2,
+.book-status-panel h2 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.book-status-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.book-status-item {
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.book-status-label {
+  display: block;
+  color: var(--soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.book-status-value {
+  color: var(--text);
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+.review-accordion {
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 18px;
+  overflow: visible;
+}
+
+.review-accordion summary {
+  cursor: pointer;
+  padding: 1rem;
+  color: var(--accent-light);
+  font-weight: bold;
+}
+
+.accordion-body {
+  padding: 0 1rem 1rem;
+}
+
+.admin-notes {
+  width: 100%;
+  min-height: 130px;
+  resize: vertical;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.22);
+  background: rgba(23,16,12,0.92);
+  color: var(--text);
+  font: inherit;
+}
+
+.mm-btn.approve-btn {
+  background: #2f6b3f;
+  color: #fff8f0;
+  border-color: rgba(200,242,206,0.35);
+}
+
+.mm-btn.needs-info-btn {
+  background: #24456f;
+  color: #fff8f0;
+  border-color: rgba(183,216,255,0.35);
+}
+
+.mm-btn.deny-btn {
+  background: #6b302c;
+  color: #fff8f0;
+  border-color: rgba(255,209,203,0.35);
+}
+
+.save-toast {
+
+  position: fixed;
+
+  right: 24px;
+
+  bottom: 24px;
+
+  background: #2f6b3f;
+
+  color: white;
+
+  padding: .9rem 1.3rem;
+
+  border-radius: 14px;
+
+  font-weight: 600;
+
+  box-shadow: 0 14px 40px rgba(0,0,0,.35);
+
+  opacity: 0;
+
+  transform: translateY(20px);
+
+  transition: all .25s ease;
+
+  z-index: 9999;
+
+}
+
+.save-toast.show {
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+}
+
+@media (max-width: 900px) {
+  .compact-review {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+    @media (max-width: 850px) {
+      .submission-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-card {
+        max-width: 260px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hidden {
+  display: none;
+}
+
+.tag-picker {
+  position: relative;
+  min-height: 58px;
+  padding: 0.65rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.author-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(230,176,106,0.12);
+  border: 1px solid rgba(230,176,106,0.28);
+  color: var(--accent-light);
+  font-size: 0.9rem;
+}
+
+.author-tag.unmatched {
+  background: rgba(255,255,255,0.08);
+  color: var(--muted);
+}
+
+.author-tag button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#coAuthorInput {
+  border: none;
+  background: transparent;
+  padding: 0.4rem;
+  color: var(--text);
+  width: 100%;
+}
+
+#coAuthorInput:focus {
+  outline: none;
+}
+
+.tag-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 20;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 14px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.suggestion-item {
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: rgba(23,16,12,0.8);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.suggestion-item:hover {
+  background: rgba(230,176,106,0.12);
+}
+
+.suggestion-meta {
+  display: block;
+  color: var(--soft);
+  font-size: 0.82rem;
+}
+
+.global-autocomplete {
+  position: absolute;
+  z-index: 99999;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 14px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.global-autocomplete.hidden {
+  display: none;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="mm-layout">
+    <div id="mateMasieSidebar"></div>
+
+    <main class="mm-main">
+      <div id="mateMasieTopbar"></div>
+
+      <section class="mm-content">
+        <div class="content-column">
+          <span class="mm-eyebrow">Authors</span>
+<h1 class="mm-page-title" id="pageTitle">Author Details</h1>
+<p class="mm-page-subtitle">
+  View and edit an approved author profile.
+</p>
+
+          <div class="mm-btn-row" id="pageActions">
+  <a class="mm-btn mm-btn-secondary" href="authors.html" id="cancelBtn">
+  ← Back to Authors
+</a>
+
+<button class="mm-btn" id="editAuthorBtn" type="button">
+  Edit Author
+</button>
+</div>
+
+          <div id="submissionContent">
+            <div class="mm-card">
+              <p class="mm-muted">Loading submission...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/components/book-form-options.js"></script>
+<script src="js/components/book-form-ui.js"></script>
+<script src="js/components/author-form-data.js"></script>
+<script src="js/components/book-form-data.js"></script>
+<script src="js/components/contributor-picker.js"></script>
+<script src="js/components/series-picker.js"></script>
+
+  <script>
+    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+    let editMode = false;
+let currentAuthor = null;
+
+const {
+  GENRES,
+  SUBGENRES,
+  VIBES,
+  REPRESENTATION,
+  SPICE_LEVELS,
+  AGE_RANGES,
+  FORMATS,
+  KIDS_CATEGORIES
+} = window.BookFormOptions;
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function normalizeStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "needs-info";
+      if (status === "approved") return "approved";
+      if (status === "denied") return "denied";
+      return "pending";
+    }
+
+    function displayStatus(value) {
+      const status = String(value || "pending").toLowerCase().trim();
+      if (status === "needs_info") return "Needs Info";
+      if (status === "approved") return "Approved";
+      if (status === "denied") return "Denied";
+      return "Pending Review";
+    }
+
+    function normalizeDriveImageUrl(url) {
+  if (!url) return "";
+
+  const value = String(url).trim();
+
+  const fileMatch = value.match(/\/file\/d\/([^/]+)/);
+  if (fileMatch && fileMatch[1]) {
+    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w900`;
+  }
+
+  const idMatch = value.match(/[?&]id=([^&]+)/);
+  if (idMatch && idMatch[1]) {
+    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w900`;
+  }
+
+  return value;
+}
+
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+async function uploadReplacementAuthorPhoto(file, author) {
+  if (!file) return null;
+
+  const extension = file.name.split(".").pop() || "jpg";
+  const baseName = slugify(
+    author.AUTHOR_NAME || author.AUTHOR_ID || "author-photo"
+  );
+
+  const fileName =
+    `${author.AUTHOR_ID}-${baseName}-${Date.now()}.${extension}`;
+
+  const { error } = await supabaseClient.storage
+    .from("authors")
+    .upload(fileName, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (error) throw error;
+
+  return fileName;
+}
+
+async function deleteOldAuthorPhoto(path) {
+  if (!path) return;
+
+  const { error } = await supabaseClient.storage
+    .from("authors")
+    .remove([path]);
+
+  if (error) {
+    console.warn("Old author photo could not be deleted:", error.message);
+  }
+}
+
+function getAuthorPhotoUrl(item) {
+  if (item.AUTHORIMAGEPATH) {
+    return `${STORAGE_BASE}/authors/${encodeURIComponent(item.AUTHORIMAGEPATH)}`;
+  }
+
+  if (item.author_image_path) {
+    return `${STORAGE_BASE}/authors/${encodeURIComponent(item.author_image_path)}`;
+  }
+
+  if (item.legacy_headshot_url) {
+    return normalizeDriveImageUrl(item.legacy_headshot_url);
+  }
+
+  return "";
+}
+
+function getAuthorImageUrl(item) {
+  if (item.author_photo_path) {
+    return `${STORAGE_BASE}/author-submissions/${encodeURIComponent(item.author_photo_path)}`;
+  }
+
+  if (item.legacy_headshot_url) {
+    return normalizeDriveImageUrl(item.legacy_headshot_url);
+  }
+
+  if (item.author_image_path) {
+    return `${STORAGE_BASE}/authors/${encodeURIComponent(item.author_image_path)}`;
+  }
+
+  return "";
+}
+
+    function field(label, value, fieldName = null) {
+
+  if (editMode && fieldName) {
+    return `
+      <div class="detail-field">
+        <span class="detail-label">${escapeHtml(label)}</span>
+
+        <input
+  class="detail-input"
+  type="${fieldName === "Release/Expected_Release_Date" ? "date" : "text"}"
+  name="${escapeHtml(fieldName)}"
+  value="${
+    fieldName === "Release/Expected_Release_Date" && value
+      ? String(value).substring(0, 10)
+      : escapeHtml(value || "")
+  }"
+>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="detail-field">
+      <span class="detail-label">${escapeHtml(label)}</span>
+      <div class="detail-value">${value ? escapeHtml(value) : "—"}</div>
+    </div>
+  `;
+}
+
+function textareaField(label, value, fieldName) {
+  if (editMode && fieldName) {
+    return `
+      <div class="mm-card section-card">
+        <h2>${escapeHtml(label)}</h2>
+        <textarea
+          class="detail-textarea"
+          name="${escapeHtml(fieldName)}"
+        >${escapeHtml(value || "")}</textarea>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="mm-card section-card">
+      <h2>${escapeHtml(label)}</h2>
+      <p class="mm-muted compact-description">${escapeHtml(value || "No description provided.")}</p>
+    </div>
+  `;
+}
+
+function toArray(value) {
+  if (Array.isArray(value)) return value;
+
+  if (typeof value === "string" && value.trim()) {
+    return value
+      .split(/[,;|]/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+    function tags(values) {
+  let list = [];
+
+  if (Array.isArray(values)) {
+    list = values;
+  } else if (typeof values === "string" && values.trim()) {
+    list = values
+      .split(/[,;|]/)
+      .map(value => value.trim())
+      .filter(Boolean);
+  }
+
+  if (!list.length) return `<p class="mm-muted">None listed.</p>`;
+
+  return `
+    <div class="tag-row">
+      ${list.map(value => `<span class="tag">${escapeHtml(value)}</span>`).join("")}
+    </div>
+  `;
+}
+
+    function linkList(links) {
+      const entries = Object.entries(links || {}).filter(([_, value]) => value);
+
+      if (!entries.length) return `<p class="mm-muted">No retailer links listed.</p>`;
+
+      return `
+        <div class="detail-grid">
+          ${entries.map(([key, value]) => `
+            <div class="detail-field">
+              <span class="detail-label">${escapeHtml(key.replaceAll("_", " "))}</span>
+              <a class="detail-value" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
+                ${escapeHtml(value)}
+              </a>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    async function initSubmissionPage() {
+      await loadMateMasieShell("library");
+
+      const target = document.getElementById("submissionContent");
+      const params = new URLSearchParams(window.location.search);
+const authorId = params.get("id");
+
+if (!authorId) {
+  target.innerHTML = `
+    <div class="mm-card">
+      <h2>Missing Author ID</h2>
+      <p class="mm-muted">This page requires an author ID.</p>
+    </div>
+  `;
+  return;
+}
+
+      const auth = await requireAdmin();
+if (!auth) return;
+
+setTopbarUser(auth.user, auth.profile);
+
+      const { data: authorRows, error: authorError } = await supabaseClient
+  .from("authors")
+  .select("*")
+  .eq("AUTHOR_ID", authorId)
+  .limit(1);
+
+      if (authorError || !authorRows?.length) {
+  target.innerHTML = `
+    <div class="mm-card">
+      <h2>Author not found</h2>
+      <p class="mm-muted">
+        ${escapeHtml(authorError?.message || "This author could not be loaded.")}
+      </p>
+    </div>
+  `;
+  return;
+}
+
+const item = authorRows[0];
+currentAuthor = item;
+
+      document.getElementById("pageTitle").textContent =
+    item.AUTHOR_NAME || "Author Details";
+
+document.getElementById("editAuthorBtn").onclick = startAuthorEdit;
+
+currentAuthor.editHistory =
+  await loadAuthorEditHistory(currentAuthor.AUTHOR_ID);
+
+renderAuthor(currentAuthor);
+    }
+
+function renderAuthor(item) {
+  const target = document.getElementById("submissionContent");
+  const authorPhotoUrl = getAuthorPhotoUrl(item);
+
+  target.innerHTML = `
+        <div class="submission-layout compact-review">
+          <aside class="review-sidebar">
+            <div class="mm-card cover-card">
+
+        ${
+  authorPhotoUrl
+    ? `<img
+         src="${escapeHtml(authorPhotoUrl)}"
+         alt="${escapeHtml(item.AUTHOR_NAME)} author photo"
+         onerror="this.outerHTML='<div class=&quot;mm-muted&quot;>Author photo unavailable</div>'"
+       >`
+    : `<div class="mm-muted">No author photo</div>`
+}
+
+${
+  editMode
+    ? `
+      <div class="cover-replace-field">
+        <label class="detail-label" for="replacementAuthorPhoto">
+          Replace Author Photo
+        </label>
+
+        <input
+          class="detail-input"
+          id="replacementAuthorPhoto"
+          name="replacementAuthorPhoto"
+          type="file"
+          accept="image/*"
+        >
+
+        <p class="mm-muted cover-help">
+          Leave blank to keep the current photo.
+        </p>
+      </div>
+    `
+    : ""
+}
+      </div>
+
+<div class="mm-card section-card book-action-panel">
+  <h2>Author Actions</h2>
+
+  <div class="review-action-stack">
+    ${
+      editMode
+        ? `
+          <button class="mm-btn" type="button" onclick="saveAuthorChanges()">
+            Save Changes
+          </button>
+
+          <button class="mm-btn mm-btn-secondary" type="button" onclick="cancelAuthorEdit()">
+            Cancel
+          </button>
+
+          <button class="mm-btn mm-btn-secondary" type="button" onclick="resetAuthorEdit()">
+            Reset Changes
+          </button>
+        `
+        : `
+  <a
+  class="mm-btn mm-btn-secondary"
+  href="../author.html?id=${encodeURIComponent(item.AUTHOR_ID)}"
+  target="_blank"
+>
+  View Public Profile
+</a>
+`
+    }
+  </div>
+
+  <p class="mm-muted" id="saveNote"></p>
+</div>
+
+<div class="mm-card section-card book-status-panel">
+  <h2>Author Status</h2>
+
+  <div class="book-status-list">
+  <div class="book-status-item">
+    <span class="book-status-label">Status</span>
+
+    <span class="status-pill ${
+      String(item.APPROVAL || "").toLowerCase() === "approved"
+        ? "approved"
+        : "pending"
+    }">
+      ${escapeHtml(item.APPROVAL || "Pending")}
+    </span>
+  </div>
+
+  <div class="book-status-item">
+    <span class="book-status-label">Author ID</span>
+    <span class="book-status-value">${escapeHtml(item.AUTHOR_ID || "—")}</span>
+  </div>
+
+  <div class="book-status-item">
+    <span class="book-status-label">Added</span>
+    <span class="book-status-value">${escapeHtml(formatDate(item.TIMESTAMP))}</span>
+  </div>
+
+  <div class="book-status-item">
+    <span class="book-status-label">Last Updated</span>
+    <span class="book-status-value">
+      ${escapeHtml(formatDate(item.Last_Updated || item.updated_at))}
+    </span>
+  </div>
+</div>
+
+    </aside>
+
+    <section>
+  <div class="mm-card">
+    <h2>Author Details</h2>
+
+    <div class="detail-grid compact-grid">
+      ${field("Author Name", item.AUTHOR_NAME, "AUTHOR_NAME")}
+      ${field("Email Address", item.EMAIL_ADDRESS, "EMAIL_ADDRESS")}
+      ${field("Submission Email", item.EMAIL_ADDRESS)}
+      ${field("Website", item.WEBSITE, "WEBSITE")}
+      ${field("Mailing List", item.MAILING_LIST, "MAILING_LIST")}
+      ${field("Added", formatDate(item.TIMESTAMP))}
+      ${field("Submission ID", item.SUBMISSION_ID)}
+    </div>
+  </div>
+
+  ${textareaField("Biography", item.BIO, "BIO")}
+
+<details class="review-accordion section-card" open>
+  <summary>Genres</summary>
+
+  <div class="accordion-body">
+    ${
+      editMode
+        ? BookFormUI.checkboxPanel({
+            label: "Select Genres",
+            name: "AUTHOR_GENRES",
+            values: item.GENRES,
+            options: GENRES
+          })
+        : tags(item.GENRES)
+    }
+  </div>
+</details>
+
+<details class="review-accordion section-card">
+  <summary>Social Media</summary>
+
+    <div class="accordion-body">
+      ${
+        editMode
+          ? `
+            <div class="detail-grid">
+              ${field("TikTok", item.TIKTOK, "TIKTOK")}
+              ${field("Facebook", item.FACEBOOK, "FACEBOOK")}
+              ${field("Instagram", item.INSTAGRAM, "INSTAGRAM")}
+              ${field("Substack", item.SUBSTACK, "SUBSTACK")}
+              ${field("Other Socials", item.OTHER_SOCIALS, "OTHER_SOCIALS")}
+            </div>
+          `
+          : linkList({
+              tiktok: item.TIKTOK,
+              facebook: item.FACEBOOK,
+              instagram: item.INSTAGRAM,
+              substack: item.SUBSTACK,
+              other_socials: item.OTHER_SOCIALS
+            })
+      }
+    </div>
+  </details>
+
+  <details class="review-accordion section-card">
+    <summary>Reviewer Notes</summary>
+
+    <div class="accordion-body">
+      ${
+        editMode
+          ? `<textarea class="detail-textarea" name="Reason">${escapeHtml(item.Reason || "")}</textarea>`
+          : `<p class="mm-muted">${escapeHtml(item.Reason || "No reviewer notes yet.")}</p>`
+      }
+    </div>
+  </details>
+
+<details class="review-accordion section-card">
+  <summary>Edit History</summary>
+
+  <div class="accordion-body">
+    ${renderAuthorEditHistory(item.editHistory || [])}
+  </div>
+</details>
+</section>
+
+  </div>
+`;
+
+if (editMode) {
+  // Author-specific edit controls initialize here.
+}
+}
+
+function enforceCheckboxLimits() {
+  document.querySelectorAll('input[type="checkbox"][data-max]').forEach(input => {
+    input.addEventListener("change", event => {
+      const max = Number(event.target.dataset.max || 0);
+      if (!max) return;
+
+      const name = event.target.name;
+      const checked = Array.from(document.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`));
+
+      if (checked.length > max) {
+        event.target.checked = false;
+        alert(`You can select up to ${max}.`);
+      }
+    });
+  });
+}
+
+function startAuthorEdit() {
+  editMode = true;
+  renderAuthor(currentAuthor);
+}
+
+function cancelAuthorEdit() {
+  editMode = false;
+  renderAuthor(currentAuthor);
+}
+
+function resetAuthorEdit() {
+  renderAuthor(currentAuthor);
+}
+
+function normalizeForCompare(value) {
+  if (value === null || value === undefined) return "";
+  if (Array.isArray(value)) return value.join(", ");
+  return String(value).trim();
+}
+
+function getChangedFields(oldBook, payload) {
+  const changes = {};
+
+  Object.entries(payload).forEach(([key, newValue]) => {
+    const oldValue = oldBook[key];
+
+    if (normalizeForCompare(oldValue) !== normalizeForCompare(newValue)) {
+      changes[key] = {
+        old: oldValue ?? "",
+        new: newValue ?? ""
+      };
+    }
+  });
+
+  return changes;
+}
+
+async function saveAuthorChanges() {
+  const saveBtn = document.querySelector(".book-action-panel .mm-btn");
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const root = document.getElementById("submissionContent");
+  const payload = AuthorFormData.read(root);
+
+  const replacementPhoto =
+    root.querySelector("#replacementAuthorPhoto")?.files?.[0];
+
+  let oldPhotoPath = null;
+
+  try {
+    if (replacementPhoto) {
+      oldPhotoPath = currentAuthor.AUTHORIMAGEPATH || null;
+
+      const newPhotoPath = await uploadReplacementAuthorPhoto(
+        replacementPhoto,
+        currentAuthor
+      );
+
+      payload.AUTHORIMAGEPATH = newPhotoPath;
+    }
+
+    /*
+      Calculate actual content changes before adding the automatic timestamp.
+      This keeps Last_Updated from appearing as a user-made edit every time.
+    */
+    const changes = getChangedFields(currentAuthor, payload);
+
+    payload.Last_Updated = new Date().toISOString();
+
+    const { error: updateError } = await supabaseClient
+      .from("authors")
+      .update(payload)
+      .eq("AUTHOR_ID", currentAuthor.AUTHOR_ID);
+
+    if (updateError) throw updateError;
+
+    const { data: userData } = await supabaseClient.auth.getUser();
+    const user = userData?.user;
+
+    const historyChanges = { ...changes };
+
+    if (replacementPhoto) {
+      historyChanges.AUTHORIMAGEPATH = {
+        old: oldPhotoPath || "",
+        new: payload.AUTHORIMAGEPATH || ""
+      };
+    }
+
+    if (Object.keys(historyChanges).length) {
+      const { error: historyError } = await supabaseClient
+        .from("author_edit_history")
+        .insert({
+          author_id: currentAuthor.AUTHOR_ID,
+          edited_by: user?.id || null,
+          edited_by_email: user?.email || "",
+          change_type: replacementPhoto
+            ? "author_update_with_photo"
+            : "author_update",
+          changes: historyChanges
+        });
+
+      if (historyError) {
+        console.error("Author audit log failed:", historyError);
+      }
+    }
+
+    if (
+      oldPhotoPath &&
+      payload.AUTHORIMAGEPATH &&
+      oldPhotoPath !== payload.AUTHORIMAGEPATH
+    ) {
+      await deleteOldAuthorPhoto(oldPhotoPath);
+    }
+
+    const { data: updatedAuthor, error: fetchError } = await supabaseClient
+      .from("authors")
+      .select("*")
+      .eq("AUTHOR_ID", currentAuthor.AUTHOR_ID)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    currentAuthor = updatedAuthor;
+
+currentAuthor.editHistory =
+  await loadAuthorEditHistory(currentAuthor.AUTHOR_ID);
+
+editMode = false;
+
+    document.getElementById("pageTitle").textContent =
+      currentAuthor.AUTHOR_NAME || "Author Details";
+
+    renderAuthor(currentAuthor);
+    showSaveSuccess();
+
+    console.log("Author changes:", historyChanges);
+  } catch (error) {
+    console.error("Author save failed:", error);
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Save Changes";
+
+    alert(error.message || "Unable to save author changes.");
+  }
+}
+
+function showSaveSuccess() {
+
+  const note = document.createElement("div");
+
+  note.className = "save-toast";
+
+  note.textContent = "✓ Changes saved successfully";
+
+  document.body.appendChild(note);
+
+  requestAnimationFrame(() => note.classList.add("show"));
+
+  setTimeout(() => {
+
+    note.classList.remove("show");
+
+    setTimeout(() => note.remove(), 250);
+
+  }, 2200);
+
+}
+
+async function loadAuthorEditHistory(authorId) {
+  const { data, error } = await supabaseClient
+    .from("author_edit_history")
+    .select("*")
+    .eq("author_id", authorId)
+    .order("edited_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Unable to load author edit history:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+function renderAuthorEditHistory(history = []) {
+  if (!history.length) {
+    return `<p class="mm-muted">No edit history yet.</p>`;
+  }
+
+  return history.map(entry => `
+    <div class="book-status-item" style="margin-bottom:.75rem;">
+      <span class="book-status-label">
+        ${escapeHtml(formatDate(entry.edited_at))} ·
+        ${escapeHtml(entry.edited_by_email || "Unknown editor")}
+      </span>
+
+      ${Object.entries(entry.changes || {}).map(([field, change]) => `
+        <div class="detail-value" style="margin-top:.45rem;">
+          <strong>${escapeHtml(field)}</strong><br>
+          <span class="mm-muted">Old:</span>
+          ${escapeHtml(change?.old || "—")}<br>
+          <span class="mm-muted">New:</span>
+          ${escapeHtml(change?.new || "—")}
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+}
+
+    initSubmissionPage();
+  </script>
+</body>
+</html>
