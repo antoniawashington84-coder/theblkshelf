@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Author Actions – The BLK Shelf</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="includes/shared.css"
+  >
+
+  <style>
+    :root {
+      --bg: #0f0c0a;
+      --panel: #3f2e23;
+      --panel-2: #241d17;
+      --text: #fff8f0;
+      --muted: #e3d2c0;
+      --soft: #c9b7a5;
+      --accent: #e6b06a;
+      --accent-light: #f2c994;
+      --line: rgba(255,255,255,0.18);
+      --radius: 22px;
+      --max: 1280px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      line-height: 1.6;
+
+      background:
+        linear-gradient(
+          rgba(15,12,10,0.65),
+          rgba(15,12,10,0.65)
+        ),
+        url(
+          "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd.png"
+        );
+
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .actions-header {
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      border: 0;
+    }
+
+    .actions-wrap {
+      max-width: 900px;
+      padding: 3rem 0;
+    }
+
+    .actions-card {
+      padding: 2rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+
+      background:
+        linear-gradient(
+          180deg,
+          var(--panel),
+          var(--panel-2)
+        );
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(230,176,106,0.3);
+      background: rgba(230,176,106,0.1);
+      color: var(--accent-light);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .actions-title {
+      margin: 0 0 0.8rem;
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      line-height: 1;
+    }
+
+    .actions-subtitle {
+      margin: 0 0 1.5rem;
+      color: var(--muted);
+    }
+
+    .author-profile-display {
+      width: 100%;
+      margin-bottom: 1.25rem;
+      padding: 0.95rem;
+      border: 2px solid rgba(230,176,106,0.3);
+      border-radius: 14px;
+      background: rgba(230,176,106,0.08);
+      color: var(--accent-light);
+      font-weight: bold;
+    }
+
+    .action-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .action-card {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      gap: 1rem;
+      align-items: center;
+
+      padding: 1.4rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 18px;
+      background: rgba(23,16,12,0.75);
+
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .action-card:hover,
+    .action-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: rgba(230,176,106,0.1);
+      outline: none;
+    }
+
+    .action-icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(230,176,106,0.12);
+      color: var(--accent-light);
+      font-size: 1.45rem;
+    }
+
+    .action-card h2 {
+      margin: 0 0 0.25rem;
+      color: var(--text);
+      font-size: 1.25rem;
+    }
+
+    .action-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .page-note {
+      min-height: 1.5rem;
+      margin-top: 1rem;
+      color: var(--soft);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        background:
+          linear-gradient(
+            rgba(15,12,10,0.5),
+            rgba(15,12,10,0.5)
+          ),
+          url(
+            "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/bckgrnd-mobile.png"
+          );
+
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
+      }
+
+      .actions-wrap {
+        padding: 2rem 1rem;
+      }
+
+      .actions-card {
+        padding: 1.3rem;
+      }
+
+      .action-card {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .action-icon {
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="actions-header">
+    <div id="site-header"></div>
+  </header>
+
+  <main class="actions-wrap container">
+    <section class="actions-card">
+      <span class="eyebrow">
+        Approved Author Access
+      </span>
+
+      <h1 class="actions-title">
+        Manage Your BLK Shelf Profile
+      </h1>
+
+      <p class="actions-subtitle">
+        Choose what you would like to submit for review.
+      </p>
+
+      <div
+        class="author-profile-display"
+        id="authorProfileDisplay"
+      >
+        Verifying approved author profile...
+      </div>
+
+      <div class="action-grid">
+        <a
+          class="action-card"
+          id="newBookAction"
+          href="#"
+        >
+          <span class="action-icon">
+            <i class="fa-solid fa-book"></i>
+          </span>
+
+          <span>
+            <h2>Add a New Book</h2>
+
+            <p>
+              Submit a new title for inclusion on The BLK Shelf.
+            </p>
+          </span>
+        </a>
+
+        <a
+          class="action-card"
+          id="updateBookAction"
+          href="#"
+        >
+          <span class="action-icon">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </span>
+
+          <span>
+            <h2>Update an Existing Book</h2>
+
+            <p>
+              Request changes to one of your current books.
+            </p>
+          </span>
+        </a>
+
+        <a
+          class="action-card"
+          id="updateAuthorAction"
+          href="#"
+        >
+          <span class="action-icon">
+            <i class="fa-solid fa-user-pen"></i>
+          </span>
+
+          <span>
+            <h2>Update My Author Profile</h2>
+
+            <p>
+              Update your bio, links, genres, headshot, and profile details.
+            </p>
+          </span>
+        </a>
+      </div>
+
+      <p
+        class="page-note"
+        id="pageNote"
+        aria-live="polite"
+      ></p>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      "https://njgprucvnayyiooiftaw.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qZ3BydWN2bmF5eWlvb2lmdGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDg0ODMsImV4cCI6MjA5MzMyNDQ4M30.1r6r8vyYB0PnrZtugcBz3CPuCP9MMlTTMYXfewEINNw";
+
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+    function clean(value) {
+      return String(value || "").trim();
+    }
+
+    async function loadIncludes() {
+      const header =
+        await fetch("includes/header.html");
+
+      if (header.ok) {
+        document.getElementById(
+          "site-header"
+        ).innerHTML =
+          await header.text();
+      }
+
+      const footer =
+        await fetch("includes/footer.html");
+
+      if (footer.ok) {
+        document.getElementById(
+          "site-footer"
+        ).innerHTML =
+          await footer.text();
+      }
+    }
+
+    async function loadAuthorActions() {
+      await loadIncludes();
+
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      const authorId =
+        clean(
+          params.get("author_id")
+        );
+
+      const display =
+        document.getElementById(
+          "authorProfileDisplay"
+        );
+
+      const pageNote =
+        document.getElementById(
+          "pageNote"
+        );
+
+      if (!authorId) {
+        display.textContent =
+          "Missing approved author link.";
+
+        pageNote.textContent =
+          "Please use the personal link provided in your approval email.";
+
+        return;
+      }
+
+      const {
+        data: author,
+        error
+      } =
+        await supabaseClient
+          .from("authors")
+          .select(
+            "AUTHOR_ID, AUTHOR_NAME, APPROVAL"
+          )
+          .eq(
+            "AUTHOR_ID",
+            authorId
+          )
+          .eq(
+            "APPROVAL",
+            "Approved"
+          )
+          .maybeSingle();
+
+      if (error) {
+        throw error;
+      }
+
+      if (!author) {
+        display.textContent =
+          "Approved author profile not found.";
+
+        pageNote.textContent =
+          "The author profile connected to this link could not be verified.";
+
+        return;
+      }
+
+      display.textContent =
+        author.AUTHOR_NAME;
+
+      const encodedAuthorId =
+        encodeURIComponent(
+          author.AUTHOR_ID
+        );
+
+      document.getElementById(
+        "newBookAction"
+      ).href =
+        `submit-book.html?author_id=${encodedAuthorId}&mode=new`;
+
+      document.getElementById(
+        "updateBookAction"
+      ).href =
+        `submit-book.html?author_id=${encodedAuthorId}&mode=update`;
+
+      document.getElementById(
+        "updateAuthorAction"
+      ).href =
+        `update-author.html?author_id=${encodedAuthorId}`;
+    }
+
+    loadAuthorActions().catch(error => {
+      console.error(error);
+
+      document.getElementById(
+        "pageNote"
+      ).textContent =
+        error.message ||
+        "Unable to load author options.";
+    });
+  </script>
+</body>
+</html>
