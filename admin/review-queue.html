@@ -9,7 +9,7 @@
   <style>
     .queue-summary {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
       margin-bottom: 1.2rem;
     }
@@ -88,10 +88,6 @@
       object-fit: cover;
       display: block;
     }
-
-    .queue-thumb {
-  position: relative;
-}
 
 .queue-thumb {
   position: relative;
@@ -247,6 +243,18 @@
   </article>
 
   <article class="mm-card">
+  <div class="mm-stat" id="authorUpdatePendingCount">
+    —
+  </div>
+
+  <h3>Author Updates</h3>
+
+  <p class="mm-muted">
+    Author profile changes awaiting review.
+  </p>
+</article>
+
+  <article class="mm-card">
     <div class="mm-stat" id="bookPendingCount">—</div>
     <h3>Books</h3>
     <p class="mm-muted">Books awaiting review.</p>
@@ -267,8 +275,26 @@
 </div>
 
         <div class="queue-tabs">
-  <button class="queue-tab active" data-type="authors">Authors</button>
-  <button class="queue-tab" data-type="books">Books</button>
+  <button
+  class="queue-tab active"
+  data-type="authors"
+>
+  Authors
+</button>
+
+<button
+  class="queue-tab"
+  data-type="authorUpdates"
+>
+  Author Updates
+</button>
+
+<button
+  class="queue-tab"
+  data-type="books"
+>
+  Books
+</button>
 <button class="queue-tab" data-type="bookUpdates">Book Updates</button>
 <button class="queue-tab" data-type="events">Events</button>
 </div>
@@ -284,15 +310,18 @@
   >
 
   <select class="queue-select" id="statusFilter">
-    <option value="all">All statuses</option>
-    <option value="pending">Pending</option>
-    <option value="needs_info">Needs Info</option>
-    <option value="denied">Denied</option>
-  </select>
+  <option value="active" selected>
+    Action Required
+  </option>
+  <option value="pending">Pending</option>
+  <option value="needs_info">Needs Info</option>
+  <option value="denied">Denied</option>
+  <option value="all">All Statuses</option>
+</select>
 
   <select class="queue-select" id="sortQueue">
-    <option value="newest">Newest first</option>
     <option value="oldest">Oldest first</option>
+    <option value="newest">Newest first</option>
     <option value="az">A–Z</option>
     <option value="za">Z–A</option>
     <option value="status">Status</option>
@@ -317,6 +346,7 @@
   <script>
     let queueData = {
   authors: [],
+  authorUpdates: [],
   books: [],
   bookUpdates: [],
   events: []
@@ -349,6 +379,21 @@
         year: "numeric"
       });
     }
+
+    function getQueueDate(item) {
+  if (
+    activeType === "authorUpdates" ||
+    activeType === "bookUpdates"
+  ) {
+    return item.created_at || null;
+  }
+
+  return (
+    item.submitted_at ||
+    item.created_at ||
+    null
+  );
+}
     
     function formatAge(value) {
   if (!value) return "Unknown age";
@@ -401,11 +446,12 @@ function displayStatus(value) {
 
     function getAuthorSubmissionImage(item) {
   if (item.author_photo_path) {
-    return `${SUPABASE_STORAGE_BASE}/author-submissions/${encodeURIComponent(item.author_photo_path)}`;
-  }
-
-  if (item.legacy_headshot_url) {
-    return normalizeDriveImageUrl(item.legacy_headshot_url);
+    return `${SUPABASE_STORAGE_BASE}/author-submissions/${String(
+      item.author_photo_path
+    )
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`;
   }
 
   return "";
@@ -431,9 +477,7 @@ function normalizeDriveImageUrl(url) {
 
     async function loadPendingQueue() {
       const target = document.getElementById("queueList");
-      const A = DB.authors;
-      const B = DB.books;
-
+      
       target.innerHTML = `
         <div class="mm-card">
           <p class="mm-muted">Loading submissions...</p>
@@ -442,6 +486,7 @@ function normalizeDriveImageUrl(url) {
 
       const [
   authorsResult,
+  authorUpdatesResult,
   booksResult,
   bookUpdatesResult,
   eventsResult
@@ -449,14 +494,44 @@ function normalizeDriveImageUrl(url) {
   supabaseClient
     .from("author_submissions")
     .select("*")
-    .in("submission_status", ["pending", "needs_info"])
-    .order("created_at", { ascending: false }),
+    .in(
+  "submission_status",
+  [
+    "pending",
+    "needs_info",
+    "denied"
+  ]
+)
+    .order("submitted_at", {
+  ascending: false
+}),
+
+    supabaseClient
+  .from("author_update_requests")
+  .select("*")
+  .in("request_status", [
+    "pending",
+    "needs_info",
+    "denied"
+  ])
+  .order("created_at", {
+    ascending: false
+  }),
 
   supabaseClient
     .from("book_submissions")
     .select("*")
-    .in("submission_status", ["pending", "needs_info"])
-    .order("created_at", { ascending: false }),
+    .in(
+  "submission_status",
+  [
+    "pending",
+    "needs_info",
+    "denied"
+  ]
+)
+    .order("submitted_at", {
+  ascending: false
+}),
 
     supabaseClient
   .from("book_update_requests")
@@ -478,11 +553,14 @@ function normalizeDriveImageUrl(url) {
     "needs_info",
     "denied"
   ])
-  .order("created_at", { ascending: false })
+  .order("submitted_at", {
+  ascending: false
+})
 ]);
 
       const queueError =
   authorsResult.error ||
+  authorUpdatesResult.error ||
   booksResult.error ||
   bookUpdatesResult.error ||
   eventsResult.error;
@@ -500,10 +578,72 @@ if (queueError) {
   return;
 }
 
-queueData.authors = authorsResult.data || [];
-queueData.books = booksResult.data || [];
-queueData.bookUpdates = bookUpdatesResult.data || [];
-queueData.events = eventsResult.data || [];
+queueData.authors =
+  authorsResult.data || [];
+
+queueData.authorUpdates =
+  authorUpdatesResult.data || [];
+
+queueData.books =
+  booksResult.data || [];
+
+queueData.bookUpdates =
+  bookUpdatesResult.data || [];
+
+queueData.events =
+  eventsResult.data || [];
+
+  const updateAuthorIds = [
+  ...new Set(
+    queueData.authorUpdates
+      .map(item => item.author_id)
+      .filter(Boolean)
+  )
+];
+
+if (updateAuthorIds.length) {
+  const {
+    data: liveUpdateAuthors,
+    error: liveUpdateAuthorsError
+  } = await supabaseClient
+    .from("authors")
+    .select(
+      "AUTHOR_ID, AUTHOR_NAME, AUTHORIMAGEPATH"
+    )
+    .in(
+      "AUTHOR_ID",
+      updateAuthorIds
+    );
+
+  if (liveUpdateAuthorsError) {
+    console.error(
+      "Unable to load author update profiles:",
+      liveUpdateAuthorsError
+    );
+  } else {
+    const liveAuthorMap =
+      Object.fromEntries(
+        (liveUpdateAuthors || []).map(
+          author => [
+            author.AUTHOR_ID,
+            author
+          ]
+        )
+      );
+
+    queueData.authorUpdates =
+      queueData.authorUpdates.map(
+        request => ({
+          ...request,
+
+          live_author:
+            liveAuthorMap[
+              request.author_id
+            ] || null
+        })
+      );
+  }
+}
 
 const updateBookIds = [
   ...new Set(
@@ -553,6 +693,12 @@ const pendingAuthorCount =
     item.submission_status === "needs_info"
   ).length;
 
+  const pendingAuthorUpdateCount =
+  queueData.authorUpdates.filter(item =>
+    item.request_status === "pending" ||
+    item.request_status === "needs_info"
+  ).length;
+
 const pendingBookCount =
   queueData.books.filter(item =>
     item.submission_status === "pending" ||
@@ -574,6 +720,11 @@ const pendingEventCount =
 document.getElementById("authorPendingCount").textContent =
   pendingAuthorCount;
 
+  document.getElementById(
+  "authorUpdatePendingCount"
+).textContent =
+  pendingAuthorUpdateCount;
+
 document.getElementById("bookPendingCount").textContent =
   pendingBookCount;
 
@@ -585,8 +736,11 @@ document.getElementById("bookPendingCount").textContent =
 document.getElementById("eventPendingCount").textContent =
   pendingEventCount;
 
-document.getElementById("totalPendingCount").textContent =
+document.getElementById(
+  "totalPendingCount"
+).textContent =
   pendingAuthorCount +
+  pendingAuthorUpdateCount +
   pendingBookCount +
   pendingBookUpdateCount +
   pendingEventCount;
@@ -613,6 +767,18 @@ if (activeType === "authors") {
     item.genres,
     item.website
   ].join(" ");
+
+} else if (
+  activeType === "authorUpdates"
+) {
+  text = [
+    item.proposed_data?.author_name,
+    item.author_name,
+    item.email,
+    item.author_id,
+    item.request_id
+  ].join(" ");
+
 } else if (activeType === "books") {
   text = [
     item.title,
@@ -621,6 +787,7 @@ if (activeType === "authors") {
     item.primary_genre,
     item.series_name
   ].join(" ");
+
 } else if (activeType === "bookUpdates") {
   text = [
     item.proposed_data?.title,
@@ -646,11 +813,19 @@ if (activeType === "authors") {
       if (statusFilter !== "all") {
   filtered = filtered.filter(item => {
     const status =
-      activeType === "bookUpdates"
+      activeType === "bookUpdates" ||
+      activeType === "authorUpdates"
         ? item.request_status
         : item.submission_status;
 
-    return normalizeSearch(status) === statusFilter;
+    if (statusFilter === "active") {
+      return (
+        status === "pending" ||
+        status === "needs_info"
+      );
+    }
+
+    return status === statusFilter;
   });
 }
 
@@ -664,6 +839,16 @@ filtered.sort((a, b) => {
   return item.title || "";
 }
 
+if (
+  activeType === "authorUpdates"
+) {
+  return (
+    item.proposed_data?.author_name ||
+    item.author_name ||
+    ""
+  );
+}
+
 if (activeType === "bookUpdates") {
   return item.proposed_data?.title || "";
 }
@@ -672,10 +857,13 @@ return item.event_name || "";
 };
 
 const getDate = item =>
-  new Date(item.created_at || 0);
+  new Date(
+    getQueueDate(item) || 0
+  );
 
 const getStatus = item =>
-  activeType === "bookUpdates"
+  activeType === "bookUpdates" ||
+  activeType === "authorUpdates"
     ? item.request_status || ""
     : item.submission_status || "";
 
@@ -699,6 +887,12 @@ const getStatus = item =>
 
       if (activeType === "authors") {
   renderAuthorCards(filtered);
+
+} else if (
+  activeType === "authorUpdates"
+) {
+  renderAuthorUpdateCards(filtered);
+
 } else if (activeType === "books") {
   renderBookCards(filtered);
 } else if (activeType === "bookUpdates") {
@@ -718,8 +912,15 @@ const getStatus = item =>
     const name = item.pen_name || item.author_name || "Unnamed Author";
     const email = item.email || "No email listed";
     const genres = item.genres || "No genres listed";
-    const submitted = formatDate(item.created_at);
-    const age = formatAge(item.created_at);
+    const submissionDate =
+  item.submitted_at ||
+  item.created_at;
+
+const submitted =
+  formatDate(submissionDate);
+
+const age =
+  formatAge(submissionDate);
 const statusClass = normalizeStatus(item.submission_status);
 const statusLabel = displayStatus(item.submission_status);
     const image = getAuthorSubmissionImage(item);
@@ -772,6 +973,132 @@ const statusLabel = displayStatus(item.submission_status);
   }).join("");
 }
 
+function renderAuthorUpdateCards(
+  items
+) {
+  const target =
+    document.getElementById(
+      "queueList"
+    );
+
+  target.innerHTML =
+    items.map(item => {
+      const id =
+        item.id;
+
+      const proposed =
+        item.proposed_data || {};
+
+      const name =
+        proposed.author_name ||
+        item.author_name ||
+        item.live_author?.AUTHOR_NAME ||
+        "Unnamed Author";
+
+      const email =
+        item.email || "";
+
+      const requestId =
+        item.request_id ||
+        "No request ID";
+
+      const submitted =
+        formatDate(
+          item.created_at
+        );
+
+      const age =
+        formatAge(
+          item.created_at
+        );
+
+      const statusClass =
+        normalizeStatus(
+          item.request_status
+        );
+
+      const statusLabel =
+        displayStatus(
+          item.request_status
+        );
+
+      const livePhotoPath =
+        item.live_author
+          ?.AUTHORIMAGEPATH || "";
+
+      const image =
+        livePhotoPath
+          ? `${SUPABASE_STORAGE_BASE}/authors/${String(
+              livePhotoPath
+            )
+              .split("/")
+              .map(encodeURIComponent)
+              .join("/")}`
+          : DEFAULT_AUTHOR;
+
+      return `
+        <article
+          class="mm-card queue-card"
+          data-type="author-update"
+          data-id="${escapeHtml(id)}"
+        >
+          <div class="queue-thumb">
+            <img
+              src="${escapeHtml(image)}"
+              alt="${escapeHtml(name)}"
+              onerror="this.onerror=null;this.src='${DEFAULT_AUTHOR}'"
+            >
+          </div>
+
+          <div>
+            <span class="queue-label">
+              Author Update Request
+            </span>
+
+            <h3>
+              ${escapeHtml(name)}
+            </h3>
+
+            <p class="queue-meta">
+              ${escapeHtml(email)}
+            </p>
+
+            <p class="queue-meta">
+              Submitted
+              ${escapeHtml(submitted)}
+              •
+              ${escapeHtml(age)}
+            </p>
+
+            <p class="queue-meta">
+              Ref:
+              ${escapeHtml(requestId)}
+            </p>
+          </div>
+
+          <div class="queue-action">
+            <span
+              class="review-status-pill ${escapeHtml(
+                statusClass
+              )}"
+            >
+              ${escapeHtml(statusLabel)}
+            </span>
+
+            <a
+              class="mm-btn"
+              href="review-author-update.html?id=${encodeURIComponent(
+                id
+              )}"
+            >
+              Review Update
+            </a>
+          </div>
+        </article>
+      `;
+    }).join("");
+}
+
     function renderBookCards(items) {
       const target = document.getElementById("queueList");
 
@@ -781,30 +1108,41 @@ const title = item.title || "Untitled";
 const author = item.author_name || "Unknown Author";
 const email = item.email || "";
 const genre = item.primary_genre || "";
-const submitted = formatDate(item.created_at);
-const age = formatAge(item.created_at);
+const submissionDate =
+  item.submitted_at ||
+  item.created_at;
+
+const submitted =
+  formatDate(submissionDate);
+
+const age =
+  formatAge(submissionDate);
 const statusClass = normalizeStatus(item.submission_status);
 const statusLabel = displayStatus(item.submission_status);
 
 const cover = item.cover_path
-  ? `${SUPABASE_STORAGE_BASE}/book-submissions/${encodeURIComponent(item.cover_path)}`
-  : item.legacy_cover_url
-    ? normalizeDriveImageUrl(item.legacy_cover_url)
-    : DEFAULT_COVER;
+  ? `${SUPABASE_STORAGE_BASE}/book-submissions/${String(
+      item.cover_path
+    )
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/")}`
+  : DEFAULT_COVER;
 
         return `
-          <article
-  class="mm-card queue-card"
-  data-type="book"
-  data-id="${id}"
->
 
-  <img
-    src="${escapeHtml(cover)}"
-    alt="${escapeHtml(title)} cover"
-    onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+  <article
+    class="mm-card queue-card"
+    data-type="book"
+    data-id="${escapeHtml(id)}"
   >
-</div>
+    <div class="queue-thumb">
+      <img
+        src="${escapeHtml(cover)}"
+        alt="${escapeHtml(title)} cover"
+        onerror="this.onerror=null;this.src='${DEFAULT_COVER}'"
+      >
+    </div>
 
             <div>
               <span class="queue-label">Book Submission</span>
@@ -955,8 +1293,15 @@ const cover =
       item.state
     ].filter(Boolean).join(", ") || item.event_format || "Location not provided";
 
-    const submitted = formatDate(item.created_at);
-    const age = formatAge(item.created_at);
+    const submissionDate =
+  item.submitted_at ||
+  item.created_at;
+
+const submitted =
+  formatDate(submissionDate);
+
+const age =
+  formatAge(submissionDate);
     const statusClass = normalizeStatus(item.submission_status);
     const statusLabel = displayStatus(item.submission_status);
 

@@ -7,6 +7,89 @@
   <title>Mate Masie Dashboard – The BLK Shelf</title>
 
   <link rel="stylesheet" href="css/mate-masie.css">
+
+  <style>
+  .dashboard-count-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+  }
+
+  .dashboard-count-card {
+    padding: 0.9rem 1rem;
+  }
+
+  .dashboard-count-card .mm-stat {
+    font-size: 1.65rem;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+
+  .dashboard-count-card h3 {
+    margin: 0.2rem 0;
+    font-size: 1rem;
+  }
+
+  .dashboard-count-card p {
+    margin: 0.2rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .dashboard-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.dashboard-snapshot-card {
+  padding: 0.9rem 1rem;
+}
+
+.dashboard-snapshot-card .mm-stat {
+  font-size: 1.65rem;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.dashboard-snapshot-card h3 {
+  margin: 0.2rem 0;
+  font-size: 1rem;
+}
+
+.dashboard-snapshot-card p {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .dashboard-snapshot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-snapshot-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+  @media (max-width: 900px) {
+    .dashboard-count-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .dashboard-count-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+  
 </head>
 
 <body>
@@ -22,34 +105,6 @@
         <p class="mm-page-subtitle">
           Review submissions, preserve the collection, and manage the stories entrusted to The BLK Shelf.
         </p>
-
-        <div class="mm-grid mm-grid-2">
-          <article class="mm-card">
-            <div class="mm-stat" id="pendingAuthorsCount">—</div>
-            <h3>Pending Authors</h3>
-            <p class="mm-muted">Author submissions waiting for review.</p>
-          </article>
-
-          <article class="mm-card">
-            <div class="mm-stat" id="pendingBooksCount">—</div>
-            <h3>Pending Books</h3>
-            <p class="mm-muted">Book submissions waiting for review.</p>
-          </article>
-
-          <article class="mm-card">
-            <div class="mm-stat" id="pendingEventsCount">—</div>
-            <h3>Pending Events</h3>
-            <p class="mm-muted">Event submissions waiting for approval.</p>
-          </article>
-
-          <article class="mm-card">
-  <div class="mm-stat" id="readerCount">0</div>
-  <h3>Reader Accounts</h3>
-  <p class="mm-muted">
-    Registered reader accounts once the reader portal launches.
-  </p>
-</article>
-        </div>
 
         <div class="mm-card" style="margin-top:1rem;">
   <h2>Platform Overview</h2>
@@ -81,55 +136,68 @@
   </div>
 </div>
 
-<div class="mm-card" style="margin-top:1rem;">
+ <div class="mm-card" style="margin-top:1rem;">
+  <h2>Review Queue</h2>
 
-<h2>Submission Breakdown</h2>
+<div class="dashboard-count-grid">
+  <article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="totalActiveReviewCount">—</div>
+    <h3>Total Active Review</h3>
+    <p class="mm-muted">
+      All actionable submissions and update requests.
+    </p>
+  </article>
 
-<table class="mm-table">
+  <article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="pendingAuthorsCount">—</div>
+    <h3>Author Submissions</h3>
+    <p class="mm-muted">
+      Pending and needs-info author submissions.
+    </p>
+  </article>
 
-<thead>
+    <article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="pendingBooksCount">—</div>
+    <h3>Book Submissions</h3>
+    <p class="mm-muted">
+      Pending and needs-info book submissions.
+    </p>
+  </article>
 
-<tr>
+<article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="pendingAuthorUpdatesCount">—</div>
+    <h3>Author Updates</h3>
+    <p class="mm-muted">
+      Active author profile update requests.
+    </p>
+  </article>
 
-<th>Category</th>
 
-<th>Pending</th>
+  <article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="pendingBookUpdatesCount">—</div>
+    <h3>Book Updates</h3>
+    <p class="mm-muted">
+      Active book update requests.
+    </p>
+  </article>
 
-<th>Needs Info</th>
+  <article class="mm-card dashboard-count-card">
+    <div class="mm-stat" id="pendingEventsCount">—</div>
+    <h3>Event Submissions</h3>
+    <p class="mm-muted">
+      Pending and needs-info event submissions.
+    </p>
+  </article>
 
-<th>Approved</th>
-<th>Denied</th>
-
-</tr>
-
-</thead>
-
-<tbody id="submissionSummaryTable">
-
-<tr>
-
-<td colspan="5" class="mm-muted">
-
-Loading...
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
-
+  
+</div>
 </div>
 
 <div class="mm-card" style="margin-top:1rem;">
-
 <h2>Today's Snapshot</h2>
 
-<div class="mm-grid mm-grid-2">
-
-<article class="mm-card">
-
+<div class="dashboard-snapshot-grid">
+<article class="mm-card dashboard-snapshot-card">
 <div class="mm-stat" id="todayAuthorsCount">—</div>
 
 <h3>Author Submissions</h3>
@@ -140,7 +208,7 @@ Received today.
 
 </article>
 
-<article class="mm-card">
+<article class="mm-card dashboard-snapshot-card">
 
 <div class="mm-stat" id="todayBooksCount">—</div>
 
@@ -152,7 +220,7 @@ Received today.
 
 </article>
 
-<article class="mm-card">
+<article class="mm-card dashboard-snapshot-card">
 
 <div class="mm-stat" id="todayEventsCount">—</div>
 
@@ -164,7 +232,7 @@ Received today.
 
 </article>
 
-<article class="mm-card">
+<article class="mm-card dashboard-snapshot-card">
 
 <div class="mm-stat" id="todayApprovalsCount">—</div>
 
@@ -211,23 +279,39 @@ Completed today.
 
       setTopbarUser(auth.user, auth.profile);
 
-      const [
-  authorResult,
-  bookResult,
-  eventResult,
-  readerResult
-] = await Promise.all([
+      const activeStatuses = [
+  "pending",
+  "needs_info"
+];
 
+const [
+  authorResult,
+  authorUpdateResult,
+  bookResult,
+  bookUpdateResult,
+  eventResult
+] = await Promise.all([
   supabaseClient
     .from("author_submissions")
     .select("*", {
       count: "exact",
       head: true
     })
-    .in("submission_status", [
-      "pending",
-      "needs_info"
-    ]),
+    .in(
+      "submission_status",
+      activeStatuses
+    ),
+
+  supabaseClient
+    .from("author_update_requests")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in(
+      "request_status",
+      activeStatuses
+    ),
 
   supabaseClient
     .from("book_submissions")
@@ -235,10 +319,21 @@ Completed today.
       count: "exact",
       head: true
     })
-    .in("submission_status", [
-      "pending",
-      "needs_info"
-    ]),
+    .in(
+      "submission_status",
+      activeStatuses
+    ),
+
+  supabaseClient
+    .from("book_update_requests")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .in(
+      "request_status",
+      activeStatuses
+    ),
 
   supabaseClient
     .from("event_submissions")
@@ -246,34 +341,60 @@ Completed today.
       count: "exact",
       head: true
     })
-    .in("submission_status", [
-      "pending",
-      "needs_info"
-    ]),
-
-  Promise.resolve({ count: 0 })
-
+    .in(
+      "submission_status",
+      activeStatuses
+    )
 ]);
+
+const activeAuthorCount =
+  authorResult.count ?? 0;
+
+const activeAuthorUpdateCount =
+  authorUpdateResult.count ?? 0;
+
+const activeBookCount =
+  bookResult.count ?? 0;
+
+const activeBookUpdateCount =
+  bookUpdateResult.count ?? 0;
+
+const activeEventCount =
+  eventResult.count ?? 0;
 
 document.getElementById(
   "pendingAuthorsCount"
 ).textContent =
-  authorResult.count ?? 0;
+  activeAuthorCount;
+
+document.getElementById(
+  "pendingAuthorUpdatesCount"
+).textContent =
+  activeAuthorUpdateCount;
 
 document.getElementById(
   "pendingBooksCount"
 ).textContent =
-  bookResult.count ?? 0;
+  activeBookCount;
+
+document.getElementById(
+  "pendingBookUpdatesCount"
+).textContent =
+  activeBookUpdateCount;
 
 document.getElementById(
   "pendingEventsCount"
 ).textContent =
-  eventResult.count ?? 0;
+  activeEventCount;
 
 document.getElementById(
-  "readerCount"
+  "totalActiveReviewCount"
 ).textContent =
-  readerResult.count ?? 0;
+  activeAuthorCount +
+  activeAuthorUpdateCount +
+  activeBookCount +
+  activeBookUpdateCount +
+  activeEventCount;
 
   const [
   totalAuthorsResult,
@@ -336,8 +457,27 @@ document.getElementById(
 ).textContent =
   totalClicksResult.count ?? 0;
 
-  const today =
-  new Date().toISOString().split("T")[0];
+  const now = new Date();
+
+const startOfToday = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate(),
+  0,
+  0,
+  0,
+  0
+).toISOString();
+
+const startOfTomorrow = new Date(
+  now.getFullYear(),
+  now.getMonth(),
+  now.getDate() + 1,
+  0,
+  0,
+  0,
+  0
+).toISOString();
 
 const [
   todayAuthors,
@@ -345,40 +485,102 @@ const [
   todayEvents,
   todayApprovals
 ] = await Promise.all([
-
   supabaseClient
     .from("author_submissions")
     .select("*", {
-      count:"exact",
-      head:true
+      count: "exact",
+      head: true
     })
-    .gte("created_at", today),
+    .gte(
+      "submitted_at",
+      startOfToday
+    )
+    .lt(
+      "submitted_at",
+      startOfTomorrow
+    ),
 
   supabaseClient
     .from("book_submissions")
     .select("*", {
-      count:"exact",
-      head:true
+      count: "exact",
+      head: true
     })
-    .gte("created_at", today),
+    .gte(
+      "submitted_at",
+      startOfToday
+    )
+    .lt(
+      "submitted_at",
+      startOfTomorrow
+    ),
 
   supabaseClient
     .from("event_submissions")
     .select("*", {
-      count:"exact",
-      head:true
+      count: "exact",
+      head: true
     })
-    .gte("created_at", today),
+    .gte(
+      "submitted_at",
+      startOfToday
+    )
+    .lt(
+      "submitted_at",
+      startOfTomorrow
+    ),
+
+  Promise.all([
+  supabaseClient
+    .from("author_submissions")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("submission_status", "approved")
+    .gte("reviewed_at", startOfToday)
+    .lt("reviewed_at", startOfTomorrow),
 
   supabaseClient
-    .from("submission_log")
+    .from("book_submissions")
     .select("*", {
-      count:"exact",
-      head:true
+      count: "exact",
+      head: true
     })
-    .eq("action","approved")
-    .gte("created_at", today)
+    .eq("submission_status", "approved")
+    .gte("reviewed_at", startOfToday)
+    .lt("reviewed_at", startOfTomorrow),
 
+  supabaseClient
+    .from("event_submissions")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("submission_status", "approved")
+    .gte("reviewed_at", startOfToday)
+    .lt("reviewed_at", startOfTomorrow),
+
+  supabaseClient
+    .from("author_update_requests")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("request_status", "approved")
+    .gte("reviewed_at", startOfToday)
+    .lt("reviewed_at", startOfTomorrow),
+
+  supabaseClient
+    .from("book_update_requests")
+    .select("*", {
+      count: "exact",
+      head: true
+    })
+    .eq("request_status", "approved")
+    .gte("reviewed_at", startOfToday)
+    .lt("reviewed_at", startOfTomorrow)
+])
 ]);
 
 document.getElementById(
@@ -396,10 +598,17 @@ document.getElementById(
 ).textContent =
   todayEvents.count ?? 0;
 
+const approvalCount =
+  todayApprovals.reduce(
+    (sum, result) =>
+      sum + (result.count ?? 0),
+    0
+  );
+
 document.getElementById(
   "todayApprovalsCount"
 ).textContent =
-  todayApprovals.count ?? 0;
+  approvalCount;
 
   const activityContainer =
   document.getElementById(
@@ -409,12 +618,16 @@ document.getElementById(
 const [
   authorActivity,
   bookActivity,
+  authorUpdateActivity,
+  bookUpdateActivity,
   eventActivity
 ] = await Promise.all([
 
   supabaseClient
     .from("author_submissions")
-    .select("author_name, submission_status, reviewed_at, created_at")
+    .select(
+  "author_name, submission_status, reviewed_at, submitted_at, created_at"
+)
     .order("reviewed_at", {
       ascending: false,
       nullsFirst: false
@@ -423,16 +636,42 @@ const [
 
   supabaseClient
     .from("book_submissions")
-    .select("title, submission_status, reviewed_at, created_at")
+    .select(
+  "title, submission_status, reviewed_at, submitted_at, created_at"
+)
     .order("reviewed_at", {
       ascending: false,
       nullsFirst: false
     })
     .limit(5),
 
+    supabaseClient
+  .from("author_update_requests")
+  .select(
+    "author_name, request_status, reviewed_at, created_at"
+  )
+  .order("reviewed_at", {
+    ascending: false,
+    nullsFirst: false
+  })
+  .limit(5),
+
+  supabaseClient
+  .from("book_update_requests")
+  .select(
+    "title, request_status, reviewed_at, created_at"
+  )
+  .order("reviewed_at", {
+    ascending: false,
+    nullsFirst: false
+  })
+  .limit(5),
+
   supabaseClient
     .from("event_submissions")
-    .select("event_name, submission_status, reviewed_at, created_at")
+    .select(
+  "event_name, submission_status, reviewed_at, submitted_at, created_at"
+)
     .order("reviewed_at", {
       ascending: false,
       nullsFirst: false
@@ -449,7 +688,10 @@ const activity = [];
     name: item.author_name,
     type: "Author",
     status: item.submission_status,
-    date: item.reviewed_at || item.created_at
+    date:
+  item.reviewed_at ||
+  item.submitted_at ||
+  item.created_at
   });
 
 });
@@ -460,7 +702,36 @@ const activity = [];
     name: item.title,
     type: "Book",
     status: item.submission_status,
-    date: item.reviewed_at || item.created_at
+    date:
+  item.reviewed_at ||
+  item.submitted_at ||
+  item.created_at
+  });
+
+});
+
+(authorUpdateActivity.data || []).forEach(item => {
+
+  activity.push({
+    name: item.author_name,
+    type: "Author Update",
+    status: item.request_status,
+    date:
+      item.reviewed_at ||
+      item.created_at
+  });
+
+});
+
+(bookUpdateActivity.data || []).forEach(item => {
+
+  activity.push({
+    name: item.title,
+    type: "Book Update",
+    status: item.request_status,
+    date:
+      item.reviewed_at ||
+      item.created_at
   });
 
 });
@@ -471,7 +742,10 @@ const activity = [];
     name: item.event_name,
     type: "Event",
     status: item.submission_status,
-    date: item.reviewed_at || item.created_at
+    date:
+  item.reviewed_at ||
+  item.submitted_at ||
+  item.created_at
   });
 
 });
@@ -521,55 +795,6 @@ if (!activity.length) {
       No recent activity.
     </p>`;
 
-}
-
-    const summary =
-  await supabaseClient
-    .from("dashboard_submission_summary")
-    .select("*");
-
-if (summary.error) {
-  console.error(
-    "Submission summary failed:",
-    summary.error
-  );
-
-  document.getElementById(
-    "submissionSummaryTable"
-  ).innerHTML = `
-    <tr>
-      <td colspan="5" class="mm-muted">
-        Unable to load submission breakdown.
-      </td>
-    </tr>
-  `;
-} else {
-  const grouped = {};
-
-  (summary.data || []).forEach(row => {
-    if (!grouped[row.category]) {
-      grouped[row.category] = {};
-    }
-
-    grouped[row.category][row.submission_status] =
-      Number(row.total) || 0;
-  });
-
-  document.getElementById(
-    "submissionSummaryTable"
-  ).innerHTML = [
-    "Authors",
-    "Books",
-    "Events"
-  ].map(category => `
-    <tr>
-      <td><strong>${category}</strong></td>
-      <td>${grouped[category]?.pending ?? 0}</td>
-      <td>${grouped[category]?.needs_info ?? 0}</td>
-<td>${grouped[category]?.approved ?? 0}</td>
-<td>${grouped[category]?.denied ?? 0}</td>
-    </tr>
-  `).join("");
 }
 
     }
