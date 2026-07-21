@@ -215,15 +215,48 @@
 
         if (profileError) throw profileError;
 
-        if (!profile || profile.role !== "admin") {
-          await supabaseClient.auth.signOut();
-          throw new Error("This account does not have admin access.");
-        }
+        if (!profile || !profile.role) {
+  await supabaseClient.auth.signOut();
 
-        note.textContent = "Login successful. Redirecting...";
-        note.classList.add("success");
+  throw new Error(
+    "No portal role is assigned to this account."
+  );
+}
 
-        window.location.href = "dashboard.html";
+const role =
+  String(profile.role)
+    .trim()
+    .toLowerCase();
+
+const roleDestinations = {
+  admin:
+    "../admin/dashboard.html",
+
+  author:
+    "../author/dashboard.html",
+
+  reader:
+    "../reader/dashboard.html"
+};
+
+const destination =
+  roleDestinations[role];
+
+if (!destination) {
+  await supabaseClient.auth.signOut();
+
+  throw new Error(
+    "This account does not have a recognized portal role."
+  );
+}
+
+note.textContent =
+  "Login successful. Redirecting...";
+
+note.classList.add("success");
+
+window.location.href =
+  destination;
 
       } catch (error) {
         console.error(error);
