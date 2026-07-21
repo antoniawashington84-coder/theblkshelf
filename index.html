@@ -989,21 +989,49 @@ input:focus-visible {
   </style>
 </head>
 <body>
-  <header class="hero">
+  <header class="hero" id="homepageHeroSection">
   <div id="site-header"></div>
 
   <div class="container">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow">Black indie books, curated by mood and story</span>
-        <h1>Where <span class="accent">Black indie stories</span> get found.</h1>
-        <p class="lead">Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.</p>
-        <p class="support">The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered in a space built with their work in mind.</p>
+        <span class="eyebrow" id="heroEyebrow">
+  Black indie books, curated by mood and story
+</span>
 
-        <div class="button-row">
-          <a class="btn btn-primary" href="library.html">Explore the Library</a>
-          <a class="btn btn-secondary" href="featured-authors.html">Meet Featured Authors</a>
-        </div>
+<h1>
+  <span id="heroHeadlineBefore">Where</span>
+  <span class="accent" id="heroHeadlineAccent">
+    Black indie stories
+  </span>
+  <span id="heroHeadlineAfter">get found.</span>
+</h1>
+
+<p class="lead" id="heroLead">
+  Discover bold, romantic, gritty, lyrical, strange, and unforgettable books by Black independent authors across genres and across the diaspora.
+</p>
+
+<p class="support" id="heroSupport">
+  The Blk Shelf helps readers find the stories the algorithm keeps burying, and helps Black indie authors get discovered in a space built with their work in mind.
+</p>
+
+<div class="button-row">
+  <a
+    class="btn btn-primary"
+    id="heroPrimaryButton"
+    href="library.html"
+  >
+    Explore the Library
+  </a>
+
+  <a
+    class="btn btn-secondary"
+    id="heroSecondaryButton"
+    href="featured-authors.html"
+  >
+    Meet Featured Authors
+  </a>
+</div>
 
         <div class="stats">
           <div class="stat">
@@ -1022,7 +1050,7 @@ input:focus-visible {
       </div>
 
       <div class="trending-wrapper">
-        <aside class="hero-card">
+        <aside class="hero-card" id="homepageTrendingSection">
           <div class="section-label" id="trendingLabel">Loading shelf data</div>
           <h2 id="trendingHeading">Loading books...</h2>
           <div id="trendingBooks" class="loading-state">Loading books...</div>
@@ -1044,7 +1072,7 @@ input:focus-visible {
   </div>
 </header>
 
-  <section id="authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <section id="authors" data-homepage-section="featured_authors" style="background: rgba(255,255,255,0.02); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
   <div class="container">
     <div class="section-head">
       <div>
@@ -1080,7 +1108,7 @@ input:focus-visible {
     </div>
   </section>
 
-<section id="fresh-books">
+<section id="fresh-books" data-homepage-section="new_releases">
   <div class="container">
     <div class="section-head">
       <div>
@@ -1123,7 +1151,11 @@ input:focus-visible {
       </div>
     </div>
 
-            <aside class="callout" id="readers">
+            <aside
+  class="callout"
+  id="readers"
+  data-homepage-section="newsletter"
+>
         <div class="section-label">Join the list</div>
         <h2>Stay close to the books that matter.</h2>
         <p class="reader-signup-intro">
@@ -1178,7 +1210,7 @@ input:focus-visible {
     </div>
   </section>
 
-    <section id="submit" style="padding-top: 0;">
+<section id="submit" style="padding-top: 0;">
   <div class="container">
     <div class="callout">
       <div class="section-label">For authors</div>
@@ -1910,25 +1942,441 @@ function initializeDiscordButton() {
   }
 }
 
+async function initializePublicPage() {
+  const maintenanceEnabled =
+    await checkMaintenanceMode();
+
+  if (maintenanceEnabled) {
+    return;
+  }
+
+  await Promise.all([
+  loadHomepageHero(),
+  loadHomepageSections()
+]);
+
 initializeDiscordButton();
 renderVibeCards();
 loadLandingData();
+loadIncludes();
+}
 
   </script>
 
 <script>
+
+  async function loadHomepageSections() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/site_settings` +
+      `?setting_key=eq.homepage_sections` +
+      `&select=setting_value`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Homepage sections request failed: ${response.status}`
+      );
+    }
+
+    const rows = await response.json();
+
+    const settings =
+      rows?.[0]?.setting_value || {};
+
+    const hero =
+      document.getElementById("homepageHeroSection");
+
+    const trending =
+      document.getElementById("homepageTrendingSection");
+
+    if (hero) {
+      hero.style.display =
+        settings.hero === false
+          ? "none"
+          : "";
+    }
+
+    if (trending) {
+      trending.style.display =
+        settings.trending === false
+          ? "none"
+          : "";
+    }
+
+    document
+      .querySelectorAll("[data-homepage-section]")
+      .forEach(section => {
+        const key =
+          section.dataset.homepageSection;
+
+        section.style.display =
+          settings[key] === false
+            ? "none"
+            : "";
+      });
+
+  } catch (error) {
+    console.error(
+      "Homepage section settings failed:",
+      error
+    );
+  }
+}
+
+  async function loadHomepageHero() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/site_settings` +
+      `?setting_key=eq.homepage_hero` +
+      `&select=setting_value`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Homepage hero request failed: ${response.status}`
+      );
+    }
+
+    const rows = await response.json();
+    const settings =
+      rows?.[0]?.setting_value || {};
+
+    const setText = (id, value) => {
+      const element = document.getElementById(id);
+
+      if (element && String(value || "").trim()) {
+        element.textContent = String(value).trim();
+      }
+    };
+
+    setText(
+      "heroEyebrow",
+      settings.eyebrow
+    );
+
+    setText(
+      "heroHeadlineBefore",
+      settings.headline_before
+    );
+
+    setText(
+      "heroHeadlineAccent",
+      settings.headline_accent
+    );
+
+    setText(
+      "heroHeadlineAfter",
+      settings.headline_after
+    );
+
+    setText(
+      "heroLead",
+      settings.lead
+    );
+
+    setText(
+      "heroSupport",
+      settings.support
+    );
+
+    const primaryButton =
+      document.getElementById("heroPrimaryButton");
+
+    if (primaryButton) {
+      if (
+        String(
+          settings.primary_button_text || ""
+        ).trim()
+      ) {
+        primaryButton.textContent =
+          settings.primary_button_text.trim();
+      }
+
+      if (
+        String(
+          settings.primary_button_url || ""
+        ).trim()
+      ) {
+        primaryButton.href =
+          settings.primary_button_url.trim();
+      }
+    }
+
+    const secondaryButton =
+      document.getElementById("heroSecondaryButton");
+
+    if (secondaryButton) {
+      if (
+        String(
+          settings.secondary_button_text || ""
+        ).trim()
+      ) {
+        secondaryButton.textContent =
+          settings.secondary_button_text.trim();
+      }
+
+      if (
+        String(
+          settings.secondary_button_url || ""
+        ).trim()
+      ) {
+        secondaryButton.href =
+          settings.secondary_button_url.trim();
+      }
+    }
+
+  } catch (error) {
+    console.error(
+      "Homepage hero failed:",
+      error
+    );
+  }
+}
+
+  async function checkMaintenanceMode() {
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/site_settings` +
+      `?setting_key=eq.maintenance_mode` +
+      `&select=setting_value`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Maintenance request failed: ${response.status}`
+      );
+    }
+
+    const rows = await response.json();
+    const settings =
+      rows?.[0]?.setting_value || {};
+
+    if (settings.enabled !== true) {
+      return false;
+    }
+
+    const message =
+      String(
+        settings.message ||
+        "The BLK Shelf is temporarily unavailable."
+      ).trim();
+
+    document.body.innerHTML = `
+      <main
+        style="
+          min-height:100vh;
+          display:grid;
+          place-items:center;
+          padding:2rem;
+          background:
+            linear-gradient(
+              rgba(15,12,10,.75),
+              rgba(15,12,10,.75)
+            ),
+            url('${SUPABASE_URL}/storage/v1/object/public/logo/bckgrnd.png');
+          background-size:cover;
+          background-position:center;
+          color:#fff8f0;
+          text-align:center;
+        "
+      >
+        <section
+          style="
+            width:min(680px,100%);
+            padding:2.5rem;
+            border-radius:28px;
+            background:linear-gradient(
+              180deg,
+              #3f2e23,
+              #241d17
+            );
+            border:1px solid rgba(255,255,255,.22);
+            box-shadow:0 20px 60px rgba(0,0,0,.45);
+          "
+        >
+          <img
+            src="${SUPABASE_URL}/storage/v1/object/public/logo/blkshelf-seal-cream.png"
+            alt="The BLK Shelf"
+            style="
+              width:140px;
+              max-width:45%;
+              margin-bottom:1.5rem;
+            "
+          >
+
+          <div
+            style="
+              color:#f2c994;
+              font-size:.8rem;
+              letter-spacing:.14em;
+              text-transform:uppercase;
+            "
+          >
+            Maintenance Mode
+          </div>
+
+          <h1
+            style="
+              margin:.8rem 0 1rem;
+              font-size:clamp(2.3rem,7vw,4.5rem);
+              line-height:1;
+            "
+          >
+            We’ll Be Right Back
+          </h1>
+
+          <p
+            style="
+              margin:0;
+              color:#e3d2c0;
+              font-size:1.1rem;
+              line-height:1.7;
+              white-space:pre-wrap;
+            "
+          >${escapeHtml(message)}</p>
+        </section>
+      </main>
+    `;
+
+    return true;
+
+  } catch (error) {
+    console.error(
+      "Maintenance mode check failed:",
+      error
+    );
+
+    return false;
+  }
+}
+  
+async function loadAnnouncementBanner() {
+  const banner =
+    document.getElementById("siteAnnouncementBanner");
+
+  const messageElement =
+    document.getElementById("siteAnnouncementMessage");
+
+  const linkElement =
+    document.getElementById("siteAnnouncementLink");
+
+  if (!banner || !messageElement || !linkElement) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/site_settings` +
+      `?setting_key=eq.announcement_banner` +
+      `&select=setting_value`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Announcement request failed: ${response.status}`
+      );
+    }
+
+    const rows = await response.json();
+    const settings = rows?.[0]?.setting_value || {};
+
+    if (
+      settings.enabled !== true ||
+      !String(settings.message || "").trim()
+    ) {
+      banner.hidden = true;
+      return;
+    }
+
+    messageElement.textContent =
+      String(settings.message).trim();
+
+    const linkText =
+      String(settings.link_text || "").trim();
+
+    const linkUrl =
+      String(settings.link_url || "").trim();
+
+    if (linkText && linkUrl) {
+      linkElement.textContent = linkText;
+      linkElement.href = linkUrl;
+      linkElement.hidden = false;
+    } else {
+      linkElement.textContent = "";
+      linkElement.removeAttribute("href");
+      linkElement.hidden = true;
+    }
+
+    banner.hidden = false;
+
+  } catch (error) {
+    console.error(
+      "Announcement banner failed:",
+      error
+    );
+
+    banner.hidden = true;
+  }
+}
+
 async function loadIncludes() {
 
-  const header = await fetch('includes/header.html');
-  document.getElementById('site-header').innerHTML =
+  const header = await fetch("includes/header.html");
+
+  if (!header.ok) {
+    throw new Error(
+      `Header failed to load: ${header.status}`
+    );
+  }
+
+  document.getElementById("site-header").innerHTML =
     await header.text();
 
-  const footer = await fetch('includes/footer.html');
-  document.getElementById('site-footer').innerHTML =
+  await loadAnnouncementBanner();
+
+  const footer = await fetch("includes/footer.html");
+
+  if (!footer.ok) {
+    throw new Error(
+      `Footer failed to load: ${footer.status}`
+    );
+  }
+
+  document.getElementById("site-footer").innerHTML =
     await footer.text();
 }
 
-loadIncludes();
+initializePublicPage();
+
 </script>
 
 </body>

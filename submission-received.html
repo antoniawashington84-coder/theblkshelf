@@ -246,6 +246,9 @@
   const submissionId =
     params.get("id");
 
+    const authorSubmissionId =
+  params.get("submission_id") || "";
+
   const submissionType =
     params.get("type") || "author";
 
@@ -327,9 +330,9 @@
     "Return to Author Actions",
 
   continueHref:
-    `author-actions.html?author_id=${encodeURIComponent(
-      params.get("author_id") || ""
-    )}`
+  `author-actions.html?submission_id=${encodeURIComponent(
+    authorSubmissionId
+  )}`
 },
 
     "author-update": {
@@ -358,9 +361,9 @@
     "Return to Author Actions",
 
   continueHref:
-    `author-actions.html?author_id=${encodeURIComponent(
-      params.get("author_id") || ""
-    )}`
+  `author-actions.html?submission_id=${encodeURIComponent(
+    authorSubmissionId
+  )}`
 },
 
     event: {

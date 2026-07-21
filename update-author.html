@@ -912,17 +912,17 @@ async function loadApprovedAuthor() {
       window.location.search
     );
 
-  const authorId =
-    clean(
-      params.get("author_id")
-    );
+  const submissionId =
+  clean(
+    params.get("submission_id")
+  );
 
   const display =
     document.getElementById(
       "authorProfileDisplay"
     );
 
-  if (!authorId) {
+  if (!submissionId) {
     display.textContent =
       "Missing approved author link.";
 
@@ -932,21 +932,21 @@ async function loadApprovedAuthor() {
   }
 
   const {
-    data: author,
-    error
-  } =
-    await supabaseClient
-      .from("authors")
-      .select("*")
-      .eq(
-        "AUTHOR_ID",
-        authorId
-      )
-      .eq(
-        "APPROVAL",
-        "Approved"
-      )
-      .maybeSingle();
+  data: author,
+  error
+} =
+  await supabaseClient
+    .from("authors")
+    .select("*")
+    .eq(
+      "SUBMISSION_ID",
+      submissionId
+    )
+    .eq(
+      "APPROVAL",
+      "Approved"
+    )
+    .maybeSingle();
 
   if (error) {
     throw error;

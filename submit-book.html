@@ -1722,8 +1722,8 @@ async function loadAuthorBooks(authorId) {
   const params =
     new URLSearchParams(window.location.search);
 
-  const authorId =
-    clean(params.get("author_id"));
+  const submissionId =
+  clean(params.get("submission_id"));
 
   const authorIdInput =
   document.getElementById("authorId");
@@ -1733,7 +1733,7 @@ const authorProfileDisplay =
     "authorProfileDisplay"
   );
 
-  if (!authorId) {
+  if (!submissionId) {
     authorProfileDisplay.textContent =
   "Missing approved author link.";
 
@@ -1743,14 +1743,20 @@ const authorProfileDisplay =
   }
 
   const { data: author, error } =
-    await supabaseClient
-      .from("authors")
-      .select(
-        "AUTHOR_ID, AUTHOR_NAME, EMAIL, APPROVAL"
-      )
-      .eq("AUTHOR_ID", authorId)
-      .eq("APPROVAL", "Approved")
-      .maybeSingle();
+  await supabaseClient
+    .from("authors")
+    .select(
+      "AUTHOR_ID, AUTHOR_NAME, EMAIL, SUBMISSION_ID, APPROVAL"
+    )
+    .eq(
+      "SUBMISSION_ID",
+      submissionId
+    )
+    .eq(
+      "APPROVAL",
+      "Approved"
+    )
+    .maybeSingle();
 
   if (error) {
     throw error;
@@ -2192,9 +2198,13 @@ if (submissionType === "new") {
 window.location.href =
   `submission-received.html` +
   `?id=${encodeURIComponent(requestId)}` +
-  `&type=book-update` +
-  `&author_id=${encodeURIComponent(
-    approvedAuthor.AUTHOR_ID
+  `&type=${encodeURIComponent(
+    submissionType === "update"
+      ? "book-update"
+      : "book"
+  )}` +
+  `&submission_id=${encodeURIComponent(
+    approvedAuthor.SUBMISSION_ID
   )}`;
 
       } catch (error) {

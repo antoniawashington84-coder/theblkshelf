@@ -359,10 +359,10 @@
           window.location.search
         );
 
-      const authorId =
-        clean(
-          params.get("author_id")
-        );
+      const submissionId =
+  clean(
+    params.get("submission_id")
+  );
 
       const display =
         document.getElementById(
@@ -374,34 +374,34 @@
           "pageNote"
         );
 
-      if (!authorId) {
-        display.textContent =
-          "Missing approved author link.";
+      if (!submissionId) {
+  display.textContent =
+    "Missing approved author link.";
 
-        pageNote.textContent =
-          "Please use the personal link provided in your approval email.";
+  pageNote.textContent =
+    "Please use the personal link provided in your approval email.";
 
-        return;
-      }
+  return;
+}
 
       const {
         data: author,
         error
       } =
         await supabaseClient
-          .from("authors")
-          .select(
-            "AUTHOR_ID, AUTHOR_NAME, APPROVAL"
-          )
-          .eq(
-            "AUTHOR_ID",
-            authorId
-          )
-          .eq(
-            "APPROVAL",
-            "Approved"
-          )
-          .maybeSingle();
+  .from("authors")
+  .select(
+    "AUTHOR_ID, AUTHOR_NAME, SUBMISSION_ID, APPROVAL"
+  )
+  .eq(
+    "SUBMISSION_ID",
+    submissionId
+  )
+  .eq(
+    "APPROVAL",
+    "Approved"
+  )
+  .maybeSingle();
 
       if (error) {
         throw error;
@@ -420,25 +420,25 @@
       display.textContent =
         author.AUTHOR_NAME;
 
-      const encodedAuthorId =
-        encodeURIComponent(
-          author.AUTHOR_ID
-        );
+      const encodedSubmissionId =
+  encodeURIComponent(
+    author.SUBMISSION_ID
+  );
 
       document.getElementById(
-        "newBookAction"
-      ).href =
-        `submit-book.html?author_id=${encodedAuthorId}&mode=new`;
+  "newBookAction"
+).href =
+  `submit-book.html?submission_id=${encodedSubmissionId}&mode=new`;
 
-      document.getElementById(
-        "updateBookAction"
-      ).href =
-        `submit-book.html?author_id=${encodedAuthorId}&mode=update`;
+document.getElementById(
+  "updateBookAction"
+).href =
+  `submit-book.html?submission_id=${encodedSubmissionId}&mode=update`;
 
-      document.getElementById(
-        "updateAuthorAction"
-      ).href =
-        `update-author.html?author_id=${encodedAuthorId}`;
+document.getElementById(
+  "updateAuthorAction"
+).href =
+  `update-author.html?submission_id=${encodedSubmissionId}`;
     }
 
     loadAuthorActions().catch(error => {
