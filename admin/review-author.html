@@ -265,8 +265,9 @@
   <script>
     const SUPABASE_STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
     let currentSubmission = null;
-    let reviewList = [];
+let reviewList = [];
 let currentIndex = -1;
+let possibleLegacyBooks = [];
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -433,6 +434,271 @@ function displayStatus(value) {
   currentIndex = reviewList.findIndex(item => String(item.id) === String(currentId));
 }
 
+async function loadPossibleLegacyBooks(item) {
+  possibleLegacyBooks = [];
+
+  let ids =
+    Array.isArray(
+      item.possible_legacy_book_ids
+    )
+      ? item.possible_legacy_book_ids
+      : [];
+
+  /*
+   * Use the saved candidate list when it
+   * has already been generated.
+   */
+  if (ids.length) {
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("books")
+        .select(`
+          id,
+          Title,
+          Author_Name,
+          Email_Address,
+          Book_Approval,
+          Is_Live,
+          Author_ID
+        `)
+        .in("id", ids);
+
+    if (error) {
+      console.error(
+        "Unable to load saved legacy books:",
+        error
+      );
+
+      return;
+    }
+
+    possibleLegacyBooks =
+      data || [];
+
+    return;
+  }
+
+  /*
+   * No previous-books claim means there
+   * is nothing to search.
+   */
+  if (!item.has_previous_books) {
+    return;
+  }
+
+  const previousEmail =
+    String(
+      item.previous_book_email || ""
+    ).trim();
+
+  const previousTitle =
+    String(
+      item.previous_book_title || ""
+    ).trim();
+
+  const previousAuthorName =
+    String(
+      item.previous_author_name ||
+      item.pen_name ||
+      item.author_name ||
+      ""
+    ).trim();
+
+  if (
+    !previousEmail ||
+    !previousTitle
+  ) {
+    console.warn(
+      "Previous-book search information is incomplete."
+    );
+
+    return;
+  }
+
+  /*
+   * Find the anchor book using the email
+   * and title supplied by the author.
+   */
+  const {
+    data: anchorMatches,
+    error: anchorError
+  } =
+    await supabaseClient
+      .from("books")
+      .select(`
+        id,
+        Title,
+        Author_Name,
+        Email_Address,
+        Book_Approval,
+        Is_Live,
+        Author_ID
+      `)
+      .ilike(
+        "Email_Address",
+        previousEmail
+      )
+      .ilike(
+        "Title",
+        previousTitle
+      );
+
+  if (anchorError) {
+    console.error(
+      "Unable to search for the previous book:",
+      anchorError
+    );
+
+    return;
+  }
+
+  const unlinkedAnchors =
+    (anchorMatches || [])
+      .filter(book => {
+        return !String(
+          book.Author_ID || ""
+        ).trim();
+      });
+
+  if (!unlinkedAnchors.length) {
+    console.warn(
+      "No unlinked legacy book matched the supplied email and title."
+    );
+
+    return;
+  }
+
+  /*
+   * More than one anchor means the match
+   * is ambiguous. Show those candidates,
+   * but do not expand automatically.
+   */
+  if (unlinkedAnchors.length > 1) {
+    possibleLegacyBooks =
+      unlinkedAnchors;
+
+    ids =
+      unlinkedAnchors.map(
+        book => book.id
+      );
+  } else {
+    const anchor =
+      unlinkedAnchors[0];
+
+    const anchorEmail =
+      String(
+        anchor.Email_Address || ""
+      ).trim();
+
+    const anchorAuthorName =
+      String(
+        previousAuthorName ||
+        anchor.Author_Name ||
+        ""
+      ).trim();
+
+    /*
+     * Find the rest of the unlinked books
+     * submitted under the same name and email.
+     */
+    let query =
+      supabaseClient
+        .from("books")
+        .select(`
+          id,
+          Title,
+          Author_Name,
+          Email_Address,
+          Book_Approval,
+          Is_Live,
+          Author_ID
+        `)
+        .ilike(
+          "Email_Address",
+          anchorEmail
+        );
+
+    if (anchorAuthorName) {
+      query =
+        query.ilike(
+          "Author_Name",
+          anchorAuthorName
+        );
+    }
+
+    const {
+      data: relatedBooks,
+      error: relatedError
+    } =
+      await query;
+
+    if (relatedError) {
+      console.error(
+        "Unable to load related legacy books:",
+        relatedError
+      );
+
+      possibleLegacyBooks = [
+        anchor
+      ];
+
+      ids = [
+        anchor.id
+      ];
+    } else {
+      possibleLegacyBooks =
+        (relatedBooks || [])
+          .filter(book => {
+            return !String(
+              book.Author_ID || ""
+            ).trim();
+          });
+
+      ids =
+        possibleLegacyBooks
+          .map(book => book.id);
+    }
+  }
+
+  if (!ids.length) {
+    return;
+  }
+
+  /*
+   * Save the candidate list so the same
+   * books appear every time the review opens.
+   */
+  const {
+    error: saveError
+  } =
+    await supabaseClient
+      .from("author_submissions")
+      .update({
+        possible_legacy_book_ids:
+          ids
+      })
+      .eq(
+        "id",
+        item.id
+      );
+
+  if (saveError) {
+    console.error(
+      "Possible legacy books were found but could not be saved:",
+      saveError
+    );
+
+    return;
+  }
+
+  currentSubmission
+    .possible_legacy_book_ids =
+      ids;
+}
+
     async function loadSubmission() {
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
@@ -468,7 +734,14 @@ function displayStatus(value) {
       }
 
       currentSubmission = data;
-      renderSubmission(data);
+
+await loadPossibleLegacyBooks(
+  currentSubmission
+);
+
+renderSubmission(
+  currentSubmission
+);
     }
 
     async function copyText(id) {
@@ -508,6 +781,145 @@ function displayStatus(value) {
           ? `<a class="mm-btn btn-secondary" href="review-author.html?id=${encodeURIComponent(next.id)}">Next →</a>`
           : `<span></span>`
       }
+    </div>
+  `;
+}
+
+function legacyBooksSection() {
+  if (
+    !currentSubmission
+      ?.has_previous_books
+  ) {
+    return "";
+  }
+
+  if (
+    !possibleLegacyBooks.length
+  ) {
+    return `
+      <div class="mm-card review-section">
+        <h2>Possible Existing Books</h2>
+
+        <p class="mm-muted">
+          The author indicated that they previously submitted books,
+          but no possible legacy matches were found.
+        </p>
+      </div>
+    `;
+  }
+
+  const savedSelections =
+    Array.isArray(
+      currentSubmission
+        .selected_legacy_book_ids
+    )
+      ? currentSubmission
+          .selected_legacy_book_ids
+          .map(String)
+      : [];
+
+  return `
+    <div class="mm-card review-section">
+      <h2>Possible Existing Books</h2>
+
+      <p class="mm-muted">
+        Select only the books that belong to this author.
+        Selected books will be linked when the author is approved.
+      </p>
+
+      <div
+        style="
+          display:grid;
+          gap:.75rem;
+          margin-top:1rem;
+        "
+      >
+        ${possibleLegacyBooks
+          .map(book => {
+            const checked =
+              savedSelections.includes(
+                String(book.id)
+              );
+
+            return `
+              <label
+                style="
+                  display:flex;
+                  align-items:flex-start;
+                  gap:.75rem;
+                  padding:.9rem;
+                  border-radius:14px;
+                  background:rgba(23,16,12,.65);
+                  border:1px solid rgba(255,255,255,.12);
+                  cursor:pointer;
+                "
+              >
+                <input
+                  type="checkbox"
+                  class="legacy-book-checkbox"
+                  value="${escapeHtml(book.id)}"
+                  ${checked ? "checked" : ""}
+                  style="
+                    width:auto;
+                    margin-top:.2rem;
+                  "
+                >
+
+                <span>
+                  <strong>
+                    ${escapeHtml(
+                      book.Title ||
+                      "Untitled Book"
+                    )}
+                  </strong>
+
+                  <span
+                    class="mm-muted"
+                    style="
+                      display:block;
+                      margin-top:.25rem;
+                    "
+                  >
+                    ${escapeHtml(
+                      book.Author_Name ||
+                      "Unknown author"
+                    )}
+
+                    ·
+
+                    ${escapeHtml(
+                      book.Email_Address ||
+                      "No email"
+                    )}
+                  </span>
+
+                  <span
+                    class="mm-muted"
+                    style="
+                      display:block;
+                      margin-top:.2rem;
+                    "
+                  >
+                    Book status:
+                    ${escapeHtml(
+                      book.Book_Approval ||
+                      "Pending"
+                    )}
+
+                    ·
+
+                    Live:
+                    ${escapeHtml(
+                      book.Is_Live ||
+                      "No"
+                    )}
+                  </span>
+                </span>
+              </label>
+            `;
+          })
+          .join("")}
+      </div>
     </div>
   `;
 }
@@ -601,7 +1013,9 @@ function displayStatus(value) {
                 ${linkField("Facebook", item.facebook)}
                 ${linkField("Goodreads", item.goodreads)}
               </div>
-            </div>
+                        </div>
+
+            ${legacyBooksSection()}
 
             <div class="mm-card review-section">
               <h2>Internal Notes</h2>
@@ -659,6 +1073,14 @@ function displayStatus(value) {
   note.textContent = "Notes saved.";
 }
 
+function getSelectedLegacyBookIds() {
+  return Array.from(
+    document.querySelectorAll(
+      ".legacy-book-checkbox:checked"
+    )
+  ).map(input => input.value);
+}
+
 async function approveAuthorSubmission() {
   if (!currentSubmission) return;
 
@@ -666,6 +1088,9 @@ async function approveAuthorSubmission() {
 
   const note = document.getElementById("actionNote");
   const adminNotes = document.getElementById("adminNotes").value;
+
+  const selectedLegacyBookIds =
+  getSelectedLegacyBookIds();
 
   try {
     note.textContent = "Checking author profile...";
@@ -679,6 +1104,14 @@ await processAuthorHeadshot(authorId);
 note.textContent = "Creating author account link...";
 
 await createAuthorAccountLink(authorId);
+
+note.textContent =
+  "Linking legacy books...";
+
+await linkLegacyBooks(
+  authorId,
+  selectedLegacyBookIds
+);
 
 note.textContent = "Updating submission status...";
 
@@ -894,6 +1327,117 @@ async function updateApprovedSubmission(authorId, adminNotes) {
 
   if (error) {
     throw error;
+  }
+}
+
+async function linkLegacyBooks(
+  authorId,
+  selectedBookIds
+) {
+  const ids =
+    Array.isArray(selectedBookIds)
+      ? selectedBookIds
+      : [];
+
+  const {
+    error: selectionError
+  } =
+    await supabaseClient
+      .from("author_submissions")
+      .update({
+        selected_legacy_book_ids:
+          ids
+      })
+      .eq(
+        "id",
+        currentSubmission.id
+      );
+
+  if (selectionError) {
+    throw selectionError;
+  }
+
+  currentSubmission
+    .selected_legacy_book_ids =
+      ids;
+
+  if (!ids.length) {
+    return;
+  }
+
+  const {
+    error: linkError
+  } =
+    await supabaseClient
+      .from("books")
+      .update({
+        Author_ID: authorId,
+        Author_Status:
+          "Approved"
+      })
+      .in(
+        "id",
+        ids
+      );
+
+  if (linkError) {
+    throw linkError;
+  }
+
+  const {
+    data: linkedBooks,
+    error: readError
+  } =
+    await supabaseClient
+      .from("books")
+      .select(`
+        id,
+        Book_ID,
+        Book_Approval
+      `)
+      .in(
+        "id",
+        ids
+      );
+
+  if (readError) {
+    throw readError;
+  }
+
+  const liveBookIds =
+    (linkedBooks || [])
+      .filter(book => {
+        return (
+          String(
+            book.Book_Approval || ""
+          )
+            .trim()
+            .toLowerCase() ===
+            "approved" &&
+          String(
+            book.Book_ID || ""
+          ).trim()
+        );
+      })
+      .map(book => book.id);
+
+  if (liveBookIds.length) {
+    const {
+      error: liveError
+    } =
+      await supabaseClient
+        .from("books")
+        .update({
+          Is_Live: "Yes"
+        })
+        .in(
+          "id",
+          liveBookIds
+        );
+
+    if (liveError) {
+      throw liveError;
+    }
   }
 }
 
