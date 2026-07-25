@@ -237,7 +237,12 @@
 <script src="js/navigation.js"></script>
 
   <script>
-    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+    const STORAGE_BASE =
+  "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+
+let currentBookSubmission = null;
+let linkedAuthor = null;
+let linkedAuthorReviewUrl = "";
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -274,6 +279,26 @@
       if (status === "denied") return "Denied";
       return "Pending Review";
     }
+
+    function generateId(prefix) {
+  const now = new Date();
+
+  const stamp =
+    now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, "0") +
+    String(now.getDate()).padStart(2, "0") +
+    String(now.getHours()).padStart(2, "0") +
+    String(now.getMinutes()).padStart(2, "0") +
+    String(now.getSeconds()).padStart(2, "0");
+
+  const random =
+    Math.random()
+      .toString(36)
+      .substring(2, 6)
+      .toUpperCase();
+
+  return `${prefix}${stamp}${random}`;
+}
 
     function normalizeDriveImageUrl(url) {
   if (!url) return "";
@@ -348,35 +373,133 @@ function getAuthorImageUrl(item) {
       `;
     }
 
-    function tags(values) {
-      const list = Array.isArray(values) ? values : [];
-      if (!list.length) return `<p class="mm-muted">None listed.</p>`;
+    function normalizeList(values) {
+  if (Array.isArray(values)) {
+    return values
+      .map(value => String(value || "").trim())
+      .filter(Boolean);
+  }
 
-      return `
-        <div class="tag-row">
-          ${list.map(value => `<span class="tag">${escapeHtml(value)}</span>`).join("")}
-        </div>
-      `;
+  if (values && typeof values === "object") {
+    return Object.values(values)
+      .map(value => String(value || "").trim())
+      .filter(Boolean);
+  }
+
+  const text = String(values || "").trim();
+
+  if (!text) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map(value => String(value || "").trim())
+        .filter(Boolean);
     }
+  } catch (error) {
+    // Legacy rows may contain comma-separated text.
+  }
 
-    function linkList(links) {
-      const entries = Object.entries(links || {}).filter(([_, value]) => value);
+  return text
+    .split(/\s*[,;|]\s*/)
+    .map(value => value.trim())
+    .filter(Boolean);
+}
 
-      if (!entries.length) return `<p class="mm-muted">No retailer links listed.</p>`;
+function tags(values) {
+  const list = normalizeList(values);
 
-      return `
-        <div class="detail-grid">
-          ${entries.map(([key, value]) => `
-            <div class="detail-field">
-              <span class="detail-label">${escapeHtml(key.replaceAll("_", " "))}</span>
-              <a class="detail-value" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
-                ${escapeHtml(value)}
-              </a>
-            </div>
-          `).join("")}
-        </div>
-      `;
-    }
+  if (!list.length) {
+    return `<p class="mm-muted">None listed.</p>`;
+  }
+
+  return `
+    <div class="tag-row">
+      ${list
+        .map(value => `
+          <span class="tag">
+            ${escapeHtml(value)}
+          </span>
+        `)
+        .join("")}
+    </div>
+  `;
+}
+
+    function normalizeObject(value) {
+  if (!value) {
+    return {};
+  }
+
+  if (
+    typeof value === "object" &&
+    !Array.isArray(value)
+  ) {
+    return value;
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+
+    return (
+      parsed &&
+      typeof parsed === "object" &&
+      !Array.isArray(parsed)
+    )
+      ? parsed
+      : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function linkList(links) {
+  const normalizedLinks =
+    normalizeObject(links);
+
+  const entries =
+    Object.entries(normalizedLinks)
+      .filter(([_, value]) =>
+        String(value || "").trim()
+      );
+
+  if (!entries.length) {
+    return `
+      <p class="mm-muted">
+        No retailer links listed.
+      </p>
+    `;
+  }
+
+  return `
+    <div class="detail-grid">
+      ${entries
+        .map(([key, value]) => `
+          <div class="detail-field">
+            <span class="detail-label">
+              ${escapeHtml(
+                key.replaceAll("_", " ")
+              )}
+            </span>
+
+            <a
+              class="detail-value"
+              href="${escapeHtml(value)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ${escapeHtml(value)}
+            </a>
+          </div>
+        `)
+        .join("")}
+    </div>
+  `;
+}
 
     async function setupSubmissionNavigation(currentId) {
   const prevBtn = document.getElementById("prevSubmissionBtn");
@@ -420,11 +543,20 @@ function getAuthorImageUrl(item) {
     async function initSubmissionPage() {
       await loadMateMasieShell("review-queue");
 
-      const target = document.getElementById("submissionContent");
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+      const target =
+  document.getElementById(
+    "submissionContent"
+  );
 
-      if (!id) {
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const id =
+  params.get("id");
+
+if (!id) {
         target.innerHTML = `<div class="mm-card"><h2>Missing submission ID</h2></div>`;
         return;
       }
@@ -451,28 +583,337 @@ setTopbarUser(auth.user, auth.profile);
       }
 
       const item = book[0];
-      await setupSubmissionNavigation(item.id);
+
+currentBookSubmission = item;
+linkedAuthor = null;
+linkedAuthorReviewUrl = "";
+
+await setupSubmissionNavigation(item.id);
       const statusClass = normalizeStatus(item.submission_status);
       const coverUrl = getCoverUrl(item);
 
       let authorImageUrl = "";
 
-if (item.author_name) {
-  const { data: authorMatch } = await supabaseClient
+if (item.author_id) {
+  const cleanAuthorId =
+    String(item.author_id).trim();
+
+  const {
+    data: authorMatch,
+    error: authorError
+  } = await supabaseClient
     .from("authors")
-    .select("AUTHORIMAGEPATH")
-    .eq("AUTHOR_NAME", item.author_name)
+    .select(`
+  AUTHOR_ID,
+  SUBMISSION_ID,
+  AUTHOR_NAME,
+  EMAIL_ADDRESS,
+  AUTHORIMAGEPATH,
+  APPROVAL
+`)
+    .ilike(
+      "AUTHOR_ID",
+      cleanAuthorId
+    )
     .limit(1)
     .maybeSingle();
 
-  if (authorMatch?.AUTHORIMAGEPATH) {
-    authorImageUrl = `${STORAGE_BASE}/authors/${encodeURIComponent(authorMatch.AUTHORIMAGEPATH)}`;
+  if (authorError) {
+    console.error(
+      "Unable to load linked author:",
+      authorError
+    );
   }
+
+  linkedAuthor =
+    authorMatch || null;
+
+  if (linkedAuthor?.AUTHORIMAGEPATH) {
+    authorImageUrl =
+      `${STORAGE_BASE}/authors/` +
+      encodeURIComponent(
+        linkedAuthor.AUTHORIMAGEPATH
+      );
+  }
+
+  const approvalStatus =
+  String(
+    linkedAuthor?.APPROVAL || ""
+  )
+    .trim()
+    .toLowerCase();
+
+if (
+  approvalStatus === "approved" &&
+  linkedAuthor?.AUTHOR_ID
+) {
+  linkedAuthorReviewUrl =
+    `admin-author.html?id=${encodeURIComponent(
+      linkedAuthor.AUTHOR_ID
+    )}`;
+
+} else if (
+  linkedAuthor?.AUTHOR_ID
+) {
+  const linkedAuthorId =
+    String(
+      linkedAuthor.AUTHOR_ID
+    ).trim();
+
+  let authorSubmission = null;
+
+  /*
+   * First use the permanent author relationship.
+   * Do not filter by status because legacy rows may
+   * have a status that does not match the author table.
+   */
+  const {
+    data: authorIdMatches,
+    error: authorIdError
+  } = await supabaseClient
+    .from("author_submissions")
+    .select(`
+      id,
+      submission_id,
+      submission_status,
+      submitted_at,
+      created_at
+    `)
+    .eq(
+      "approved_author_id",
+      linkedAuthorId
+    )
+    .order(
+      "submitted_at",
+      {
+        ascending: false,
+        nullsFirst: false
+      }
+    )
+    .limit(10);
+
+  if (authorIdError) {
+    console.error(
+      "Unable to find author review by Author ID:",
+      authorIdError
+    );
+  }
+
+  if (authorIdMatches?.length) {
+    authorSubmission =
+      authorIdMatches.find(row =>
+        ["pending", "needs_info"].includes(
+          String(
+            row.submission_status || ""
+          )
+            .trim()
+            .toLowerCase()
+        )
+      ) ||
+      authorIdMatches.find(row =>
+        String(
+          row.submission_status || ""
+        )
+          .trim()
+          .toLowerCase() !==
+        "archived_duplicate"
+      ) ||
+      authorIdMatches[0];
+  }
+
+  /*
+   * Legacy fallback using the original submission ID.
+   */
+  if (
+    !authorSubmission &&
+    linkedAuthor?.SUBMISSION_ID
+  ) {
+    const {
+      data: submissionMatches,
+      error: submissionError
+    } = await supabaseClient
+      .from("author_submissions")
+      .select(`
+        id,
+        submission_id,
+        submission_status,
+        submitted_at,
+        created_at
+      `)
+      .eq(
+        "submission_id",
+        String(
+          linkedAuthor.SUBMISSION_ID
+        ).trim()
+      )
+      .order(
+        "submitted_at",
+        {
+          ascending: false,
+          nullsFirst: false
+        }
+      )
+      .limit(10);
+
+    if (submissionError) {
+      console.error(
+        "Unable to find author review by Submission ID:",
+        submissionError
+      );
+    }
+
+    if (submissionMatches?.length) {
+      authorSubmission =
+        submissionMatches.find(row =>
+          ["pending", "needs_info"].includes(
+            String(
+              row.submission_status || ""
+            )
+              .trim()
+              .toLowerCase()
+          )
+        ) ||
+        submissionMatches.find(row =>
+          String(
+            row.submission_status || ""
+          )
+            .trim()
+            .toLowerCase() !==
+          "archived_duplicate"
+        ) ||
+        submissionMatches[0];
+    }
+  }
+
+  if (authorSubmission?.id) {
+    linkedAuthorReviewUrl =
+      `review-author.html?id=${encodeURIComponent(
+        authorSubmission.id
+      )}`;
+  }
+}
+}
+
+const hasLinkedAuthor =
+  Boolean(
+    linkedAuthor?.AUTHOR_ID
+  );
+
+const authorApprovalStatus =
+  String(
+    linkedAuthor?.APPROVAL || ""
+  )
+    .trim()
+    .toLowerCase();
+
+const authorIsApproved =
+  hasLinkedAuthor &&
+  authorApprovalStatus ===
+    "approved";
+
+let authorWarningHtml = "";
+
+if (authorIsApproved) {
+  authorWarningHtml = `
+    <div
+      style="
+        margin-bottom:1rem;
+        padding:.85rem 1rem;
+        border-radius:14px;
+        background:rgba(53,86,61,.3);
+        border:1px solid rgba(123,188,138,.3);
+        color:#c8f2ce;
+      "
+    >
+      Linked to approved author:
+      <strong>
+        ${escapeHtml(
+          linkedAuthor.AUTHOR_NAME
+        )}
+      </strong>
+
+      <span
+        style="
+          display:block;
+          margin-top:.25rem;
+          font-size:.88rem;
+        "
+      >
+        Author ID:
+        ${escapeHtml(
+          linkedAuthor.AUTHOR_ID
+        )}
+      </span>
+    </div>
+  `;
+
+} else if (hasLinkedAuthor) {
+  authorWarningHtml = `
+    <div
+      style="
+        margin-bottom:1rem;
+        padding:.85rem 1rem;
+        border-radius:14px;
+        background:rgba(111,83,36,.35);
+        border:1px solid rgba(245,216,157,.3);
+        color:#f5d89d;
+      "
+    >
+      Connected to author:
+      <strong>
+        ${escapeHtml(
+          linkedAuthor.AUTHOR_NAME
+        )}
+      </strong>
+
+      <span
+        style="
+          display:block;
+          margin-top:.25rem;
+          font-size:.88rem;
+        "
+      >
+        Author ID:
+        ${escapeHtml(
+          linkedAuthor.AUTHOR_ID
+        )}
+      </span>
+
+      <span
+        style="
+          display:block;
+          margin-top:.25rem;
+        "
+      >
+        This author profile is still pending approval.
+        Approve the author before publishing this book.
+      </span>
+    </div>
+  `;
+
+} else {
+  authorWarningHtml = `
+    <div
+      style="
+        margin-bottom:1rem;
+        padding:.85rem 1rem;
+        border-radius:14px;
+        background:rgba(107,48,44,.35);
+        border:1px solid rgba(255,209,203,.3);
+        color:#ffd1cb;
+      "
+    >
+      This book is not connected to an author profile.
+      Link or approve the author before publishing this book.
+    </div>
+  `;
 }
 
       document.getElementById("pageTitle").textContent = item.title || "Book Submission";
 
       target.innerHTML = `
+  ${authorWarningHtml}
+
   <div class="submission-layout compact-review">
     <aside class="review-sidebar">
       <div class="mm-card cover-card">
@@ -539,13 +980,50 @@ if (item.author_name) {
       </div>
 
       <div
+  style="
+    font-weight:600;
+    color:var(--text);
+  "
+>
+  ${escapeHtml(
+    linkedAuthor?.AUTHOR_NAME ||
+    item.author_name ||
+    "Unknown Author"
+  )}
+</div>
+
+${
+  linkedAuthorReviewUrl
+    ? `
+      <a
+        class="mm-btn mm-btn-secondary"
+        href="${escapeHtml(
+          linkedAuthorReviewUrl
+        )}"
         style="
-          font-weight:600;
-          color:var(--text);
+          display:inline-block;
+          margin-top:.55rem;
+          padding:.45rem .7rem;
+          font-size:.82rem;
         "
       >
-        ${escapeHtml(item.author_name || "Unknown Author")}
-      </div>
+        <i class="fa-solid fa-user-check"></i>
+        Review Author
+      </a>
+    `
+    : `
+      <span
+        class="mm-muted"
+        style="
+          display:block;
+          margin-top:.45rem;
+          font-size:.82rem;
+        "
+      >
+        Author review page unavailable
+      </span>
+    `
+}
     </div>
 
   </div>
@@ -566,7 +1044,11 @@ if (item.author_name) {
         >${escapeHtml(item.admin_notes || "")}</textarea>
 
         <div class="review-action-stack">
-          <button class="mm-btn approve-btn" onclick="approveBookSubmission('${escapeHtml(item.id)}')">
+          <button
+  class="mm-btn approve-btn"
+  onclick="approveBookSubmission('${escapeHtml(item.id)}')"
+  ${authorIsApproved ? "" : "disabled"}
+>
   Approve
 </button>
 
@@ -590,12 +1072,29 @@ if (item.author_name) {
         <div class="detail-grid compact-grid">
           ${field("Title", item.title)}
           ${field("Author", item.author_name)}
-          ${field("Submitted", formatDate(item.created_at))}
+          ${field(
+  "Submitted",
+  formatDate(
+    item.submitted_at ||
+    item.created_at
+  )
+)}
           ${field("Release", formatDate(item.release_date))}
           ${field("Genre", item.primary_genre)}
           ${field("Age", item.age_range)}
           ${field("Spice", item.spice_level)}
-          ${field("Series", item.series_name ? `${item.series_name} #${item.series_number || ""}` : "")}
+
+${field(
+  "Formats",
+  normalizeList(item.available_formats).join(", ")
+)}
+
+${field(
+  "Series",
+  item.series_name
+    ? `${item.series_name}${item.series_number ? ` #${item.series_number}` : ""}`
+    : ""
+)}
           ${field("Words", item.word_count)}
           ${field("Pages", item.page_count)}
         </div>
@@ -693,34 +1192,470 @@ setTimeout(() => {
 }, 600);
 }
 
+async function moveBookCoverToLive(
+  item,
+  bookId
+) {
+  if (!item.cover_path) {
+    return null;
+  }
+
+  const pendingPath =
+    String(item.cover_path).trim();
+
+  const extension =
+    pendingPath.includes(".")
+      ? pendingPath
+          .split(".")
+          .pop()
+          .toLowerCase()
+      : "jpg";
+
+  const livePath =
+    `${bookId}.${extension}`;
+
+  const {
+    data: coverBlob,
+    error: downloadError
+  } = await supabaseClient.storage
+    .from("book-submissions")
+    .download(pendingPath);
+
+  if (downloadError) {
+    throw downloadError;
+  }
+
+  const {
+    error: uploadError
+  } = await supabaseClient.storage
+    .from("covers")
+    .upload(
+      livePath,
+      coverBlob,
+      {
+        cacheControl: "3600",
+        upsert: true,
+        contentType:
+          coverBlob.type ||
+          "image/jpeg"
+      }
+    );
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  return {
+    pendingPath,
+    livePath
+  };
+}
+
+function arrayToText(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map(item =>
+        String(item || "").trim()
+      )
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  return String(value || "").trim();
+}
+
+function buildLiveBookPayload(
+  item,
+  bookId,
+  coverPath
+) {
+  const retailerLinks =
+    item.retailer_links || {};
+
+  const audio =
+    item.audio || {};
+
+  const kids =
+    item.kids || {};
+
+  return {
+    "Timestamp":
+      item.submitted_at ||
+      item.created_at ||
+      new Date().toISOString(),
+
+    "SUBMISSION_ID":
+      item.submission_id,
+
+    "Book_ID":
+      bookId,
+
+    "Author_ID":
+      item.author_id,
+
+    "Author_Name":
+      linkedAuthor?.AUTHOR_NAME ||
+      item.author_name,
+
+    "Email_Address":
+      item.email ||
+      linkedAuthor?.EMAIL_ADDRESS ||
+      "",
+
+    "Title":
+      item.title,
+
+    "Description":
+      item.description || "",
+
+    "Release/Expected_Release_Date":
+      item.release_date || null,
+
+    "Genre":
+      item.primary_genre || "",
+
+    "Sub_Genres":
+      arrayToText(
+        item.sub_genres
+      ),
+
+    "Vibes":
+      arrayToText(
+        item.vibes
+      ),
+
+    "Spice_Level":
+      item.spice_level || "",
+
+    "Age_Range":
+      item.age_range || "",
+
+    "Representation":
+      arrayToText(
+        item.representation
+      ),
+
+    "Available_Formats":
+      arrayToText(
+        item.available_formats
+      ),
+
+    "Website_Link":
+      retailerLinks.website || "",
+
+    "Amazon_Link":
+      retailerLinks.amazon || "",
+
+    "BN_Link":
+      retailerLinks.barnes_noble || "",
+
+    "Bookfunnel_Link":
+      retailerLinks.bookfunnel || "",
+
+    "Kobo_Link":
+      retailerLinks.kobo || "",
+
+    "Apple_Books_Link":
+      retailerLinks.apple_books || "",
+
+    "Other_Link":
+      retailerLinks.other || "",
+
+    "Word_Count":
+      item.word_count || null,
+
+    "Page_Count":
+      item.page_count || null,
+
+    "Has_Audiobook":
+      Boolean(
+        audio.has_audiobook
+      ),
+
+    "Audiobook_Narrators":
+      audio.narrators || "",
+
+    "Audiobook_Link":
+      audio.link || "",
+
+    "Kids_Category":
+      kids.category || "",
+
+    "Contributors":
+      Array.isArray(
+        item.co_authors
+      )
+        ? item.co_authors
+        : [],
+
+    "Series_Name":
+      item.series_name || "",
+
+    "Series_Number":
+      item.series_number || null,
+
+    "Book_Cover":
+      item.legacy_cover_url || "",
+
+    "CoverImagePath":
+      coverPath || null,
+
+    "CoverImageStatus":
+      coverPath
+        ? "Complete"
+        : "",
+
+    "CoverImageLastUpdated":
+      coverPath
+        ? new Date().toISOString()
+        : null,
+
+    "CoverImageError":
+      "",
+
+    "Author_Status":
+      "Approved",
+
+    "Book_Approval":
+      "Approved",
+
+    "Is_Live":
+      "Yes",
+
+    "admin_notes":
+      document
+        .getElementById(
+          "adminNotes"
+        )
+        .value,
+
+    "Last_Updated":
+      new Date().toISOString()
+  };
+}
+
 async function approveBookSubmission(id) {
-  if (!confirm("Approve this book submission?")) return;
-
-  const note = document.getElementById("actionNote");
-  const adminNotes = document.getElementById("adminNotes").value;
-
-  note.textContent = "Approving book...";
-
-  const { error } = await supabaseClient
-    .from("book_submissions")
-    .update({
-      submission_status: "approved",
-      admin_notes: adminNotes,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id);
-
-  if (error) {
-    console.error(error);
-    note.textContent = error.message || "Unable to approve book.";
+  if (!currentBookSubmission) {
     return;
   }
 
-  note.textContent = "Book approved. Refreshing...";
+  if (
+    !linkedAuthor ||
+    String(
+      linkedAuthor.APPROVAL || ""
+    )
+      .trim()
+      .toLowerCase() !==
+      "approved"
+  ) {
+    alert(
+      "This book must be connected to an approved author before it can be approved."
+    );
 
-setTimeout(() => {
-  window.location.reload();
-}, 600);
+    return;
+  }
+
+  if (
+    !currentBookSubmission.author_id
+  ) {
+    alert(
+      "This submission is missing its Author ID."
+    );
+
+    return;
+  }
+
+  if (
+    !confirm(
+      "Approve this book and publish it to the live library?"
+    )
+  ) {
+    return;
+  }
+
+  const note =
+    document.getElementById(
+      "actionNote"
+    );
+
+    const approveButton =
+  document.querySelector(
+    ".approve-btn"
+  );
+
+if (approveButton) {
+  approveButton.disabled = true;
+  approveButton.textContent =
+    "Approving...";
+}
+
+  const adminNotes =
+    document.getElementById(
+      "adminNotes"
+    ).value;
+
+  let coverMove = null;
+
+  try {
+    note.textContent =
+      "Checking for an existing book...";
+
+    const {
+      data: existingBooks,
+      error: existingError
+    } = await supabaseClient
+      .from("books")
+      .select(`
+        id,
+        Book_ID,
+        CoverImagePath
+      `)
+      .eq(
+        "SUBMISSION_ID",
+        currentBookSubmission
+          .submission_id
+      )
+      .limit(1);
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const existingBook =
+      existingBooks?.[0] || null;
+
+    const bookId =
+      existingBook?.Book_ID ||
+      currentBookSubmission
+        .approved_book_id ||
+      generateId("BLKB");
+
+    let liveCoverPath =
+      existingBook?.CoverImagePath ||
+      null;
+
+    if (
+      currentBookSubmission.cover_path
+    ) {
+      note.textContent =
+        "Moving cover to the live library...";
+
+      coverMove =
+        await moveBookCoverToLive(
+          currentBookSubmission,
+          bookId
+        );
+
+      liveCoverPath =
+        coverMove.livePath;
+    }
+
+    note.textContent =
+      "Creating live book record...";
+
+    const payload =
+      buildLiveBookPayload(
+        currentBookSubmission,
+        bookId,
+        liveCoverPath
+      );
+
+    if (existingBook) {
+      const {
+        error: updateError
+      } = await supabaseClient
+        .from("books")
+        .update(payload)
+        .eq(
+          "id",
+          existingBook.id
+        );
+
+      if (updateError) {
+        throw updateError;
+      }
+
+    } else {
+      const {
+        error: insertError
+      } = await supabaseClient
+        .from("books")
+        .insert(payload);
+
+      if (insertError) {
+        throw insertError;
+      }
+    }
+
+    note.textContent =
+      "Updating submission status...";
+
+    const {
+      error: submissionError
+    } = await supabaseClient
+      .from("book_submissions")
+      .update({
+        submission_status:
+          "approved",
+
+        admin_notes:
+          adminNotes,
+
+        reviewed_at:
+          new Date().toISOString(),
+
+        approved_book_id:
+          bookId
+      })
+      .eq(
+        "id",
+        id
+      );
+
+    if (submissionError) {
+      throw submissionError;
+    }
+
+    if (coverMove?.pendingPath) {
+      const {
+        error: cleanupError
+      } = await supabaseClient.storage
+        .from("book-submissions")
+        .remove([
+          coverMove.pendingPath
+        ]);
+
+      if (cleanupError) {
+        console.warn(
+          "Book approved, but pending cover cleanup failed:",
+          cleanupError
+        );
+      }
+    }
+
+    note.textContent =
+      `Book approved and published as ${bookId}.`;
+
+    setTimeout(() => {
+      window.location.href =
+        "review-queue.html";
+    }, 900);
+
+  } catch (error) {
+    console.error(error);
+
+    note.textContent =
+      error.message ||
+      "Unable to approve and publish this book.";
+
+      if (approveButton) {
+  approveButton.disabled = false;
+  approveButton.textContent =
+    "Approve";
+
+  }
+}
+  
 }
 
     initSubmissionPage();
