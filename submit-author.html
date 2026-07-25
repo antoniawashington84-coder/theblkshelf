@@ -237,6 +237,52 @@
   color: var(--accent-light);
 }
 
+.previous-books-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.previous-books-fieldset legend {
+  margin-bottom: 0.65rem;
+  color: var(--soft);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.yes-no-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.yes-no-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 110px;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  background: rgba(23,16,12,0.65);
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.yes-no-options input {
+  width: auto;
+  margin: 0;
+}
+
+#previousBookDetails {
+  display: grid;
+  gap: 1rem;
+}
+
 @media (max-width: 900px) {
   .genre-options {
     grid-template-columns: repeat(2, 1fr);
@@ -315,9 +361,10 @@
       <form id="authorSubmissionForm">
         <div class="form-progress">
   <a class="progress-pill active" href="#basicInfo">1. Basic Info</a>
-  <a class="progress-pill active" href="#aboutYou">2. About You</a>
-  <a class="progress-pill active" href="#onlinePresence">3. Online Presence</a>
-  <a class="progress-pill active" href="#submitReview">4. Submit</a>
+  <a class="progress-pill active" href="#previousBooks">2. Previous Books</a>
+  <a class="progress-pill active" href="#aboutYou">3. About You</a>
+  <a class="progress-pill active" href="#onlinePresence">4. Online Presence</a>
+  <a class="progress-pill active" href="#submitReview">5. Submit</a>
 </div>
 
 <section class="form-section" id="basicInfo">
@@ -368,6 +415,89 @@
     style="margin-top: 0.8rem; display: none;"
   >
 </div>
+</section>
+
+<section class="form-section" id="previousBooks">
+  <h2>Previously Submitted Books</h2>
+
+  <p class="form-section-intro">
+    This helps us connect books you submitted before creating an author profile.
+  </p>
+
+  <fieldset class="previous-books-fieldset">
+    <legend>
+      Have you previously submitted a book to The BLK Shelf?
+    </legend>
+
+    <div class="yes-no-options">
+      <label>
+        <input
+          type="radio"
+          name="hasPreviousBooks"
+          value="false"
+          checked
+        >
+        No
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          name="hasPreviousBooks"
+          value="true"
+        >
+        Yes
+      </label>
+    </div>
+  </fieldset>
+
+  <div
+    id="previousBookDetails"
+    style="display:none;"
+  >
+    <div class="form-grid">
+      <div>
+        <label for="previousBookEmail">
+          Email Used for the Previous Book Submission *
+        </label>
+
+        <input
+          id="previousBookEmail"
+          name="previousBookEmail"
+          type="email"
+          autocomplete="email"
+        >
+      </div>
+
+      <div>
+        <label for="previousBookTitle">
+          Title of One Previously Submitted Book *
+        </label>
+
+        <input
+          id="previousBookTitle"
+          name="previousBookTitle"
+        >
+      </div>
+    </div>
+
+    <div>
+      <label for="previousAuthorName">
+        Author / Pen Name Used on the Book
+      </label>
+
+      <input
+        id="previousAuthorName"
+        name="previousAuthorName"
+        placeholder="Leave blank if it is the same as the name above"
+      >
+    </div>
+
+    <p class="small-note">
+      Enter the information used on the original book submission, even if your
+      email address or pen name has changed.
+    </p>
+  </div>
 </section>
 
 <section class="form-section" id="aboutYou">
@@ -588,11 +718,39 @@ if (selectedGenres.includes("Other") && otherGenre) {
 
 const genres = selectedGenres.join(", ");
         const bio = clean(form.bio.value);
-        const file = form.photo.files[0];
+const file = form.photo.files[0];
+
+const hasPreviousBooks =
+  form.querySelector(
+    'input[name="hasPreviousBooks"]:checked'
+  )?.value === "true";
+
+const previousBookEmail =
+  clean(form.previousBookEmail.value);
+
+const previousBookTitle =
+  clean(form.previousBookTitle.value);
+
+const previousAuthorName =
+  clean(form.previousAuthorName.value);
 
         if (!authorName || !email || !genres || !bio) {
-          throw new Error("Please complete all required fields.");
-        }
+  throw new Error(
+    "Please complete all required fields."
+  );
+}
+
+if (
+  hasPreviousBooks &&
+  (
+    !previousBookEmail ||
+    !previousBookTitle
+  )
+) {
+  throw new Error(
+    "Enter the email and title used for your previous book submission."
+  );
+}
 
         const additionalPenNameBox =
   document.getElementById(
@@ -656,10 +814,37 @@ if (
           other_socials: clean(form.other_socials.value),
           author_photo_path: photoPath,
           submission_status: "pending",
-submission_source: "blk_shelf_author_form",
+submission_source:
+  "blk_shelf_author_form",
+
 is_additional_pen_name:
   existingSubmission.length > 0 &&
-  additionalPenNameCheckbox.checked
+  additionalPenNameCheckbox.checked,
+
+has_previous_books:
+  hasPreviousBooks,
+
+previous_book_email:
+  hasPreviousBooks
+    ? previousBookEmail
+    : null,
+
+previous_book_title:
+  hasPreviousBooks
+    ? previousBookTitle
+    : null,
+
+previous_author_name:
+  hasPreviousBooks
+    ? (
+        previousAuthorName ||
+        authorName
+      )
+    : null,
+
+possible_legacy_book_ids: [],
+
+selected_legacy_book_ids: []
         };
 
         const { error } = await supabaseClient
@@ -701,6 +886,64 @@ is_additional_pen_name:
     const footer = await fetch('includes/footer.html');
     document.getElementById('site-footer').innerHTML = await footer.text();
   }
+
+  const previousBookRadios =
+  document.querySelectorAll(
+    'input[name="hasPreviousBooks"]'
+  );
+
+const previousBookDetails =
+  document.getElementById(
+    "previousBookDetails"
+  );
+
+const previousBookEmailInput =
+  document.getElementById(
+    "previousBookEmail"
+  );
+
+const previousBookTitleInput =
+  document.getElementById(
+    "previousBookTitle"
+  );
+
+function updatePreviousBookFields() {
+  const hasPreviousBooks =
+    document.querySelector(
+      'input[name="hasPreviousBooks"]:checked'
+    )?.value === "true";
+
+  previousBookDetails.style.display =
+    hasPreviousBooks
+      ? "grid"
+      : "none";
+
+  previousBookEmailInput.required =
+    hasPreviousBooks;
+
+  previousBookTitleInput.required =
+    hasPreviousBooks;
+
+  if (!hasPreviousBooks) {
+    previousBookEmailInput.value = "";
+    previousBookTitleInput.value = "";
+
+    document.getElementById(
+      "previousAuthorName"
+    ).value = "";
+  }
+}
+
+previousBookRadios.forEach(
+  radio => {
+    radio.addEventListener(
+      "change",
+      updatePreviousBookFields
+    );
+  }
+);
+
+updatePreviousBookFields();
 
   loadIncludes();
 </script>
