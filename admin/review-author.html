@@ -1019,6 +1019,7 @@ function legacyBooksSection() {
 
             <div class="mm-card review-section">
               <h2>Internal Notes</h2>
+              <p>This will be included in the automatic email sent to authors.</p>
               <textarea class="admin-notes" id="adminNotes" placeholder="Add private review notes...">${escapeHtml(item.admin_notes || "")}</textarea>
 
               <div class="review-actions">
@@ -1144,25 +1145,61 @@ async function findOrCreateAuthor() {
     throw existingAuthor.error;
   }
 
-  if (existingAuthor.data && existingAuthor.data.length) {
-    return existingAuthor.data[0].AUTHOR_ID;
+  if (
+  existingAuthor.data &&
+  existingAuthor.data.length
+) {
+  const existingAuthorId =
+    existingAuthor.data[0].AUTHOR_ID;
+
+  const { error: updateError } =
+    await supabaseClient
+      .from("authors")
+      .update({
+        SUBMISSION_ID:
+          currentSubmission.submission_id,
+        APPROVAL:
+          "Approved",
+        manager_email_sent:
+          false,
+        manager_email_sent_at:
+          null,
+        manager_email_type:
+          null
+      })
+      .eq(
+        "AUTHOR_ID",
+        existingAuthorId
+      );
+
+  if (updateError) {
+    throw updateError;
+  }
+
+  return existingAuthorId;
 }
 
   const authorId = generateId("BLKA");
 
   const authorPayload = {
-    AUTHOR_ID: authorId,
-    AUTHOR_NAME: authorName,
-    EMAIL_ADDRESS: currentSubmission.email,
-    GENRES: currentSubmission.genres,
-    BIO: currentSubmission.bio,
-    WEBSITE: currentSubmission.website,
-    FACEBOOK: currentSubmission.facebook,
-    INSTAGRAM: currentSubmission.instagram,
-    TIKTOK: currentSubmission.tiktok,
-    AUTHORIMAGEPATH: null,
-    APPROVAL: "Approved"
-  };
+  AUTHOR_ID: authorId,
+  SUBMISSION_ID:
+    currentSubmission.submission_id,
+  AUTHOR_NAME: authorName,
+  EMAIL_ADDRESS: currentSubmission.email,
+  GENRES: currentSubmission.genres,
+  BIO: currentSubmission.bio,
+  WEBSITE: currentSubmission.website,
+  FACEBOOK: currentSubmission.facebook,
+  INSTAGRAM: currentSubmission.instagram,
+  TIKTOK: currentSubmission.tiktok,
+  AUTHORIMAGEPATH: null,
+  APPROVAL: "Approved",
+
+  manager_email_sent: false,
+  manager_email_sent_at: null,
+  manager_email_type: null
+};
 
   const { error } = await supabaseClient
     .from("authors")
@@ -1453,13 +1490,18 @@ async function linkLegacyBooks(
       note.textContent = "Saving...";
 
       const { error } = await supabaseClient
-        .from("author_submissions")
-        .update({
-          submission_status: status,
-          admin_notes: adminNotes,
-          reviewed_at: new Date().toISOString()
-        })
-        .eq("id", currentSubmission.id);
+  .from("author_submissions")
+  .update({
+    submission_status: status,
+    admin_notes: adminNotes,
+    reviewed_at: new Date().toISOString(),
+
+    status_email_sent: false,
+    status_email_sent_at: null,
+    status_email_type: null,
+    status_email_error: null
+  })
+  .eq("id", currentSubmission.id);
 
       if (error) {
         console.error(error);
