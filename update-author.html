@@ -406,7 +406,7 @@
   Replacement Author Photo
 </label>
     <div class="upload-box">
-      <input id="photo" name="photo" type="file" accept="image/*">
+      <input id="photo" name="photo" type="file" accept=".jpg,.jpeg,.png,.webp">
       <div class="upload-file-name" id="photoFileName">No file selected.</div>
     </div>
     <p class="small-note">
@@ -728,10 +728,39 @@ document
         generateId("AUR");
 
       const file =
-        form.photo.files[0];
+  form.photo.files[0];
 
-      let replacementPhotoPath =
-        "";
+if (file) {
+  const allowedImageTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ];
+
+  const maxImageSize =
+    10 * 1024 * 1024;
+
+  if (
+    !allowedImageTypes.includes(
+      file.type
+    )
+  ) {
+    throw new Error(
+      "Please upload the replacement author photo as a JPG, PNG, or WebP image."
+    );
+  }
+
+  if (
+    file.size > maxImageSize
+  ) {
+    throw new Error(
+      "Author photos must be 10 MB or smaller."
+    );
+  }
+}
+
+let replacementPhotoPath =
+  "";
 
       if (file) {
         replacementPhotoPath =
@@ -867,8 +896,8 @@ document
   `submission-received.html` +
   `?id=${encodeURIComponent(requestId)}` +
   `&type=author-update` +
-  `&author_id=${encodeURIComponent(
-    approvedAuthor.AUTHOR_ID
+  `&submission_id=${encodeURIComponent(
+    approvedAuthor.SUBMISSION_ID
   )}`;
 
     } catch (error) {
