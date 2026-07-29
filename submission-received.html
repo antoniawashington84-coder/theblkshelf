@@ -277,32 +277,37 @@
     },
 
     book: {
-      heading:
-        "Book submission received.",
+  heading:
+    "Book submission received.",
 
-      message:
-        "Your book has been submitted to The BLK Shelf and is awaiting review. Please watch your email, including your spam and promotions folders, in case our team needs additional information.",
+  message:
+    "Your book has been submitted to The BLK Shelf and is awaiting review. You can track its status from your Author Manager.",
 
-      steps: [
-        "Our team will review the book details, classification, links, and cover.",
-        "If approved, the book will be added to the live BLK Shelf library.",
-        "You may use your personal submission link again to submit another book."
-      ],
+  steps: [
+    "Our team will review the book details, classification, links, and cover.",
+    "The submission will appear in your Author Manager while it is pending, needs information, or is denied.",
+    "If approved, the book will be added to the live BLK Shelf library and disappear from the Books Under Review section."
+  ],
 
-      reviewTime:
-        "3–7 business days",
+  reviewTime:
+    "3–7 business days",
 
-      buttonText:
-        "Submit Another Book",
+  buttonText:
+    "Submit Another Book",
 
-      buttonHref:
-        document.referrer &&
-        document.referrer.includes(
-          "submit-book.html"
-        )
-          ? document.referrer
-          : "index.html"
-    },
+  buttonHref:
+    `submit-book.html?submission_id=${encodeURIComponent(
+      authorSubmissionId
+    )}&mode=new`,
+
+  continueText:
+    "Return to Author Actions",
+
+  continueHref:
+    `author-actions.html?submission_id=${encodeURIComponent(
+      authorSubmissionId
+    )}`
+},
 
     "book-update": {
   heading:
