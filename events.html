@@ -1134,6 +1134,9 @@
 
 <footer id="site-footer"></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin/js/supabase.js"></script>
+
 <script>
 
   const TEST_LOCATION_COORDINATES = {
@@ -1146,226 +1149,8 @@
   "tulsa ok": { latitude: 36.1540, longitude: -95.9928, label: "Tulsa, OK" }
 };
 
-const TEST_EVENTS = [
-  {
-    event_name: "Black Romance Book Fest",
-    slug: "black-romance-book-fest",
-    event_type: "Book Festival",
-    event_types: ["Book Festival", "Author Signing"],
-    description: "A weekend celebration of Black romance authors featuring panels, signings, networking events, and reader experiences.",
-    start_date: "2026-08-14",
-    end_date: "2026-08-16",
-    start_time: "09:00",
-    end_time: "18:00",
-    timezone: "Eastern",
-    event_format: "In-Person",
-    venue_name: "Atlanta Convention Center",
-    street_address: "285 Andrew Young International Blvd NW",
-    city: "Atlanta",
-    state: "GA",
-    zip_code: "30313",
-    country: "United States",
-    latitude: 33.7587,
-    longitude: -84.3973,
-    ticket_price: "$25–$75",
-    registration_link: "https://example.com/romancefest",
-    event_website: "https://example.com/romancefest",
-    vendor_available: true,
-    vendor_application_link: "https://example.com/vendors",
-    vendor_fee: "$150",
-    vendor_deadline: "2026-07-15",
-    audiences: ["Adult"],
-    genres: ["Romance"],
-    event_focus: ["Black Authors", "Readers", "Vendors"],
-    featured_authors: "Kennedy Ryan, Beverly Jenkins, Tia Williams",
-    family_friendly: false,
-    free_event: false,
-    event_image_url: "https://picsum.photos/1600/900?random=1",
-    event_image_alt: "Black Romance Book Fest banner",
-    featured_event: true,
-    priority: 100
-  },
-  {
-    event_name: "BLK Shelf Virtual Author Panel",
-    slug: "blk-shelf-virtual-author-panel",
-    event_type: "Panel",
-    event_types: ["Panel", "Virtual Event"],
-    description: "An online discussion featuring Black authors talking publishing, storytelling, and reader engagement.",
-    start_date: "2026-07-25",
-    end_date: null,
-    start_time: "19:00",
-    end_time: "21:00",
-    timezone: "Eastern",
-    event_format: "Virtual",
-    venue_name: null,
-    city: null,
-    state: null,
-    latitude: null,
-    longitude: null,
-    ticket_price: "Free",
-    registration_link: "https://example.com/register",
-    event_website: "https://theblkshelf.com",
-    vendor_available: false,
-    audiences: ["Adult", "Young Adult"],
-    genres: ["General"],
-    event_focus: ["Black Authors", "Readers", "Writers"],
-    featured_authors: "Vera T. Brown, Storm",
-    family_friendly: true,
-    free_event: true,
-    event_image_url: "https://picsum.photos/1600/900?random=2",
-    event_image_alt: "Virtual author panel",
-    featured_event: true,
-    priority: 95
-  },
-  {
-    event_name: "Afrofuturism & Fantasy Expo",
-    slug: "afrofuturism-fantasy-expo",
-    event_type: "Convention",
-    event_types: ["Convention", "Vendor Market"],
-    description: "A convention dedicated to Afrofuturism, speculative fiction, fantasy literature, cosplay, and Black creators.",
-    start_date: "2026-09-18",
-    end_date: "2026-09-20",
-    start_time: "10:00",
-    end_time: "20:00",
-    timezone: "Eastern",
-    event_format: "Hybrid",
-    venue_name: "Charlotte Convention Center",
-    street_address: "501 S College St",
-    city: "Charlotte",
-    state: "NC",
-    zip_code: "28202",
-    country: "United States",
-    latitude: 35.2225,
-    longitude: -80.8467,
-    ticket_price: "$40–$120",
-    registration_link: "https://example.com/expo",
-    event_website: "https://example.com/expo",
-    vendor_available: true,
-    vendor_application_link: "https://example.com/expo-vendors",
-    vendor_fee: "$250",
-    vendor_deadline: "2026-08-01",
-    audiences: ["Young Adult", "Adult"],
-    genres: ["Fantasy", "Science Fiction"],
-    event_focus: ["Black Authors", "Readers", "Vendors"],
-    featured_authors: "N.K. Jemisin, Nnedi Okorafor",
-    family_friendly: true,
-    free_event: false,
-    event_image_url: "https://picsum.photos/1600/900?random=3",
-    event_image_alt: "Afrofuturism Expo banner",
-    featured_event: true,
-    priority: 90
-  },
-  {
-    event_name: "Young Readers Literacy Day",
-    slug: "young-readers-literacy-day",
-    event_type: "Community Event",
-    event_types: ["Community Event"],
-    description: "A family-friendly literacy event featuring readings, activities, and book giveaways.",
-    start_date: "2026-08-01",
-    end_date: null,
-    start_time: "10:00",
-    end_time: "15:00",
-    timezone: "Eastern",
-    event_format: "In-Person",
-    venue_name: "Orlando Public Library",
-    street_address: "101 E Central Blvd",
-    city: "Orlando",
-    state: "FL",
-    zip_code: "32801",
-    country: "United States",
-    latitude: 28.5431,
-    longitude: -81.3767,
-    ticket_price: "Free",
-    registration_link: null,
-    event_website: "https://example.com/literacyday",
-    vendor_available: false,
-    audiences: ["Children", "Middle Grade"],
-    genres: ["General"],
-    event_focus: ["Families", "Readers"],
-    featured_authors: null,
-    family_friendly: true,
-    free_event: true,
-    event_image_url: "https://picsum.photos/1600/900?random=4",
-    event_image_alt: "Young readers literacy event",
-    featured_event: false,
-    priority: 50
-  },
-  {
-    event_name: "Indie Author Business Summit",
-    slug: "indie-author-business-summit",
-    event_type: "Workshop",
-    event_types: ["Workshop", "Writing Conference"],
-    description: "A business-focused conference helping indie authors learn marketing, branding, and publishing strategies.",
-    start_date: "2026-10-10",
-    end_date: "2026-10-11",
-    start_time: "08:00",
-    end_time: "17:00",
-    timezone: "Eastern",
-    event_format: "Hybrid",
-    venue_name: "Tampa Marriott Waterside",
-    street_address: "700 S Florida Ave",
-    city: "Tampa",
-    state: "FL",
-    zip_code: "33602",
-    country: "United States",
-    latitude: 27.9418,
-    longitude: -82.4547,
-    ticket_price: "$99–$299",
-    registration_link: "https://example.com/summit",
-    event_website: "https://example.com/summit",
-    vendor_available: true,
-    vendor_application_link: "https://example.com/summit-vendors",
-    vendor_fee: "$300",
-    vendor_deadline: "2026-09-01",
-    audiences: ["Adult"],
-    genres: ["General", "Nonfiction"],
-    event_focus: ["Writers", "Indie Authors"],
-    featured_authors: "David Gaughran, Joanna Penn",
-    family_friendly: false,
-    free_event: false,
-    event_image_url: "https://picsum.photos/1600/900?random=5",
-    event_image_alt: "Indie Author Business Summit",
-    featured_event: false,
-    priority: 85
-  },
-  {
-    event_name: "BLK Shelf Reader Meetup",
-    slug: "blk-shelf-reader-meetup",
-    event_type: "Reader Meetup",
-    event_types: ["Reader Meetup", "Community Event"],
-    description: "A casual meetup for readers to discuss favorite books, discover new authors, and connect with the community.",
-    start_date: "2026-07-18",
-    end_date: null,
-    start_time: "14:00",
-    end_time: "17:00",
-    timezone: "Eastern",
-    event_format: "In-Person",
-    venue_name: "Downtown Book Lounge",
-    street_address: "125 Main St",
-    city: "Jacksonville",
-    state: "FL",
-    zip_code: "32202",
-    country: "United States",
-    latitude: 30.3322,
-    longitude: -81.6557,
-    ticket_price: "Free",
-    registration_link: null,
-    event_website: "https://theblkshelf.com",
-    vendor_available: false,
-    audiences: ["Adult", "Young Adult"],
-    genres: ["General"],
-    event_focus: ["Readers"],
-    featured_authors: null,
-    family_friendly: true,
-    free_event: true,
-    event_image_url: "https://picsum.photos/1600/900?random=6",
-    event_image_alt: "BLK Shelf Reader Meetup",
-    featured_event: false,
-    priority: 40
-  }
-];
-
-let filteredEvents = [...TEST_EVENTS];
+let allEvents = [];
+let filteredEvents = [];
 let visibleEventLimit = 6;
 let currentView = "list";
 let currentCalendarDate = new Date(2026, 6, 1);
@@ -1381,6 +1166,26 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function getEventFlyerUrl(event) {
+  if (event?.flyer_storage_path) {
+    const encodedPath = String(event.flyer_storage_path)
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
+
+    return `https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/event-flyers/${encodedPath}`;
+  }
+
+  return event?.event_image_url || event?.flyer_image_url || "";
+}
+
+function getEventImage(event) {
+  return (
+    getEventFlyerUrl(event) ||
+    "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/defaults/event-default.jpg"
+  );
 }
 
 function normalizeForSearch(value) {
@@ -1547,24 +1352,233 @@ function calculateDistanceMiles(lat1, lon1, lat2, lon2) {
   return radius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+async function loadEvents() {
+  const resultCount = document.getElementById("eventResultCount");
+  const eventList = document.getElementById("eventList");
+
+  resultCount.textContent = "Loading events...";
+  eventList.innerHTML = `
+    <div class="loading-state">
+      Loading upcoming events...
+    </div>
+  `;
+
+  try {
+    const { data, error } = await supabaseClient
+  .from("events")
+  .select("*")
+  .eq("event_status", "active")
+  .order("start_date", { ascending: true })
+  .order("priority", {
+    ascending: false,
+    nullsFirst: false
+  });
+
+    if (error) {
+      throw error;
+    }
+
+    allEvents = (data || []).map(event => {
+      const eventTypes =
+        Array.isArray(event.event_types) && event.event_types.length
+          ? event.event_types
+          : [event.event_type].filter(Boolean);
+
+      return {
+        ...event,
+
+        slug:
+          event.slug ||
+          event.id,
+
+        event_type:
+          event.event_type ||
+          eventTypes[0] ||
+          "Community Event",
+
+        event_types: eventTypes,
+
+        audiences:
+          Array.isArray(event.audiences)
+            ? event.audiences
+            : [],
+
+        genres:
+          Array.isArray(event.genres)
+            ? event.genres
+            : [],
+
+        event_focus:
+          Array.isArray(event.event_focus)
+            ? event.event_focus
+            : [],
+
+        featured_event:
+          Boolean(event.featured_event),
+
+        vendor_available:
+          Boolean(event.vendor_available),
+
+        family_friendly:
+          Boolean(event.family_friendly),
+
+        free_event:
+          Boolean(event.free_event),
+
+        priority:
+          Number(event.priority || 0),
+
+        latitude:
+          event.latitude == null
+            ? null
+            : Number(event.latitude),
+
+        longitude:
+          event.longitude == null
+            ? null
+            : Number(event.longitude),
+
+        event_image_url:
+          getEventImage(event),
+
+        event_image_alt:
+          event.event_image_alt ||
+          `${event.event_name || "Event"} flyer`
+      };
+    });
+
+    filteredEvents = [...allEvents];
+
+    populateFilterOptions();
+    applyFilters();
+
+    const nextUpcomingEvent = allEvents
+      .filter(event => {
+        const endDate =
+          event.end_date ||
+          event.start_date;
+
+        return endDate &&
+          new Date(`${endDate}T23:59:59`) >= new Date();
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.start_date) -
+          new Date(b.start_date)
+      )[0];
+
+    if (nextUpcomingEvent?.start_date) {
+      const nextDate = new Date(
+        `${nextUpcomingEvent.start_date}T00:00:00`
+      );
+
+      currentCalendarDate = new Date(
+        nextDate.getFullYear(),
+        nextDate.getMonth(),
+        1
+      );
+
+      renderCalendar();
+    }
+  } catch (error) {
+    console.error("Unable to load public events:", error);
+
+    allEvents = [];
+    filteredEvents = [];
+
+    resultCount.textContent =
+      "Events could not be loaded.";
+
+    eventList.innerHTML = `
+      <div class="empty-state">
+        Events are temporarily unavailable. Please try again later.
+      </div>
+    `;
+
+    document.getElementById(
+      "featuredSection"
+    ).style.display = "none";
+  }
+}
+
 function populateFilterOptions() {
-  const eventTypes = [...new Set(TEST_EVENTS.flatMap(event => event.event_types || [event.event_type]))].sort();
-  const audiences = [...new Set(TEST_EVENTS.flatMap(event => event.audiences || []))].sort();
-  const genres = [...new Set(TEST_EVENTS.flatMap(event => event.genres || []))].sort();
+  const eventTypeFilter =
+    document.getElementById("eventTypeFilter");
 
-  document.getElementById("eventTypeFilter").insertAdjacentHTML(
+  const audienceFilter =
+    document.getElementById("audienceFilter");
+
+  const genreFilter =
+    document.getElementById("genreFilter");
+
+  eventTypeFilter.innerHTML =
+    `<option value="">All Event Types</option>`;
+
+  audienceFilter.innerHTML =
+    `<option value="">All Audiences</option>`;
+
+  genreFilter.innerHTML =
+    `<option value="">All Genres</option>`;
+
+  const eventTypes = [
+    ...new Set(
+      allEvents.flatMap(
+        event =>
+          event.event_types ||
+          [event.event_type].filter(Boolean)
+      )
+    )
+  ].filter(Boolean).sort();
+
+  const audiences = [
+    ...new Set(
+      allEvents.flatMap(
+        event =>
+          event.audiences || []
+      )
+    )
+  ].filter(Boolean).sort();
+
+  const genres = [
+    ...new Set(
+      allEvents.flatMap(
+        event =>
+          event.genres || []
+      )
+    )
+  ].filter(Boolean).sort();
+
+  eventTypeFilter.insertAdjacentHTML(
     "beforeend",
-    eventTypes.map(type => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`).join("")
+    eventTypes
+      .map(type => `
+        <option value="${escapeHtml(type)}">
+          ${escapeHtml(type)}
+        </option>
+      `)
+      .join("")
   );
 
-  document.getElementById("audienceFilter").insertAdjacentHTML(
+  audienceFilter.insertAdjacentHTML(
     "beforeend",
-    audiences.map(audience => `<option value="${escapeHtml(audience)}">${escapeHtml(audience)}</option>`).join("")
+    audiences
+      .map(audience => `
+        <option value="${escapeHtml(audience)}">
+          ${escapeHtml(audience)}
+        </option>
+      `)
+      .join("")
   );
 
-  document.getElementById("genreFilter").insertAdjacentHTML(
+  genreFilter.insertAdjacentHTML(
     "beforeend",
-    genres.map(genre => `<option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>`).join("")
+    genres
+      .map(genre => `
+        <option value="${escapeHtml(genre)}">
+          ${escapeHtml(genre)}
+        </option>
+      `)
+      .join("")
   );
 }
 
@@ -1582,7 +1596,7 @@ function applyFilters() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  filteredEvents = TEST_EVENTS.filter(event => {
+  filteredEvents = allEvents.filter(event => {
     const eventEnd = new Date(`${event.end_date || event.start_date}T23:59:59`);
     if (eventEnd < today) return false;
     if (search && getSearchRelevanceScore(event, search) === 0) return false;
@@ -1711,7 +1725,12 @@ function renderFeaturedEvents() {
   target.innerHTML = featuredEvents.map(event => `
     <article class="featured-event">
       <a class="featured-image" href="event.html?slug=${encodeURIComponent(event.slug)}">
-        <img src="${escapeHtml(event.event_image_url)}" alt="${escapeHtml(event.event_image_alt || event.event_name)}" loading="lazy">
+        <img
+  src="${escapeHtml(getEventImage(event))}"
+  alt="${escapeHtml(event.event_image_alt || event.event_name)}"
+  loading="lazy"
+  onerror="this.style.display='none';"
+>
         <span class="featured-badge">Featured Event</span>
       </a>
 
@@ -1736,7 +1755,12 @@ function renderEventCard(event) {
   return `
     <article class="event-list-card">
       <a class="event-list-image" href="event.html?slug=${encodeURIComponent(event.slug)}">
-        <img src="${escapeHtml(event.event_image_url)}" alt="${escapeHtml(event.event_image_alt || event.event_name)}" loading="lazy">
+        <img
+  src="${escapeHtml(getEventImage(event))}"
+  alt="${escapeHtml(event.event_image_alt || event.event_name)}"
+  loading="lazy"
+  onerror="this.style.display='none';"
+>
       </a>
 
       <div class="event-list-content">
@@ -2339,10 +2363,9 @@ async function loadIncludes() {
   }
 }
 
-function initializeEventsPage() {
-  populateFilterOptions();
+async function initializeEventsPage() {
   bindEventListeners();
-  applyFilters();
+  await loadEvents();
 }
 
 loadIncludes();
