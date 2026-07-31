@@ -300,10 +300,11 @@
 }
 
     .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 360px));
+  justify-content: center;
+  gap: 1rem;
+}
 
     .featured-event {
       display: flex;
@@ -350,11 +351,12 @@
     }
 
     .featured-content {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 1rem;
-    }
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem;
+}
 
     .featured-content h3 {
       margin: 0 0 0.45rem;
@@ -367,12 +369,6 @@
       gap: 0.3rem;
       color: var(--soft);
       font-size: 0.86rem;
-    }
-
-    .featured-description {
-      margin: 0.7rem 0 1rem;
-      color: var(--muted);
-      font-size: 0.9rem;
     }
 
     .featured-content .btn { margin-top: auto; }
@@ -1742,10 +1738,9 @@ function renderFeaturedEvents() {
           <span><i class="fa-solid fa-location-dot"></i> ${escapeHtml(getLocationLabel(event))}</span>
         </div>
 
-        <p class="featured-description">${escapeHtml(event.description)}</p>
         ${renderPills(event.event_types || [event.event_type], 3)}
 
-        <a class="btn" href="event.html?slug=${encodeURIComponent(event.slug)}">View Event</a>
+<a class="btn" href="event.html?slug=${encodeURIComponent(event.slug)}">View Event</a>
       </div>
     </article>
   `).join("");
