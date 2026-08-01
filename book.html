@@ -267,11 +267,30 @@
       letter-spacing: -0.03em;
     }
 
+    .series-subtitle {
+  margin: -0.35rem 0 0.75rem;
+  color: var(--accent);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
     .author-line {
-      font-size: 1.05rem;
-      color: var(--muted);
-      margin: 0.5rem 0 0;
-    }
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+}
+
+.author-name-link {
+  color: var(--accent);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.author-name-link:hover {
+  color: #f2c994;
+  text-decoration: underline;
+}
 
     .badge-row,
     .meta-grid,
@@ -292,11 +311,11 @@
     }
 
     .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(120px, 1fr));
-      gap: 0.8rem;
-      margin: 1.3rem 0 1.5rem;
-    }
+  display: grid;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 0.8rem;
+  margin: 1.3rem 0 1.5rem;
+}
 
     .meta-card {
       padding: 0.95rem;
@@ -405,6 +424,37 @@
   font-size: 0.88rem;
 }
 
+.detail-link {
+  color: var(--accent);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.detail-link:hover {
+  color: #f2c994;
+  text-decoration: underline;
+}
+
+.current-series-book {
+  border-color: rgba(216,163,93,.45);
+  background: rgba(216,163,93,.12);
+}
+
+.current-series-book:hover {
+  transform: none;
+}
+
+.current-book-label {
+  display: inline-block;
+  margin-top: .35rem;
+  padding: .2rem .45rem;
+  border-radius: 999px;
+  background: rgba(216,163,93,.18);
+  color: #f2cb98;
+  font-size: .72rem;
+  font-weight: bold;
+}
+
     @media (max-width: 1080px) {
       .book-layout {
         grid-template-columns: 1fr;
@@ -414,6 +464,10 @@
         position: static;
       }
     }
+
+    .meta-grid {
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+}
 
         @media (max-width: 760px) {
   body {
@@ -567,7 +621,18 @@
         <div class="book-head">
           <div>
             <h1 id="book-title">Loading...</h1>
-            <p class="author-line">By <span id="book-author">Loading...</span></p>
+
+<p
+  id="book-series-subtitle"
+  class="series-subtitle"
+  style="display:none;"
+>
+  —
+</p>
+
+<p class="author-line">
+  By <span id="book-author">Loading...</span>
+</p>
           </div>
 
           <div class="badge-row" id="badge-row">
@@ -592,6 +657,14 @@
             <strong>Spice Level</strong>
             <span id="book-spice">—</span>
           </div>
+          <div
+  class="meta-card"
+  id="page-count-meta"
+  style="display:none;"
+>
+  <strong>Length</strong>
+  <span id="book-pages-meta">—</span>
+</div>
         </div>
 
         <div class="section-stack">
@@ -611,20 +684,76 @@
         <aside class="book-side">
           <h2>Book Details</h2>
           <div class="side-list">
-            <div class="side-item">
-              <strong>Release Date</strong>
-              <span id="book-release">—</span>
-            </div>
-            <div class="side-item">
-              <strong>Formats</strong>
-              <span id="book-formats">—</span>
-            </div>
-          </div>
+  <div class="side-item">
+    <strong>Release Date</strong>
+    <span id="book-release">—</span>
+  </div>
 
-          <article class="section-card" id="other-books-card" style="margin-top:1rem; display:none;">
+  <div class="side-item">
+    <strong>Formats</strong>
+    <span id="book-formats">—</span>
+  </div>
+
+  <div
+    class="side-item"
+    id="pages-detail-item"
+    style="display:none;"
+  >
+    <strong>Length</strong>
+    <span id="book-pages">—</span>
+  </div>
+
+  <div
+    class="side-item"
+    id="audiobook-detail-item"
+    style="display:none;"
+  >
+    <strong>Audiobook</strong>
+    <span id="book-audiobook">—</span>
+  </div>
+
+  <div
+    class="side-item"
+    id="kids-detail-item"
+    style="display:none;"
+  >
+    <strong>Young Reader Category</strong>
+    <span id="book-kids-category">—</span>
+  </div>
+</div>
+
+<article
+  class="section-card"
+  id="series-books-card"
+  style="margin-top:1rem;display:none;"
+>
+  <h2 id="series-heading">Series</h2>
+
+  <p class="other-books-subtext">
+    Read the series in order.
+  </p>
+
+  <div
+    class="other-books-grid"
+    id="series-books-list"
+  ></div>
+</article>
+
+<article
+  class="section-card"
+  id="other-books-card"
+  style="margin-top:1rem;display:none;"
+>
   <h2>Other Books by This Author</h2>
-<p class="other-books-subtext">Click "View Author" to view full catalog.</p>
-  <div class="other-books-grid" id="other-books-list"></div>
+
+  <p class="other-books-subtext">
+    Click "View Author" to view full catalog.
+  </p>
+
+  <div
+    class="other-books-grid"
+    id="other-books-list"
+  ></div>
 </article>
         </aside>
 
@@ -695,23 +824,163 @@ function markBookClickTracked(bookId) {
 }
 
     function textOrFallback(value, fallback = "—") {
-      if (value === null || value === undefined) return fallback;
-      const str = String(value).trim();
-      return str ? str : fallback;
-    }
+  if (value === null || value === undefined) return fallback;
+  const str = String(value).trim();
+  return str ? str : fallback;
+}
 
-    function splitToArray(value) {
-      if (!value) return [];
-      if (Array.isArray(value)) {
-        return value.map(v => String(v).trim()).filter(Boolean);
-      }
-      return String(value)
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function splitToArray(value) {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map(v => String(v).trim())
+      .filter(Boolean);
+  }
+
+  return String(value)
+    .split(",")
+    .map(v => v.trim())
+    .filter(Boolean);
+}
+
+function normalizeAuthorName(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function parseContributors(value) {
+  if (!value) return [];
+
+  let contributors = value;
+
+  if (typeof contributors === "string") {
+    const trimmed = contributors.trim();
+
+    if (!trimmed) return [];
+
+    try {
+      contributors = JSON.parse(trimmed);
+    } catch {
+      contributors = trimmed
         .split(",")
-        .map(v => v.trim())
+        .map(name => name.trim())
         .filter(Boolean);
     }
+  }
 
-    function formatDate(dateString) {
+  if (!Array.isArray(contributors)) {
+    contributors = [contributors];
+  }
+
+  const parsed = contributors
+    .map(contributor => {
+      if (typeof contributor === "string") {
+        return {
+          authorName: contributor.trim(),
+          authorId: ""
+        };
+      }
+
+      if (
+        contributor &&
+        typeof contributor === "object"
+      ) {
+        return {
+          authorName: textOrFallback(
+            contributor.author_name ||
+            contributor.authorName ||
+            contributor.name ||
+            contributor.Author_Name ||
+            contributor.AUTHOR_NAME,
+            ""
+          ),
+
+          authorId: textOrFallback(
+            contributor.author_id ||
+            contributor.authorId ||
+            contributor.Author_ID ||
+            contributor.AUTHOR_ID,
+            ""
+          )
+        };
+      }
+
+      return null;
+    })
+    .filter(contributor => contributor?.authorName);
+
+  const seenNames = new Set();
+
+  return parsed.filter(contributor => {
+    const normalizedName =
+      normalizeAuthorName(contributor.authorName);
+
+    if (
+      !normalizedName ||
+      seenNames.has(normalizedName)
+    ) {
+      return false;
+    }
+
+    seenNames.add(normalizedName);
+    return true;
+  });
+}
+
+async function connectContributorsToAuthors(contributors) {
+  if (!contributors.length) return [];
+
+  try {
+    const authors = await supabaseFetch(
+      "public_authors?select=AUTHOR_ID,AUTHOR_NAME"
+    );
+
+    const authorsByName = new Map(
+      authors.map(author => [
+        normalizeAuthorName(author.AUTHOR_NAME),
+        {
+          authorName: author.AUTHOR_NAME,
+          authorId: author.AUTHOR_ID
+        }
+      ])
+    );
+
+    return contributors.map(contributor => {
+      if (contributor.authorId) {
+        return contributor;
+      }
+
+      const matchingAuthor = authorsByName.get(
+        normalizeAuthorName(contributor.authorName)
+      );
+
+      return matchingAuthor || contributor;
+    });
+  } catch (error) {
+    console.error(
+      "Contributor author matching failed:",
+      error
+    );
+
+    return contributors;
+  }
+}
+
+function formatDate(dateString) {
   if (!dateString) return "—";
 
   const raw = String(dateString).trim();
@@ -735,13 +1004,64 @@ function markBookClickTracked(bookId) {
   if (Number.isNaN(date.getTime())) return raw;
 
   return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
 }
 
-    function normalizeUrl(url) {
+function toPositiveNumber(value) {
+  const number = Number(value);
+
+  return Number.isFinite(number) && number > 0
+    ? number
+    : null;
+}
+
+function getDisplayPageCount(book) {
+  const actualPages =
+    toPositiveNumber(book.pageCount);
+
+  if (actualPages) {
+    return {
+      pages: Math.round(actualPages),
+      estimated: false
+    };
+  }
+
+  const wordCount =
+    toPositiveNumber(book.wordCount);
+
+  if (wordCount) {
+    return {
+      pages: Math.max(
+        1,
+        Math.round(wordCount / 250)
+      ),
+      estimated: true
+    };
+  }
+
+  return null;
+}
+
+function toBoolean(value) {
+  if (value === true) return true;
+  if (value === false) return false;
+
+  const normalized =
+    String(value || "")
+      .trim()
+      .toLowerCase();
+
+  return [
+    "true",
+    "yes",
+    "1"
+  ].includes(normalized);
+}
+
+function normalizeUrl(url) {
   const value = textOrFallback(url, "");
   if (!value) return "";
 
@@ -756,18 +1076,57 @@ function markBookClickTracked(bookId) {
   const subgenres = splitToArray(raw.subGenres);
   const vibes = splitToArray(raw.vibes);
   const representation = splitToArray(raw.representation);
-  const formats = splitToArray(raw.availableFormats);
+const formats = splitToArray(raw.availableFormats);
+const contributors = parseContributors(raw.contributors);
 
-  const otherBooksByAuthor = Array.isArray(payload?.otherBooksByAuthor)
-    ? payload.otherBooksByAuthor.map(book => ({
-        id: textOrFallback(book.bookId, ""),
-        title: textOrFallback(book.title, "Untitled Book"),
-        coverUrl: textOrFallback(book.bookCover, ""),
-        releaseDate: formatDate(book.releaseDate)
-      }))
-    : [];
+const seriesName =
+  textOrFallback(raw.seriesName, "");
 
-  const externalLinks = {
+const seriesNumber =
+  toPositiveNumber(raw.seriesNumber);
+
+const wordCount =
+  toPositiveNumber(raw.wordCount);
+
+const pageCount =
+  toPositiveNumber(raw.pageCount);
+
+const hasAudiobook =
+  toBoolean(raw.hasAudiobook);
+
+const audiobookNarrators =
+  textOrFallback(
+    raw.audiobookNarrators,
+    ""
+  );
+
+const audiobookLink =
+  normalizeUrl(raw.audiobookLink);
+
+const kidsCategory =
+  textOrFallback(raw.kidsCategory, "");
+
+const otherBooksByAuthor = Array.isArray(payload?.otherBooksByAuthor)
+  ? payload.otherBooksByAuthor.map(book => ({
+      id: textOrFallback(book.bookId, ""),
+      title: textOrFallback(book.title, "Untitled Book"),
+      coverUrl: textOrFallback(book.bookCover, ""),
+      releaseDate: formatDate(book.releaseDate)
+    }))
+  : [];
+
+const seriesBooks = Array.isArray(payload?.seriesBooks)
+  ? payload.seriesBooks.map(book => ({
+      bookId: textOrFallback(book.bookId, ""),
+      title: textOrFallback(book.title, "Untitled Book"),
+      bookCover: textOrFallback(book.bookCover, ""),
+      releaseDate: formatDate(book.releaseDate),
+      seriesNumber:
+        Number(book.seriesNumber) || null
+    }))
+  : [];
+
+const externalLinks = {
   amazon: normalizeUrl(raw.amazonLink),
   barnesAndNoble: normalizeUrl(raw.bnLink),
   kobo: normalizeUrl(raw.koboLink),
@@ -790,9 +1149,13 @@ function markBookClickTracked(bookId) {
   return {
     id: textOrFallback(raw.bookId, ""),
     title: textOrFallback(raw.title, "Untitled Book"),
-    authorName: textOrFallback(raw.authorName, "Unknown Author"),
-    authorId: textOrFallback(raw.authorId, ""),
-    coverUrl: textOrFallback(raw.bookCover, ""),
+    authorName: textOrFallback(
+  raw.authorName,
+  "Unknown Author"
+),
+authorId: textOrFallback(raw.authorId, ""),
+contributors,
+coverUrl: textOrFallback(raw.bookCover, ""),
     coverAlt: `${textOrFallback(raw.title, "Book")} cover`,
     description: textOrFallback(raw.description, "Description coming soon."),
     genre,
@@ -801,12 +1164,34 @@ function markBookClickTracked(bookId) {
     tags: formats,
     representation,
     formats,
-    otherBooksByAuthor,
-    ageRange: textOrFallback(raw.ageRange, "—"),
-    spiceLevel: textOrFallback(raw.spiceLevel, "—"),
-    releaseDate: formatDate(raw.releaseDate),
-    buyLink: firstAvailableBuyLink,
-    externalLinks,
+otherBooksByAuthor,
+
+seriesName,
+seriesNumber,
+seriesBooks,
+
+wordCount,
+pageCount,
+
+hasAudiobook,
+audiobookNarrators,
+audiobookLink,
+
+kidsCategory,
+
+ageRange:
+  textOrFallback(raw.ageRange, "—"),
+
+spiceLevel:
+  textOrFallback(raw.spiceLevel, "—"),
+
+releaseDate:
+  formatDate(raw.releaseDate),
+
+buyLink:
+  firstAvailableBuyLink,
+
+externalLinks,
     badges: [
       genre,
       ...subgenres.slice(0, 2),
@@ -821,11 +1206,78 @@ function markBookClickTracked(bookId) {
     }
 
     function setHTML(id, html) {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = html;
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+
+function buildAuthorLink(author) {
+  const authorName = escapeHtml(
+    author.authorName || "Unknown Author"
+  );
+
+  if (!author.authorId) {
+    return `<span>${authorName}</span>`;
+  }
+
+  const source = getBookSource();
+
+  return `
+    <a
+      class="author-name-link"
+      href="author.html?id=${encodeURIComponent(
+        author.authorId
+      )}&source=${encodeURIComponent(source)}"
+    >
+      ${authorName}
+    </a>
+  `;
+}
+
+function buildAuthorLine(book) {
+  const primaryAuthor = {
+    authorName: book.authorName,
+    authorId: book.authorId
+  };
+
+  const allAuthors = [
+    primaryAuthor,
+    ...(book.contributors || [])
+  ];
+
+  const seenNames = new Set();
+
+  const uniqueAuthors = allAuthors.filter(author => {
+    const normalizedName =
+      normalizeAuthorName(author.authorName);
+
+    if (
+      !normalizedName ||
+      seenNames.has(normalizedName)
+    ) {
+      return false;
     }
 
-    function showOrHide(id, shouldShow) {
+    seenNames.add(normalizedName);
+    return true;
+  });
+
+  const authorLinks =
+    uniqueAuthors.map(buildAuthorLink);
+
+  if (authorLinks.length === 1) {
+    return authorLinks[0];
+  }
+
+  if (authorLinks.length === 2) {
+    return `${authorLinks[0]} and ${authorLinks[1]}`;
+  }
+
+  return `${authorLinks
+    .slice(0, -1)
+    .join(", ")}, and ${authorLinks.at(-1)}`;
+}
+
+function showOrHide(id, shouldShow) {
       const el = document.getElementById(id);
       if (el) el.style.display = shouldShow ? "" : "none";
     }
@@ -901,6 +1353,91 @@ function markBookClickTracked(bookId) {
   `).join("");
 
   card.style.display = "";
+}
+
+function renderSeriesBooks(book) {
+
+  const card =
+    document.getElementById("series-books-card");
+
+  const heading =
+    document.getElementById("series-heading");
+
+  const list =
+    document.getElementById("series-books-list");
+
+  if (
+    !book.seriesBooks ||
+    book.seriesBooks.length < 2
+  ) {
+    card.style.display = "none";
+    return;
+  }
+
+  heading.textContent =
+    book.seriesName || "Series";
+
+  const defaultCover =
+    `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
+
+  const source = getBookSource();
+
+  list.innerHTML =
+    book.seriesBooks.map(seriesBook => {
+
+      const current =
+        seriesBook.bookId === book.id;
+
+      return current
+        ? `
+        <div class="other-book-item current-series-book">
+
+          <img
+            class="other-book-cover"
+            src="${seriesBook.bookCover || defaultCover}"
+            onerror="this.onerror=null;this.src='${defaultCover}'"
+          >
+
+          <span class="other-book-title">
+            ${seriesBook.title}
+          </span>
+
+          <span class="other-book-date">
+            Book ${seriesBook.seriesNumber}
+          </span>
+
+          <span class="current-book-label">
+            Current Book
+          </span>
+
+        </div>
+        `
+        : `
+        <a
+          class="other-book-item"
+          href="book.html?id=${encodeURIComponent(seriesBook.bookId)}&source=${encodeURIComponent(source)}">
+
+          <img
+            class="other-book-cover"
+            src="${seriesBook.bookCover || defaultCover}"
+            onerror="this.onerror=null;this.src='${defaultCover}'"
+          >
+
+          <span class="other-book-title">
+            ${seriesBook.title}
+          </span>
+
+          <span class="other-book-date">
+            Book ${seriesBook.seriesNumber}
+          </span>
+
+        </a>
+        `;
+
+    }).join("");
+
+  card.style.display = "";
+
 }
 
     async function trackBookClick(bookId) {
@@ -996,17 +1533,142 @@ function markBookClickTracked(bookId) {
       const book = normalizeBookPayload(payload);
 
       setText("breadcrumb-title", book.title, "Book");
-      setText("book-title", book.title, "Untitled Book");
-      setText("book-author", book.authorName, "Unknown Author");
-      setText("book-genre", book.genre || book.subgenres.join(", "), "—");
+setText("book-title", book.title, "Untitled Book");
+setHTML("book-author", buildAuthorLine(book));
+setText(
+  "book-genre",
+  book.genre || book.subgenres.join(", "),
+  "—"
+);
       setText("book-vibe", book.vibes.join(", "), "—");
       setText("book-age", book.ageRange, "—");
       setText("book-spice", book.spiceLevel, "—");
-      setText("book-description", book.description, "Description coming soon.");
-      setText("book-release", book.releaseDate, "—");
-      setText("book-formats", book.formats.join(", "), "—");
+      setText(
+  "book-description",
+  book.description,
+  "Description coming soon."
+);
 
-      setHTML("badge-row", buildPills(book.badges, "badge", "Book Details"));
+setText(
+  "book-release",
+  book.releaseDate,
+  "—"
+);
+
+setText(
+  "book-formats",
+  book.formats.join(", "),
+  "—"
+);
+
+/*
+ * Series
+ */
+const seriesText =
+  book.seriesName
+    ? book.seriesNumber
+      ? `${book.seriesName} • Book ${book.seriesNumber}`
+      : book.seriesName
+    : "";
+
+setText(
+  "book-series-subtitle",
+  seriesText
+);
+
+showOrHide(
+  "book-series-subtitle",
+  Boolean(seriesText)
+);
+
+/*
+ * Page count
+ */
+const pageInfo =
+  getDisplayPageCount(book);
+
+if (pageInfo) {
+
+  setText(
+    "book-pages-meta",
+    pageInfo.estimated
+      ? `≈ ${pageInfo.pages.toLocaleString()} pages`
+      : `${pageInfo.pages.toLocaleString()} pages`
+  );
+
+}
+
+showOrHide(
+  "page-count-meta",
+  Boolean(pageInfo)
+);
+
+/*
+ * Audiobook
+ */
+let audiobookHtml = "";
+
+if (book.hasAudiobook) {
+  audiobookHtml = "Available";
+
+  if (book.audiobookNarrators) {
+    audiobookHtml += `
+      <br>
+      Narrated by ${escapeHtml(
+        book.audiobookNarrators
+      )}
+    `;
+  }
+
+  if (book.audiobookLink) {
+    audiobookHtml += `
+      <br>
+      <a
+        class="detail-link"
+        href="${escapeHtml(
+          book.audiobookLink
+        )}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Listen or learn more
+      </a>
+    `;
+  }
+}
+
+setHTML(
+  "book-audiobook",
+  audiobookHtml
+);
+
+showOrHide(
+  "audiobook-detail-item",
+  book.hasAudiobook
+);
+
+/*
+ * Young reader category
+ */
+setText(
+  "book-kids-category",
+  book.kidsCategory,
+  "—"
+);
+
+showOrHide(
+  "kids-detail-item",
+  Boolean(book.kidsCategory)
+);
+
+setHTML(
+  "badge-row",
+  buildPills(
+    book.badges,
+    "badge",
+    "Book Details"
+  )
+);
 
       const allTags = [
         ...book.subgenres,
@@ -1068,9 +1730,14 @@ if (authorLink && book.authorId) {
   authorLink.href = `author.html?id=${encodeURIComponent(book.authorId)}&source=${encodeURIComponent(source)}`;
 }
 
-      renderOtherBooksByAuthor(book.otherBooksByAuthor);
+      renderSeriesBooks(book);
 
-      document.title = `${book.title} – The Blk Shelf`;
+renderOtherBooksByAuthor(
+  book.otherBooksByAuthor
+);
+
+document.title =
+  `${book.title} – The Blk Shelf`;
     }
 
     async function loadBook() {
@@ -1098,13 +1765,31 @@ if (authorLink && book.authorId) {
       `public_books?select=*&Author_ID=eq.${encodeURIComponent(row.Author_ID)}&Is_Live=eq.Yes&Book_ID=neq.${encodeURIComponent(bookId)}&limit=4`
     );
 
+    let seriesRows = [];
+
+if (row.Series_Name) {
+
+  seriesRows = await supabaseFetch(
+    `public_books?select=*&Series_Name=eq.${encodeURIComponent(
+      row.Series_Name
+    )}&Is_Live=eq.Yes&order=Series_Number.asc`
+  );
+
+}
+
+    const connectedContributors =
+  await connectContributorsToAuthors(
+    parseContributors(row.Contributors)
+  );
+
     const payload = {
       book: {
         bookId: row.Book_ID || "",
-        authorId: row.Author_ID || "",
-        authorName: row.Author_Name || "",
-        title: row.Title || "",
-        description: row.Description || "",
+authorId: row.Author_ID || "",
+authorName: row.Author_Name || "",
+contributors: connectedContributors,
+title: row.Title || "",
+description: row.Description || "",
         bookCover: row.CoverImagePath
   ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
   : "",
@@ -1118,11 +1803,44 @@ if (authorLink && book.authorId) {
         subGenres: row.Sub_Genres || "",
         vibes: row.Vibes || "",
         spiceLevel: row.Spice_Level || "",
-        ageRange: row.Age_Range || "",
-        releaseDate: row["Release/Expected_Release_Date"] || "",
-        representation: row.Representation || "",
-        koboLink: row.Kobo_Link || "",
-        applebooksLink: row.Apple_Books_Link || ""
+        ageRange:
+  row.Age_Range || "",
+
+seriesName:
+  row.Series_Name || "",
+
+seriesNumber:
+  row.Series_Number || null,
+
+wordCount:
+  row.Word_Count || null,
+
+pageCount:
+  row.Page_Count || null,
+
+hasAudiobook:
+  row.Has_Audiobook || false,
+
+audiobookNarrators:
+  row.Audiobook_Narrators || "",
+
+audiobookLink:
+  row.Audiobook_Link || "",
+
+kidsCategory:
+  row.Kids_Category || "",
+
+releaseDate:
+  row["Release/Expected_Release_Date"] || "",
+
+representation:
+  row.Representation || "",
+
+koboLink:
+  row.Kobo_Link || "",
+
+applebooksLink:
+  row.Apple_Books_Link || ""
       },
       otherBooksByAuthor: otherRows.map(book => ({
         bookId: book.Book_ID || "",
@@ -1131,7 +1849,24 @@ if (authorLink && book.authorId) {
   ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(book.CoverImagePath)}`
   : "",
         releaseDate: book["Release/Expected_Release_Date"] || ""
-      }))
+      })),
+
+seriesBooks: seriesRows.map(book => ({
+
+  bookId: book.Book_ID,
+
+  title: book.Title,
+
+  seriesNumber: book.Series_Number,
+
+  releaseDate:
+    book["Release/Expected_Release_Date"],
+
+  bookCover: book.CoverImagePath
+    ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(book.CoverImagePath)}`
+    : ""
+
+}))
     };
 
     populateBook(payload);
