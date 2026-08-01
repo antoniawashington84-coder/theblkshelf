@@ -112,7 +112,7 @@
       gap: 0.8rem;
     }
 
-    details {
+    .accordion details {
   background:
     linear-gradient(135deg, rgba(255,255,255,0.06), transparent 32%),
     rgba(63,46,35,0.92);
@@ -124,18 +124,18 @@
   transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-details:hover {
+.accordion details:hover {
   transform: translateY(-2px);
   border-color: rgba(216,163,93,0.45);
 }
 
-details[open] {
+.accordion details[open] {
   background:
     linear-gradient(135deg, rgba(216,163,93,0.12), transparent 35%),
     rgba(63,46,35,0.96);
 }
 
-    summary {
+    .accordion summary {
   cursor: pointer;
   padding: 1rem 1.1rem;
   font-weight: bold;
@@ -147,17 +147,17 @@ details[open] {
   align-items: center;
 }
 
-summary::before {
+.accordion summary::before {
   content: "✦";
   color: #f2c994;
   font-size: 0.95rem;
 }
 
-    summary::-webkit-details-marker {
+    .accordion summary::-webkit-details-marker {
       display: none;
     }
 
-    summary::after {
+    .accordion summary::after {
       content: "+";
       color: #f2c994;
       font-size: 1.35rem;
@@ -165,22 +165,22 @@ summary::before {
       flex-shrink: 0;
     }
 
-    details[open] summary::after {
+    .accordion details[open] summary::after {
       content: "–";
     }
 
-    details p,
-    details ul {
+    .accordion details p,
+    .accordion details ul {
       color: var(--muted);
       margin: 0;
       padding: 0 1.1rem 1rem;
     }
 
-    details ul {
+    .accordion details ul {
       padding-left: 2.2rem;
     }
 
-    details li {
+    .accordion details li {
       margin-bottom: 0.35rem;
     }
 
@@ -199,7 +199,7 @@ summary::before {
     }
 
     a:focus-visible,
-    summary:focus-visible {
+    .accordion summary:focus-visible {
       outline: 3px solid #f2c994;
       outline-offset: 3px;
     }
@@ -236,13 +236,13 @@ summary::before {
         font-size: 1.45rem;
       }
 
-      summary {
+      .accordion summary {
         padding: 0.9rem;
         font-size: 0.95rem;
       }
 
-      details p,
-      details ul {
+      .accordion details p,
+      .accordion details ul {
         padding: 0 0.9rem 0.9rem;
         font-size: 0.92rem;
       }
