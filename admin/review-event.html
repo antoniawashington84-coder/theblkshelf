@@ -1077,6 +1077,80 @@ if (uploadError) {
   };
 }
 
+async function geocodeEventAddress(event) {
+  if (
+    event.event_format === "Virtual" ||
+    (
+      !event.street_address &&
+      !event.city &&
+      !event.state &&
+      !event.zip_code
+    )
+  ) {
+    return {
+      latitude: null,
+      longitude: null
+    };
+  }
+
+  const {
+  data: sessionData,
+  error: sessionError
+} = await supabaseClient.auth.getSession();
+
+if (sessionError) {
+  throw sessionError;
+}
+
+const accessToken =
+  sessionData.session?.access_token;
+
+if (!accessToken) {
+  throw new Error(
+    "Your admin session is missing. Please sign in again."
+  );
+}
+
+const { data, error } =
+  await supabaseClient.functions.invoke(
+    "geocode-event-v2",
+    {
+      headers: {
+        Authorization:
+          `Bearer ${accessToken}`
+      },
+      body: {
+        street_address: event.street_address,
+        city: event.city,
+        state: event.state,
+        zip_code: event.zip_code,
+        country: event.country
+      }
+    }
+  );
+
+  if (error) {
+    throw new Error(
+      `The event address could not be geocoded: ${error.message}`
+    );
+  }
+
+  if (
+    data?.latitude == null ||
+    data?.longitude == null
+  ) {
+    throw new Error(
+      data?.error ||
+      "No coordinates were found for the event address."
+    );
+  }
+
+  return {
+    latitude: Number(data.latitude),
+    longitude: Number(data.longitude)
+  };
+}
+
 async function approveSubmission() {
 
   if (!currentEvent) {
@@ -1105,7 +1179,10 @@ async function approveSubmission() {
 
   const approvedAt = new Date().toISOString();
 
-  const liveEvent = {
+const coordinates =
+  await geocodeEventAddress(currentEvent);
+
+const liveEvent = {
     event_name: currentEvent.event_name,
     slug: createEventSlug(currentEvent.event_name),
 
@@ -1122,13 +1199,15 @@ async function approveSubmission() {
     repeat_frequency: currentEvent.repeat_frequency,
 
     event_format: currentEvent.event_format,
-    venue_name: currentEvent.venue_name,
-    street_address: currentEvent.street_address,
-    city: currentEvent.city,
-    state: currentEvent.state,
-    zip_code: currentEvent.zip_code,
-    country: currentEvent.country,
-    virtual_link: currentEvent.virtual_link,
+venue_name: currentEvent.venue_name,
+street_address: currentEvent.street_address,
+city: currentEvent.city,
+state: currentEvent.state,
+zip_code: currentEvent.zip_code,
+country: currentEvent.country,
+latitude: coordinates.latitude,
+longitude: coordinates.longitude,
+virtual_link: currentEvent.virtual_link,
 
     free_event: currentEvent.free_event,
     ticket_price: currentEvent.ticket_price,
@@ -1204,13 +1283,15 @@ if (insertError) {
   error: submissionUpdateError
 } = await supabaseClient
   .from("event_submissions")
-  .update({
-    submission_status: "approved",
-    reviewer_notes: reviewerNotes,
-    reviewed_at: approvedAt,
-    flyer_storage_path: flyerResult.flyerStoragePath,
-    event_image_url: flyerResult.eventImageUrl
-  })
+.update({
+  submission_status: "approved",
+  reviewer_notes: reviewerNotes,
+  reviewed_at: approvedAt,
+  flyer_storage_path: flyerResult.flyerStoragePath,
+  event_image_url: flyerResult.eventImageUrl,
+  latitude: coordinates.latitude,
+  longitude: coordinates.longitude
+})
   .eq("id", eventId)
   .eq("submission_status", "pending")
   .select("id, submission_status")
@@ -1232,7 +1313,9 @@ if (!updatedSubmission) {
   reviewer_notes: reviewerNotes,
   reviewed_at: approvedAt,
   flyer_storage_path: flyerResult.flyerStoragePath,
-  event_image_url: flyerResult.eventImageUrl
+  event_image_url: flyerResult.eventImageUrl,
+  latitude: coordinates.latitude,
+  longitude: coordinates.longitude
 };
 
 await logEventHistory("approved", {
