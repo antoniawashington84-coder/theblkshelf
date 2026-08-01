@@ -243,6 +243,7 @@
 let currentBookSubmission = null;
 let linkedAuthor = null;
 let linkedAuthorReviewUrl = "";
+let nextSubmissionUrl = "review-queue.html";
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -520,9 +521,14 @@ function linkList(links) {
   const currentIndex = data.findIndex(item => item.id === currentId);
 
   const prevItem = currentIndex > 0 ? data[currentIndex - 1] : null;
-  const nextItem = currentIndex >= 0 && currentIndex < data.length - 1
+  const nextItem =
+  currentIndex >= 0 && currentIndex < data.length - 1
     ? data[currentIndex + 1]
     : null;
+
+nextSubmissionUrl = nextItem
+  ? `review-book.html?id=${encodeURIComponent(nextItem.id)}`
+  : "review-queue.html";
 
   prevBtn.disabled = !prevItem;
   nextBtn.disabled = !nextItem;
@@ -1189,8 +1195,8 @@ ${field(
   note.textContent = `Saved as ${status}. Refreshing...`;
 
 setTimeout(() => {
-  window.location.reload();
-}, 600);
+  window.location.href = nextSubmissionUrl;
+}, 500);
 }
 
 async function moveBookCoverToLive(
@@ -1638,9 +1644,8 @@ if (approveButton) {
       `Book approved and published as ${bookId}.`;
 
     setTimeout(() => {
-      window.location.href =
-        "review-queue.html";
-    }, 900);
+  window.location.href = nextSubmissionUrl;
+}, 500);
 
   } catch (error) {
     console.error(error);
