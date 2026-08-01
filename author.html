@@ -652,6 +652,72 @@ const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-d
         .filter(Boolean);
     }
 
+    function normalizeAuthorName(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function parseContributors(value) {
+
+  if (!value) return [];
+
+  let contributors = value;
+
+  if (typeof contributors === "string") {
+
+    try {
+      contributors = JSON.parse(contributors);
+    } catch {
+
+      contributors = contributors
+        .split(",")
+        .map(name => name.trim())
+        .filter(Boolean);
+
+    }
+
+  }
+
+  if (!Array.isArray(contributors)) {
+    contributors = [contributors];
+  }
+
+  return contributors
+    .map(contributor => {
+
+      if (typeof contributor === "string") {
+
+        return {
+          authorId: "",
+          authorName: contributor
+        };
+
+      }
+
+      return {
+        authorId:
+          contributor.author_id ||
+          contributor.authorId ||
+          contributor.AUTHOR_ID ||
+          "",
+
+        authorName:
+          contributor.author_name ||
+          contributor.authorName ||
+          contributor.AUTHOR_NAME ||
+          contributor.name ||
+          ""
+      };
+
+    })
+    .filter(c => c.authorId || c.authorName);
+
+}
+
     function parseLocalDate(value) {
   if (!value) return null;
 
@@ -945,8 +1011,8 @@ if (worksSection) worksSection.style.display = "";
         `public_authors?select=*&AUTHOR_ID=eq.${encodeURIComponent(authorId)}&APPROVAL=eq.Approved&limit=1`
       ),
       supabaseFetch(
-        `public_books?select=*&Author_ID=eq.${encodeURIComponent(authorId)}&Is_Live=eq.Yes&limit=100`
-      ),
+  `public_books?select=*&Is_Live=eq.Yes&limit=500`
+),
       supabaseFetch(
         `public_featured_authors?select=*`
       )
@@ -957,6 +1023,37 @@ if (worksSection) worksSection.style.display = "";
     }
 
     const author = authorRows[0];
+
+    const normalizedAuthorName =
+  normalizeAuthorName(author.AUTHOR_NAME);
+
+const filteredBooks = booksRows.filter(book => {
+
+  if (book.Author_ID === authorId) {
+    return true;
+  }
+
+  const contributors =
+    parseContributors(book.Contributors);
+
+  return contributors.some(contributor => {
+
+    if (
+      contributor.authorId &&
+      contributor.authorId === authorId
+    ) {
+      return true;
+    }
+
+    return (
+      normalizeAuthorName(
+        contributor.authorName
+      ) === normalizedAuthorName
+    );
+
+  });
+
+});
 
     const currentMonthKey = new Date().toISOString().slice(0, 7);
 
@@ -983,7 +1080,14 @@ otherSocials: author.OTHER_SOCIALS || "",
         isFeaturedCurrentMonth
       },
 
-      works: booksRows.map(book => ({
+      works: [...new Map(
+
+  filteredBooks.map(book => [
+    book.Book_ID,
+    book
+  ])
+
+).values()].map(book => ({
         bookId: book.Book_ID || "",
         title: book.Title || "",
         bookCover: book.CoverImagePath
