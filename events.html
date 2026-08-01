@@ -1364,11 +1364,7 @@ async function loadEvents() {
   .from("events")
   .select("*")
   .eq("event_status", "active")
-  .order("start_date", { ascending: true })
-  .order("priority", {
-    ascending: false,
-    nullsFirst: false
-  });
+  .order("start_date", { ascending: true });
 
     if (error) {
       throw error;
