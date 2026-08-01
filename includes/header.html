@@ -1,34 +1,87 @@
+<div
+  id="siteAnnouncementBanner"
+  class="site-announcement-banner"
+  hidden
+>
+  <div class="container site-announcement-inner">
+    <span id="siteAnnouncementMessage"></span>
+
+    <a
+      id="siteAnnouncementLink"
+      class="site-announcement-link"
+      href="#"
+      hidden
+    ></a>
+  </div>
+</div>
+
 <div class="container">
   <nav>
-    <a class="brand" href="index.html" aria-label="The Blk Shelf home">
-      <img
-        src="https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/blkshelf-seal-cream.png"
-        alt="The Blk Shelf logo"
-        class="brand-logo"
-      >
+  <a class="brand" href="index.html" aria-label="The Blk Shelf home">
+    <img
+      src="https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public/logo/blkshelf-seal-cream.png"
+      alt="The Blk Shelf logo"
+      class="brand-logo"
+    >
 
-      <div class="brand-text">
-        <span class="brand-title">The Blk Shelf</span>
-        <small>Powered by Black authors</small>
-      </div>
-    </a>
-
-    <div class="nav-links">
-      <a class="desktop-only" href="index.html">Home</a>
-      <a href="library.html">Library</a>
-      <a href="featured-authors.html">Featured Authors</a>
-      <a class="desktop-only" href="about.html">About</a>
-      <a class="desktop-only" href="faq.html">FAQs</a>
-      <a href="index.html#readers">Join List</a>
-
-      <details class="mobile-more-menu">
-        <summary>Menu</summary>
-        <div class="mobile-more-links">
-          <a href="index.html">Home</a>
-          <a href="about.html">About</a>
-          <a href="faq.html">FAQs</a>
-        </div>
-      </details>
+    <div class="brand-text">
+      <span class="brand-title">The Blk Shelf</span>
+      <small>Powered by Black authors</small>
     </div>
-  </nav>
+  </a>
+
+  <div class="nav-links">
+
+    <a href="index.html">Home</a>
+
+    <details class="nav-dropdown desktop-only">
+      <summary>Readers</summary>
+
+      <div class="dropdown-menu">
+        <a href="library.html">Library</a>
+        <a href="author-directory.html">Author Directory</a>
+        <a href="featured-authors.html">Featured Authors</a>
+      </div>
+    </details>
+
+    <details class="nav-dropdown desktop-only">
+      <summary>Resources</summary>
+
+      <div class="dropdown-menu">
+        <a href="events.html">Events</a>
+        <a href="submit-event.html">Submit Event</a>
+        <a href="about.html">About</a>
+        <a href="faq.html">FAQs</a>
+        <a href="submit-author.html">Submit Author Form</a>
+      </div>
+    </details>
+
+    <a href="index.html#readers">Join List</a>
+
+    <details class="mobile-more-menu">
+      <summary>Menu</summary>
+
+      <div class="mobile-more-links">
+
+        <a href="index.html">Home</a>
+
+        <strong>Readers</strong>
+        <a href="library.html">Library</a>
+        <a href="author-directory.html">Author Directory</a>
+        <a href="featured-authors.html">Featured Authors</a>
+
+        <strong>Resources</strong>
+        <a href="events.html">Events</a>
+        <a href="submit-event.html">Submit Event</a>
+        <a href="about.html">About</a>
+        <a href="faq.html">FAQs</a>
+        <a href="submit-author.html">Submit Author Form</a>
+
+        <a href="index.html#readers">Join List</a>
+
+      </div>
+    </details>
+
+  </div>
+</nav>
 </div>
