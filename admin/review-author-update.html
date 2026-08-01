@@ -317,6 +317,7 @@
 
   let currentUpdateRequest = null;
   let currentLiveAuthor = null;
+  let nextRequestUrl = "review-queue.html";
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -526,21 +527,38 @@
     }
 
     const index =
-      data.findIndex(
-        item =>
-          item.id === currentId
-      );
+  data.findIndex(
+    item =>
+      String(item.id) === String(currentId)
+  );
 
-    const previous =
-      index > 0
-        ? data[index - 1]
-        : null;
+const previous =
+  index > 0
+    ? data[index - 1]
+    : null;
 
-    const next =
-      index >= 0 &&
-      index < data.length - 1
-        ? data[index + 1]
-        : null;
+const next =
+  index >= 0 &&
+  index < data.length - 1
+    ? data[index + 1]
+    : null;
+
+/*
+  After the current request is removed from the active queue:
+
+  1. Go to the next request when available.
+  2. Otherwise go to the previous request.
+  3. Return to the queue only when no other requests remain.
+*/
+const nextReviewRequest =
+  next || previous;
+
+nextRequestUrl =
+  nextReviewRequest
+    ? `review-author-update.html?id=${encodeURIComponent(
+        nextReviewRequest.id
+      )}`
+    : "review-queue.html";
 
     prevBtn.disabled =
       !previous;
@@ -1152,9 +1170,8 @@ async function saveAuthorUpdateStatus(
       : "Author update request denied.";
 
   setTimeout(() => {
-    window.location.href =
-      "review-queue.html";
-  }, 700);
+  window.location.href = nextRequestUrl;
+}, 500);
 }
 
 async function approveAuthorUpdate() {
@@ -1272,9 +1289,8 @@ async function approveAuthorUpdate() {
       "Author profile update approved and applied.";
 
     setTimeout(() => {
-      window.location.href =
-        "review-queue.html";
-    }, 800);
+  window.location.href = nextRequestUrl;
+}, 500);
 
   } catch (error) {
     console.error(error);
