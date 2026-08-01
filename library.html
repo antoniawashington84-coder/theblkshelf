@@ -679,17 +679,22 @@
 
   <div class="search-radio-row">
     <label>
-      <input type="radio" name="search-type" value="author" checked>
-      Author
-    </label>
+  <input type="radio" name="search-type" value="author" checked>
+  Author
+</label>
 
-    <label>
-      <input type="radio" name="search-type" value="title">
-      Title
-    </label>
+<label>
+  <input type="radio" name="search-type" value="title-series">
+  Title/Series
+</label>
   </div>
 
-  <input class="field" id="author-search" type="text" placeholder="Search author..." />
+  <input
+  class="field"
+  id="author-search"
+  type="text"
+  placeholder="Search author or contributor..."
+/>
 
 </div>
 
@@ -736,6 +741,13 @@
       <div class="chip-row" id="representation-filters"></div>
     </div>
   </details>
+
+  <details class="filter-group" id="length-filter-group">
+  <summary>Length</summary>
+  <div class="filter-content">
+    <div class="chip-row" id="length-filters"></div>
+  </div>
+</details>
 
   <details class="filter-group" id="ranking-filter-group">
   <summary>Ranking</summary>
@@ -846,7 +858,8 @@ searchType: "author",
   ageRanges: new Set(),
   spiceLevels: new Set(),
   representations: new Set(),
-  rankingFilter: new Set(),
+lengths: new Set(),
+rankingFilter: new Set(),
   sortBy: "default"
 };
 
@@ -868,7 +881,9 @@ searchType: "author",
       bookId: row.Book_ID || "",
       authorId: row.Author_ID || "",
       authorName: row.Author_Name || "",
+      contributors: splitCommaList(row.Contributors),
       title: row.Title || "",
+      series: row.Series_Name || "",
       description: row.Description || "",
       bookCover: row.CoverImagePath
   ? `${SUPABASE_URL}/storage/v1/object/public/covers/${encodeURIComponent(row.CoverImagePath)}`
@@ -886,8 +901,12 @@ searchType: "author",
       ageRange: row.Age_Range || "",
       releaseDate: row["Release/Expected_Release_Date"] || "",
       representation: row.Representation || "",
+      wordCount: row.Word_Count || 0,
+      pageCount: row.Page_Count || 0,
+      lengthCategory: getLengthCategory(row.Word_Count, row.Page_Count),
       koboLink: row.Kobo_Link || "",
       applebooksLink: row.Apple_Books_Link || ""
+      
     }));
 
     const latestWeekKey = rankingRows[0]?.Week_Key || "";
@@ -963,21 +982,60 @@ if (!featuredAuthors.length) {
     buildChipGroup("age-filters", getUniqueValues(allBooks, "ageRange"), "age");
     buildChipGroup("spice-filters", getUniqueValues(allBooks, "spiceLevel"), "spice");
     buildChipGroup("representation-filters", getUniqueCommaSeparatedValues(allBooks, "representation"), "representation");
+    buildChipGroup(
+    "length-filters",
+    getUniqueValues(allBooks, "lengthCategory"),
+    "length"
+);
   }
 
   function buildChipGroup(containerId, values, type) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = "";
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
 
-    values.forEach(value => {
-      const chip = document.createElement("span");
-      chip.className = "chip filter-chip";
-      chip.dataset.type = type;
-      chip.dataset.value = value;
-      chip.textContent = value;
-      container.appendChild(chip);
-    });
+  if (type === "length") {
+    const order = [
+      "Lil' Snack",
+      "Quick Sip",
+      "Got Some Time",
+      "Locked In",
+      "Thickems",
+      "Don't Bother Me"
+    ];
+
+    values = order.filter(value => values.includes(value));
   }
+
+  values.forEach(value => {
+
+  const chip = document.createElement("span");
+  chip.className = "chip filter-chip";
+  chip.dataset.type = type;
+  chip.dataset.value = value;
+
+  if (type === "length") {
+
+    const labels = {
+      "Lil' Snack": "Lil' Snack (<40 pgs)",
+      "Quick Sip": "Quick Sip (40–120 pgs)",
+      "Got Some Time": "Got Some Time (120–240 pgs)",
+      "Locked In": "Locked In (240–400 pgs)",
+      "Thickems": "Thickems (400–600 pgs)",
+      "Don't Bother Me": "Don't Bother Me (600+ pgs)"
+    };
+
+    chip.textContent = labels[value] || value;
+
+  } else {
+
+    chip.textContent = value;
+
+  }
+
+  container.appendChild(chip);
+
+});
+}
 
   function getUniqueValues(items, field) {
     return [...new Set(
@@ -1037,25 +1095,38 @@ function getSearchScore(book, query) {
   if (!query) return 0;
 
   const title = normalizeForSearch(book.title);
+  const series = normalizeForSearch(book.series);
   const author = normalizeForSearch(book.authorName);
 
-  const target = state.searchType === "title" ? title : author;
+  const contributors = Array.isArray(book.contributors)
+    ? book.contributors.map(normalizeForSearch).join(" ")
+    : normalizeForSearch(book.contributors);
+
+  const target =
+    state.searchType === "title-series"
+      ? `${title} ${series}`.trim()
+      : `${author} ${contributors}`.trim();
 
   if (target === query) return 100;
   if (target.includes(query)) return 85;
 
   const queryWords = query.split(" ").filter(Boolean);
+
   if (!queryWords.length) return 0;
 
   let matchedWords = 0;
 
   queryWords.forEach(word => {
-    if (target.includes(word)) matchedWords++;
+    if (target.includes(word)) {
+      matchedWords++;
+    }
   });
 
   const matchRatio = matchedWords / queryWords.length;
 
-  return matchRatio >= 0.6 ? Math.round(matchRatio * 60) : 0;
+  return matchRatio >= 0.6
+    ? Math.round(matchRatio * 60)
+    : 0;
 }
 
 function shuffleArray(items) {
@@ -1185,9 +1256,9 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
 
     const searchInput = document.getElementById("author-search");
     searchInput.placeholder =
-      state.searchType === "title"
-        ? "Search title..."
-        : "Search author...";
+  state.searchType === "title-series"
+    ? "Search title or series..."
+    : "Search author or contributor...";
 
     applyFilters();
   });
@@ -1211,6 +1282,8 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
       if (type === "age") toggleSetValue(state.ageRanges, value);
       if (type === "spice") toggleSetValue(state.spiceLevels, value);
       if (type === "representation") toggleSetValue(state.representations, value);
+      if (type === "length")
+    toggleSetValue(state.lengths, value);
     }
 
     const rankingFilterChip = e.target.closest(".ranking-filter-chip");
@@ -1240,11 +1313,13 @@ state.representations.clear();
 state.rankingFilter.clear();
 state.sortBy = "default";
 state.searchType = "author";
+state.lengths.clear();
 
 document.getElementById("author-search").value = "";
 document.getElementById("sort-select").value = "default";
 document.querySelector('input[name="search-type"][value="author"]').checked = true;
-document.getElementById("author-search").placeholder = "Search author...";
+document.getElementById("author-search").placeholder =
+  "Search author or contributor...";
 document.querySelectorAll(".chip").forEach(chip => chip.classList.remove("active"));
 
 page = 1;
@@ -1262,6 +1337,12 @@ applyFilters();
   .split(",")
   .map(normalizeText)
   .filter(Boolean);
+
+const lengthCategory = normalizeText(book.lengthCategory);
+
+const matchesLength =
+  state.lengths.size === 0 ||
+  state.lengths.has(lengthCategory);
     const vibes = Array.isArray(book.vibes) ? book.vibes.map(normalizeText) : [];
 
     const matchesSearch =
@@ -1318,13 +1399,14 @@ const matchesRankingFilter =
   (state.rankingFilter.has("featured-authors") && isFeaturedAuthor);
 
     return matchesSearch &&
-      matchesGenre &&
-      matchesSubGenre &&
-      matchesVibe &&
-      matchesAge &&
-      matchesSpice &&
-      matchesRepresentation &&
-      matchesRankingFilter;
+       matchesGenre &&
+       matchesSubGenre &&
+       matchesVibe &&
+       matchesAge &&
+       matchesSpice &&
+       matchesRepresentation &&
+       matchesLength &&
+       matchesRankingFilter;
   });
 
   if (state.authorQuery && state.sortBy === "default") {
@@ -1401,6 +1483,36 @@ function splitCommaList(value) {
 
   const date = new Date(raw);
   return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getLengthCategory(wordCount, pageCount) {
+
+  const words = Number(wordCount) || 0;
+  const pages = Number(pageCount) || 0;
+
+  if (words > 0) {
+
+    if (words < 10000) return "Lil' Snack";
+    if (words < 30000) return "Quick Sip";
+    if (words < 60000) return "Got Some Time";
+    if (words < 100000) return "Locked In";
+    if (words < 150000) return "Thickems";
+
+    return "Don't Bother Me";
+  }
+
+  if (pages > 0) {
+
+    if (pages < 40) return "Lil' Snack";
+    if (pages < 120) return "Quick Sip";
+    if (pages < 240) return "Got Some Time";
+    if (pages < 400) return "Locked In";
+    if (pages < 600) return "Thickems";
+
+    return "Don't Bother Me";
+  }
+
+  return "";
 }
 
 function getReleaseBadgeLabel(book) {
