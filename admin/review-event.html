@@ -968,12 +968,13 @@ async function moveEventFlyerToApproved() {
 
   if (!pendingPath) {
     return {
-      flyerStoragePath: null,
-      eventImageUrl:
-        currentEvent.event_image_url ||
-        currentEvent.flyer_image_url ||
-        null
-    };
+  flyerStoragePath: null,
+  eventImageUrl:
+    currentEvent.event_image_url ||
+    currentEvent.flyer_image_url ||
+    null,
+  pendingFlyerPath: null
+};
   }
 
   const cleanPendingPath = decodeURIComponent(
@@ -1039,12 +1040,12 @@ const { error: uploadError } =
       approvedPath,
       flyerBlob,
       {
-        upsert: false,
-        contentType:
-          matchingFile.metadata?.mimetype ||
-          flyerBlob.type ||
-          "application/octet-stream"
-      }
+  upsert: true,
+  contentType:
+    matchingFile.metadata?.mimetype ||
+    flyerBlob.type ||
+    "application/octet-stream"
+}
     );
 
 if (uploadError) {
@@ -1058,23 +1059,28 @@ if (uploadError) {
       .from("event-flyers")
       .getPublicUrl(approvedPath);
 
-  const { error: removeError } =
+  return {
+  flyerStoragePath: approvedPath,
+  eventImageUrl:
+    publicUrlData?.publicUrl || null,
+  pendingFlyerPath: cleanPendingPath
+};
+}
+
+async function removePendingEventFlyer(pendingPath) {
+  if (!pendingPath) return;
+
+  const { error } =
     await supabaseClient.storage
       .from("event-flyers")
-      .remove([cleanPendingPath]);
+      .remove([pendingPath]);
 
-  if (removeError) {
+  if (error) {
     console.error(
-      "Approved flyer copied, but pending flyer could not be deleted:",
-      removeError
+      "Event was approved, but the pending flyer could not be deleted:",
+      error
     );
   }
-
-  return {
-    flyerStoragePath: approvedPath,
-    eventImageUrl:
-      publicUrlData?.publicUrl || null
-  };
 }
 
 async function geocodeEventAddress(event) {
@@ -1322,6 +1328,10 @@ await logEventHistory("approved", {
   submission_status: "approved",
   reviewer_notes: reviewerNotes
 });
+
+await removePendingEventFlyer(
+  flyerResult.pendingFlyerPath
+);
 
 }
 
