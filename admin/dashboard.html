@@ -109,12 +109,24 @@
         <div class="mm-card" style="margin-top:1rem;">
   <h2>Platform Overview</h2>
 
-  <div class="mm-grid mm-grid-4" style="margin-top:1rem;">
+  <div
+  class="mm-grid"
+  style="
+    margin-top:1rem;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  "
+>
     <article class="mm-card">
-      <div class="mm-stat" id="totalAuthorsCount">—</div>
-      <h3>Live Authors</h3>
-      <p class="mm-muted">Authors currently listed on The BLK Shelf.</p>
-    </article>
+  <div class="mm-stat" id="approvedAuthorsCount">—</div>
+  <h3>Approved Authors</h3>
+  <p class="mm-muted">Authors approved for The BLK Shelf.</p>
+</article>
+
+<article class="mm-card">
+  <div class="mm-stat" id="liveAuthorsCount">—</div>
+  <h3>Live Authors</h3>
+  <p class="mm-muted">Approved authors with at least one live book.</p>
+</article>
 
     <article class="mm-card">
       <div class="mm-stat" id="totalBooksCount">—</div>
@@ -271,6 +283,40 @@ Completed today.
   <script src="js/navigation.js"></script>
 
   <script>
+    async function loadAllLiveBookAuthors() {
+  const pageSize = 1000;
+  let from = 0;
+  let books = [];
+
+  while (true) {
+    const { data, error } = await supabaseClient
+      .from("books")
+      .select("Author_ID")
+      .eq("Is_Live", "Yes")
+      .range(from, from + pageSize - 1);
+
+    if (error) {
+      return {
+        data: [],
+        error
+      };
+    }
+
+    books = books.concat(data || []);
+
+    if (!data || data.length < pageSize) {
+      break;
+    }
+
+    from += pageSize;
+  }
+
+  return {
+    data: books,
+    error: null
+  };
+}
+
     async function loadDashboard() {
       await loadMateMasieShell("dashboard");
 
@@ -397,26 +443,28 @@ document.getElementById(
   activeEventCount;
 
   const [
-  totalAuthorsResult,
-  totalBooksResult,
+  approvedAuthorsResult,
+  liveBooksCountResult,
+  liveBookAuthorsResult,
   totalEventsResult,
   totalClicksResult
 ] = await Promise.all([
   supabaseClient
     .from("authors")
-    .select("*", {
-      count: "exact",
-      head: true
+    .select("AUTHOR_ID", {
+      count: "exact"
     })
     .eq("APPROVAL", "Approved"),
 
   supabaseClient
-    .from("books")
-    .select("*", {
-      count: "exact",
-      head: true
-    })
-    .eq("Book_Approval", "Approved"),
+  .from("books")
+  .select("*", {
+    count: "exact",
+    head: true
+  })
+  .eq("Is_Live", "Yes"),
+
+loadAllLiveBookAuthors(),
 
   supabaseClient
     .from("events")
@@ -424,10 +472,7 @@ document.getElementById(
       count: "exact",
       head: true
     })
-    .in("event_status", [
-      "approved",
-      "published"
-    ]),
+    .eq("event_status", "active"),
 
   supabaseClient
     .from("clicks")
@@ -437,15 +482,67 @@ document.getElementById(
     })
 ]);
 
+if (approvedAuthorsResult.error) {
+  console.error(
+    "Approved authors count failed:",
+    approvedAuthorsResult.error
+  );
+}
+
+if (liveBooksCountResult.error) {
+  console.error(
+    "Live authors/books count failed:",
+    liveBooksCountResult.error
+  );
+}
+
+if (totalEventsResult.error) {
+  console.error(
+    "Live events count failed:",
+    totalEventsResult.error
+  );
+}
+
+if (totalClicksResult.error) {
+  console.error(
+    "Click count failed:",
+    totalClicksResult.error
+  );
+}
+
+const approvedAuthorIds = new Set(
+  (approvedAuthorsResult.data || [])
+    .map(author =>
+      String(author.AUTHOR_ID || "").trim()
+    )
+    .filter(Boolean)
+);
+
+const liveAuthorIds = new Set(
+  (liveBookAuthorsResult.data || [])
+    .map(book =>
+      String(book.Author_ID || "").trim()
+    )
+    .filter(authorId =>
+      authorId &&
+      approvedAuthorIds.has(authorId)
+    )
+);
+
 document.getElementById(
-  "totalAuthorsCount"
+  "approvedAuthorsCount"
 ).textContent =
-  totalAuthorsResult.count ?? 0;
+  approvedAuthorsResult.count ?? 0;
+
+document.getElementById(
+  "liveAuthorsCount"
+).textContent =
+  liveAuthorIds.size;
 
 document.getElementById(
   "totalBooksCount"
 ).textContent =
-  totalBooksResult.count ?? 0;
+  liveBooksCountResult.count ?? 0;
 
 document.getElementById(
   "totalEventsCount"
