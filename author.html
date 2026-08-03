@@ -614,6 +614,42 @@ async function supabaseFetch(path) {
 
   return await res.json();
 }
+
+async function loadAllPublicBooks() {
+  const pageSize = 1000;
+  let from = 0;
+  let allBooks = [];
+
+  while (true) {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/public_books?select=*&Is_Live=eq.Yes&order=Title.asc`,
+      {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: "application/json",
+          Range: `${from}-${from + pageSize - 1}`,
+          Prefer: "count=exact"
+        }
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Supabase books request failed: ${res.status}`);
+    }
+
+    const batch = await res.json();
+    allBooks = allBooks.concat(batch || []);
+
+    if (!batch || batch.length < pageSize) {
+      break;
+    }
+
+    from += pageSize;
+  }
+
+  return allBooks;
+}
     
     const DEFAULT_AUTHOR = `${SUPABASE_URL}/storage/v1/object/public/defaults/author-default.jpg`;
 const DEFAULT_COVER = `${SUPABASE_URL}/storage/v1/object/public/defaults/cover-default.jpg`;
@@ -1010,9 +1046,8 @@ if (worksSection) worksSection.style.display = "";
       supabaseFetch(
         `public_authors?select=*&AUTHOR_ID=eq.${encodeURIComponent(authorId)}&APPROVAL=eq.Approved&limit=1`
       ),
-      supabaseFetch(
-  `public_books?select=*&Is_Live=eq.Yes&limit=500`
-),
+      loadAllPublicBooks(),
+
       supabaseFetch(
         `public_featured_authors?select=*`
       )
@@ -1029,9 +1064,12 @@ if (worksSection) worksSection.style.display = "";
 
 const filteredBooks = booksRows.filter(book => {
 
-  if (book.Author_ID === authorId) {
-    return true;
-  }
+  if (
+  String(book.Author_ID || "").trim() ===
+  String(authorId || "").trim()
+) {
+  return true;
+}
 
   const contributors =
     parseContributors(book.Contributors);
@@ -1040,7 +1078,8 @@ const filteredBooks = booksRows.filter(book => {
 
     if (
       contributor.authorId &&
-      contributor.authorId === authorId
+      String(contributor.authorId || "").trim() ===
+String(authorId || "").trim()
     ) {
       return true;
     }
