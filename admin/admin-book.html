@@ -767,35 +767,55 @@ function textareaField(label, value, fieldName) {
 }
 
 function toArray(value) {
-  if (Array.isArray(value)) return value;
+  if (!value) return [];
 
-  if (typeof value === "string" && value.trim()) {
+  if (Array.isArray(value)) {
     return value
-      .split(/[,;|]/)
-      .map(item => item.trim())
+      .map(item => String(item || "").trim())
       .filter(Boolean);
   }
 
-  return [];
+  const raw = String(value).trim();
+
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map(item => String(item || "").trim())
+        .filter(Boolean);
+    }
+  } catch (_) {
+    // Continue with regular text parsing.
+  }
+
+  return raw
+    .split(/[,;|]/)
+    .map(item =>
+      item
+        .trim()
+        .replace(/^\[+/, "")
+        .replace(/\]+$/, "")
+        .replace(/^["']+|["']+$/g, "")
+        .trim()
+    )
+    .filter(Boolean);
 }
 
     function tags(values) {
-  let list = [];
+  const list = toArray(values);
 
-  if (Array.isArray(values)) {
-    list = values;
-  } else if (typeof values === "string" && values.trim()) {
-    list = values
-      .split(/[,;|]/)
-      .map(value => value.trim())
-      .filter(Boolean);
+  if (!list.length) {
+    return `<p class="mm-muted">None listed.</p>`;
   }
-
-  if (!list.length) return `<p class="mm-muted">None listed.</p>`;
 
   return `
     <div class="tag-row">
-      ${list.map(value => `<span class="tag">${escapeHtml(value)}</span>`).join("")}
+      ${list
+        .map(value => `<span class="tag">${escapeHtml(value)}</span>`)
+        .join("")}
     </div>
   `;
 }
@@ -1104,7 +1124,11 @@ ${field("Series Number", item.Series_Number, "Series_Number")}
     ? BookFormUI.checkboxPanel({
         label: "Subgenres",
         name: "Subgenres",
-        values: item.Subgenres || item.Sub_Genres || item.sub_genres,
+        values: toArray(
+  item.Subgenres ||
+  item.Sub_Genres ||
+  item.sub_genres
+),
         options: SUBGENRES,
         max: 3
       })
@@ -1116,7 +1140,10 @@ ${
     ? BookFormUI.checkboxPanel({
         label: "Vibes",
         name: "Vibes",
-        values: item.Vibes || item.vibes,
+        values: toArray(
+  item.Vibes ||
+  item.vibes
+),
         options: VIBES,
         max: 3
       })
@@ -1128,7 +1155,10 @@ ${
     ? BookFormUI.checkboxPanel({
         label: "Representation",
         name: "Representation",
-        values: item.Representation || item.representation,
+        values: toArray(
+  item.Representation ||
+  item.representation
+),
         options: REPRESENTATION
       })
     : `<h3>Representation</h3>${tags(item.Representation || item.representation)}`
@@ -1173,7 +1203,10 @@ ${
         ? BookFormUI.checkboxPanel({
             label: "Formats",
             name: "Available_Formats",
-            values: item.Available_Formats || item.available_formats,
+            values: toArray(
+  item.Available_Formats ||
+  item.available_formats
+),
             options: FORMATS
           })
         : tags(item.Available_Formats || item.available_formats)
