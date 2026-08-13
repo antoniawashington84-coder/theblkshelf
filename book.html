@@ -841,15 +841,56 @@ function escapeHtml(value) {
 function splitToArray(value) {
   if (!value) return [];
 
+  // Already a real array
   if (Array.isArray(value)) {
     return value
       .map(v => String(v).trim())
       .filter(Boolean);
   }
 
-  return String(value)
+  const text = String(value).trim();
+
+  if (!text) return [];
+
+  // Handle JSON-formatted array stored inside a text column:
+  // ["Slow Burn","Found Family"]
+  if (text.startsWith("[") && text.endsWith("]")) {
+    try {
+      const parsed = JSON.parse(text);
+
+      if (Array.isArray(parsed)) {
+        return parsed
+          .map(v => String(v).trim())
+          .filter(Boolean);
+      }
+    } catch (error) {
+      console.warn("Unable to parse array text:", text);
+    }
+  }
+
+  // Handle PostgreSQL-style array text if any legacy rows contain it:
+  // {"Slow Burn","Found Family"}
+  if (text.startsWith("{") && text.endsWith("}")) {
+    return text
+      .slice(1, -1)
+      .split(",")
+      .map(v =>
+        v
+          .trim()
+          .replace(/^"(.*)"$/, "$1")
+      )
+      .filter(Boolean);
+  }
+
+  // Normal comma-separated text:
+  // Slow Burn, Found Family
+  return text
     .split(",")
-    .map(v => v.trim())
+    .map(v =>
+      v
+        .trim()
+        .replace(/^"(.*)"$/, "$1")
+    )
     .filter(Boolean);
 }
 
@@ -1895,6 +1936,8 @@ async function loadIncludes() {
 
 loadIncludes();
 </script>
+
+<script src="includes/shared.js"></script>
 
 </body>
 </html>
