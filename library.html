@@ -900,7 +900,7 @@ rankingFilter: new Set(),
       spiceLevel: row.Spice_Level || "",
       ageRange: row.Age_Range || "",
       releaseDate: row["Release/Expected_Release_Date"] || "",
-      representation: row.Representation || "",
+      representation: splitCommaList(row.Representation),
       wordCount: row.Word_Count || 0,
       pageCount: row.Page_Count || 0,
       lengthCategory: getLengthCategory(row.Word_Count, row.Page_Count),
@@ -981,7 +981,11 @@ if (!featuredAuthors.length) {
     buildChipGroup("vibe-filters", getUniqueFlattenedValues(allBooks, "vibes"), "vibe");
     buildChipGroup("age-filters", getUniqueValues(allBooks, "ageRange"), "age");
     buildChipGroup("spice-filters", getUniqueValues(allBooks, "spiceLevel"), "spice");
-    buildChipGroup("representation-filters", getUniqueCommaSeparatedValues(allBooks, "representation"), "representation");
+    buildChipGroup(
+  "representation-filters",
+  getUniqueFlattenedValues(allBooks, "representation"),
+  "representation"
+);
     buildChipGroup(
     "length-filters",
     getUniqueValues(allBooks, "lengthCategory"),
@@ -1333,10 +1337,9 @@ applyFilters();
     const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
     const ageRange = normalizeText(book.ageRange);
     const spiceLevel = normalizeText(book.spiceLevel);
-    const representations = normalizeText(book.representation)
-  .split(",")
-  .map(normalizeText)
-  .filter(Boolean);
+    const representations = Array.isArray(book.representation)
+  ? book.representation.map(normalizeText).filter(Boolean)
+  : splitCommaList(book.representation).map(normalizeText);
 
 const lengthCategory = normalizeText(book.lengthCategory);
 
@@ -1461,9 +1464,40 @@ const matchesRankingFilter =
 }
 
 function splitCommaList(value) {
-  return String(value || "")
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map(item => String(item || "").trim())
+      .filter(Boolean);
+  }
+
+  const raw = String(value).trim();
+
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map(item => String(item || "").trim())
+        .filter(Boolean);
+    }
+  } catch (_) {
+    // The value is a regular comma-separated string.
+  }
+
+  return raw
     .split(",")
-    .map(item => item.trim())
+    .map(item =>
+      item
+        .trim()
+        .replace(/^\[+/, "")
+        .replace(/\]+$/, "")
+        .replace(/^["']+|["']+$/g, "")
+        .trim()
+    )
     .filter(Boolean);
 }
 
@@ -1764,6 +1798,8 @@ async function loadIncludes() {
 
 loadIncludes();
 </script>
+
+<script src="includes/shared.js"></script>
 
 </body>
 </html>
