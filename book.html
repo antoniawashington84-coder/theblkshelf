@@ -164,6 +164,18 @@
       margin-top: 1rem;
     }
 
+    .affiliate-disclosure {
+  margin: 0.15rem 0 0.1rem;
+  color: var(--soft);
+  font-size: 0.76rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.affiliate-disclosure strong {
+  color: var(--muted);
+}
+
     .other-books-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -608,6 +620,12 @@
         </div>
 
         <div class="cover-actions" style="position:relative;">
+
+  <p class="affiliate-disclosure">
+    <strong>Affiliate Disclosure:</strong>
+    Some retailer links may be affiliate links. We may earn a commission from qualifying purchases at no additional cost to you.
+  </p>
+
   <button class="btn btn-primary" id="buy-button">Where to Buy</button>
   <div id="buy-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; margin-top:0.5rem; z-index:10;"></div>
 
@@ -1110,6 +1128,20 @@ function normalizeUrl(url) {
   return `https://${value}`;
 }
 
+const AMAZON_ASSOCIATE_TAG = "theblkshelf-20";
+
+function buildAmazonAffiliateUrl(asin, fallbackUrl = "") {
+  const cleanAsin = String(asin || "").trim();
+
+  if (cleanAsin) {
+    return `https://www.amazon.com/dp/${encodeURIComponent(cleanAsin)}?tag=${encodeURIComponent(AMAZON_ASSOCIATE_TAG)}`;
+  }
+
+  return normalizeUrl(fallbackUrl);
+}
+
+
+
     function normalizeBookPayload(payload) {
   const raw = payload?.book || payload || {};
 
@@ -1147,6 +1179,9 @@ const audiobookLink =
 const kidsCategory =
   textOrFallback(raw.kidsCategory, "");
 
+  const amazonAsin =
+  textOrFallback(raw.amazonAsin, "");
+
 const otherBooksByAuthor = Array.isArray(payload?.otherBooksByAuthor)
   ? payload.otherBooksByAuthor.map(book => ({
       id: textOrFallback(book.bookId, ""),
@@ -1168,7 +1203,10 @@ const seriesBooks = Array.isArray(payload?.seriesBooks)
   : [];
 
 const externalLinks = {
-  amazon: normalizeUrl(raw.amazonLink),
+  amazon: buildAmazonAffiliateUrl(
+    amazonAsin,
+    raw.amazonLink
+  ),
   barnesAndNoble: normalizeUrl(raw.bnLink),
   kobo: normalizeUrl(raw.koboLink),
   appleBooks: normalizeUrl(raw.applebooksLink),
@@ -1219,6 +1257,7 @@ audiobookNarrators,
 audiobookLink,
 
 kidsCategory,
+amazonAsin,
 
 ageRange:
   textOrFallback(raw.ageRange, "—"),
@@ -1837,6 +1876,7 @@ description: row.Description || "",
         availableFormats: row.Available_Formats || "",
         websiteLink: row.Website_Link || "",
         amazonLink: row.Amazon_Link || "",
+        amazonAsin: row.Amazon_ASIN || "",
         bnLink: row.BN_Link || "",
         bookfunnelLink: row.Bookfunnel_Link || "",
         otherLink: row.Other_Link || "",
