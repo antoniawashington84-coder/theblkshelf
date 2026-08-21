@@ -1375,1543 +1375,78 @@ function getChangedFields(oldBook, payload) {
   return changes;
 }
 
-function normalizeForCompare(value) {
-  if (value === null || value === undefined) return "";
-  if (Array.isArray(value)) return value.join(", ");
-  return String(value).trim();
-}
+async function getAmazonAsin(amazonUrl) {
+  const url = String(amazonUrl || "").trim();
 
-function getChangedFields(oldBook, payload) {
-  const changes = {};
-
-  Object.entries(payload).forEach(([key, newValue]) => {
-    const oldValue = oldBook[key];
-
-    if (normalizeForCompare(oldValue) !== normalizeForCompare(newValue)) {
-      changes[key] = {
-        old: oldValue ?? "",
-        new: newValue ?? ""
-      };
-    }
-  });
-
-  return changes;
-}
-
-async function saveBookChanges() {
-
-  const saveBtn = document.querySelector('.book-action-panel .mm-btn');
-
-  saveBtn.disabled = true;
-  saveBtn.textContent = "Saving...";
-
-  const root = document.getElementById("submissionContent");
-
-const payload = BookFormData.readBook(root);
-
-const replacementCover = root.querySelector("#replacementCover")?.files?.[0];
-
-let oldCoverPath = null;
-
-if (replacementCover) {
-  oldCoverPath = currentBook.CoverImagePath || null;
-
-  const newCoverPath = await uploadReplacementCover(replacementCover, currentBook);
-  payload.CoverImagePath = newCoverPath;
-}
-
-  payload.Last_Updated = new Date().toISOString();
-
-  Object.keys(payload).forEach(key => {
-  if (payload[key] === undefined) {
-    delete payload[key];
+  if (!url) {
+    return {
+      asin: "",
+      warning: ""
+    };
   }
-});
-
-const changes = getChangedFields(currentBook, payload);
-
-  const { error } = await supabaseClient
-    .from("books")
-    .update(payload)
-    .eq("Book_ID", currentBook.Book_ID);
-
-  if (error) {
-
-    saveBtn.disabled = false;
-    saveBtn.textContent = "Save Changes";
-
-    alert(error.message);
-
-    return;
-  }
-
-  if (oldCoverPath && payload.CoverImagePath && oldCoverPath !== payload.CoverImagePath) {
-  await deleteOldCover(oldCoverPath);
-}
-
-const { data: userData } = await supabaseClient.auth.getUser();
-const user = userData?.user;
-
-const { error: historyError } = await supabaseClient
-  .from("book_edit_history")
-  .insert({
-    book_id: currentBook.Book_ID,
-    edited_by: user?.id || null,
-    edited_by_email: user?.email || "",
-    change_type: replacementCover ? "book_update_with_cover" : "book_update",
-    changes
-  });
-
-if (historyError) {
-  console.error("Audit log failed:", historyError);
-}
-
-  const { data: updatedBook, error: fetchError } = await supabaseClient
-  .from("books")
-  .select("*")
-  .eq("Book_ID", currentBook.Book_ID)
-  .single();
-
-if (fetchError) {
-  alert(fetchError.message);
-  return;
-}
-
-currentBook = updatedBook;
-
-editMode = false;
-
-renderBook(currentBook);
-
-showSaveSuccess();
-
-}
-
-function showSaveSuccess() {
-
-  const note = document.createElement("div");
-
-  note.className = "save-toast";
-
-  note.textContent = "✓ Changes saved successfully";
-
-  document.body.appendChild(note);
-
-  requestAnimationFrame(() => note.classList.add("show"));
-
-  setTimeout(() => {
-
-    note.classList.remove("show");
-
-    setTimeout(() => note.remove(), 250);
-
-  }, 2200);
-
-}
-
-async function loadBookEditHistory(bookId) {
-  const { data, error } = await supabaseClient
-    .from("book_edit_history")
-    .select("*")
-    .eq("book_id", bookId)
-    .order("edited_at", { ascending: false })
-    .limit(20);
-
-  if (error) {
-    console.error("Unable to load edit history:", error);
-    return [];
-  }
-
-  return data || [];
-}
-
-function renderEditHistory(history = []) {
-  if (!history.length) {
-    return `<p class="mm-muted">No edit history yet.</p>`;
-  }
-
-  return history.map(entry => `
-    <div class="book-status-item" style="margin-bottom:.75rem;">
-      <span class="book-status-label">
-        ${escapeHtml(formatDate(entry.edited_at))} · ${escapeHtml(entry.edited_by_email || "Unknown editor")}
-      </span>
-
-      ${Object.entries(entry.changes || {}).map(([field, change]) => `
-        <div class="detail-value" style="margin-top:.45rem;">
-          <strong>${escapeHtml(field)}</strong><br>
-          <span class="mm-muted">Old:</span> ${escapeHtml(change.old || "—")}<br>
-          <span class="mm-muted">New:</span> ${escapeHtml(change.new || "—")}
-        </div>
-      `).join("")}
-    </div>
-  `).join("");
-}
-
-    initSubmissionPage();
-  </script>
-</body>
-</html>  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(0,0,0,0.25);
-  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
-}
-
-.cover-replace-field {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.12);
-  text-align: left;
-}
-
-.cover-replace-field input[type="file"] {
-  cursor: pointer;
-}
-
-.cover-help {
-  margin: 0.45rem 0 0;
-  font-size: 0.82rem;
-}
-
-    .status-pill {
-      display: inline-block;
-      padding: 0.4rem 0.7rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 0.8rem;
-    }
-
-    .status-pill.pending { background: rgba(111,83,36,.75); color: #f5d89d; }
-    .status-pill.approved { background: rgba(53,86,61,.75); color: #c8f2ce; }
-    .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
-    .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.8rem;
-    }
-
-    .detail-field {
-      padding: 0.9rem;
-      border-radius: 16px;
-      background: rgba(23,16,12,0.65);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .detail-label {
-      display: block;
-      color: var(--soft);
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.25rem;
-    }
-
-    .detail-value {
-      color: var(--text);
-      word-break: break-word;
-    }
-
-    .detail-input {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(12,9,7,0.85);
-  color: var(--text);
-  font: inherit;
-}
-
-.detail-input:focus {
-  outline: 2px solid var(--accent-light);
-  border-color: var(--accent-light);
-}
-
-.detail-select,
-.detail-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(12,9,7,0.85);
-  color: var(--text);
-  font: inherit;
-}
-
-.detail-select:focus,
-.detail-textarea:focus {
-  outline: 2px solid var(--accent-light);
-  border-color: var(--accent-light);
-}
-
-.detail-textarea {
-  min-height: 180px;
-  resize: vertical;
-  line-height: 1.6;
-}
-
-.checkbox-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.6rem;
-}
-
-.check-card {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  align-items: center;
-  gap: 0.65rem;
-  min-height: 58px;
-  padding: 0.7rem 0.85rem;
-  border-radius: 12px;
-  background: rgba(23,16,12,0.65);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: var(--muted);
-  line-height: 1.25;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.check-card input {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-}
-
-.check-card span {
-  display: block;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.option-panel {
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(23,16,12,0.55);
-  overflow: hidden;
-  margin-top: 0.6rem;
-}
-
-.option-panel summary {
-  padding: 0.9rem 1rem;
-  cursor: pointer;
-  color: var(--accent-light);
-  font-weight: bold;
-}
-
-.option-panel-body {
-  padding: 0 1rem 1rem;
-}
-
-.option-help {
-  margin: 0 0 0.75rem;
-  color: var(--soft);
-  font-size: 0.9rem;
-}
-
-@media (max-width: 800px) {
-  .checkbox-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.detail-textarea {
-  width: 100%;
-  min-height: 180px;
-  resize: vertical;
-  padding: 0.85rem;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(12,9,7,0.85);
-  color: var(--text);
-  font: inherit;
-  line-height: 1.6;
-}
-
-.detail-textarea:focus {
-  outline: 2px solid var(--accent-light);
-  border-color: var(--accent-light);
-}
-
-.tag-edit-input {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(12,9,7,0.85);
-  color: var(--text);
-  font: inherit;
-}
-
-    .section-card {
-      margin-top: 1rem;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 0.35rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(230,176,106,0.12);
-      border: 1px solid rgba(230,176,106,0.25);
-      color: var(--accent-light);
-      font-size: 0.85rem;
-    }
-
-    .compact-review {
-  grid-template-columns: 280px 1fr;
-}
-
-.review-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.compact-grid {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.compact-description {
-  max-height: 190px;
-  overflow-y: auto;
-  padding-right: 0.4rem;
-}
-
-.review-action-stack {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.book-action-panel h2,
-.book-status-panel h2 {
-  margin-top: 0;
-  font-size: 1rem;
-}
-
-.book-status-list {
-  display: grid;
-  gap: 0.65rem;
-}
-
-.book-status-item {
-  padding: 0.65rem;
-  border-radius: 12px;
-  background: rgba(23,16,12,0.65);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.book-status-label {
-  display: block;
-  color: var(--soft);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 0.2rem;
-}
-
-.book-status-value {
-  color: var(--text);
-  font-size: 0.9rem;
-  word-break: break-word;
-}
-
-.review-accordion {
-  background: linear-gradient(180deg, var(--panel), var(--panel-2));
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 18px;
-  overflow: visible;
-}
-
-.review-accordion summary {
-  cursor: pointer;
-  padding: 1rem;
-  color: var(--accent-light);
-  font-weight: bold;
-}
-
-.accordion-body {
-  padding: 0 1rem 1rem;
-}
-
-.admin-notes {
-  width: 100%;
-  min-height: 130px;
-  resize: vertical;
-  padding: 0.85rem;
-  border-radius: 14px;
-  border: 2px solid rgba(255,255,255,0.22);
-  background: rgba(23,16,12,0.92);
-  color: var(--text);
-  font: inherit;
-}
-
-.mm-btn.approve-btn {
-  background: #2f6b3f;
-  color: #fff8f0;
-  border-color: rgba(200,242,206,0.35);
-}
-
-.mm-btn.needs-info-btn {
-  background: #24456f;
-  color: #fff8f0;
-  border-color: rgba(183,216,255,0.35);
-}
-
-.mm-btn.deny-btn {
-  background: #6b302c;
-  color: #fff8f0;
-  border-color: rgba(255,209,203,0.35);
-}
-
-.save-toast {
-
-  position: fixed;
-
-  right: 24px;
-
-  bottom: 24px;
-
-  background: #2f6b3f;
-
-  color: white;
-
-  padding: .9rem 1.3rem;
-
-  border-radius: 14px;
-
-  font-weight: 600;
-
-  box-shadow: 0 14px 40px rgba(0,0,0,.35);
-
-  opacity: 0;
-
-  transform: translateY(20px);
-
-  transition: all .25s ease;
-
-  z-index: 9999;
-
-}
-
-.save-toast.show {
-
-  opacity: 1;
-
-  transform: translateY(0);
-
-}
-
-@media (max-width: 900px) {
-  .compact-review {
-    grid-template-columns: 1fr;
-  }
-
-  .compact-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-    @media (max-width: 850px) {
-      .submission-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .cover-card {
-        max-width: 260px;
-      }
-
-      .detail-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .hidden {
-  display: none;
-}
-
-.tag-picker {
-  position: relative;
-  min-height: 58px;
-  padding: 0.65rem;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.22);
-  background: rgba(12,9,7,0.85);
-}
-
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 0.5rem;
-}
-
-.author-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(230,176,106,0.12);
-  border: 1px solid rgba(230,176,106,0.28);
-  color: var(--accent-light);
-  font-size: 0.9rem;
-}
-
-.author-tag.unmatched {
-  background: rgba(255,255,255,0.08);
-  color: var(--muted);
-}
-
-.author-tag button {
-  border: none;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-#coAuthorInput {
-  border: none;
-  background: transparent;
-  padding: 0.4rem;
-  color: var(--text);
-  width: 100%;
-}
-
-#coAuthorInput:focus {
-  outline: none;
-}
-
-.tag-suggestions {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 0.35rem);
-  z-index: 20;
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.5rem;
-  border-radius: 14px;
-  background: #241d17;
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
-}
-
-.suggestion-item {
-  width: 100%;
-  text-align: left;
-  padding: 0.65rem 0.75rem;
-  border: none;
-  border-radius: 10px;
-  background: rgba(23,16,12,0.8);
-  color: var(--text);
-  cursor: pointer;
-  font: inherit;
-}
-
-.suggestion-item:hover {
-  background: rgba(230,176,106,0.12);
-}
-
-.suggestion-meta {
-  display: block;
-  color: var(--soft);
-  font-size: 0.82rem;
-}
-
-.global-autocomplete {
-  position: absolute;
-  z-index: 99999;
-  display: grid;
-  gap: 0.35rem;
-  padding: 0.5rem;
-  border-radius: 14px;
-  background: #241d17;
-  border: 1px solid rgba(255,255,255,0.18);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
-}
-
-.global-autocomplete.hidden {
-  display: none;
-}
-
-  </style>
-</head>
-
-<body>
-  <div class="mm-layout">
-    <div id="mateMasieSidebar"></div>
-
-    <main class="mm-main">
-      <div id="mateMasieTopbar"></div>
-
-      <section class="mm-content">
-        <div class="content-column">
-          <span class="mm-eyebrow">Library</span>
-<h1 class="mm-page-title" id="pageTitle">Book Details</h1>
-<p class="mm-page-subtitle">
-  View information for this published book.
-</p>
-
-          <div class="mm-btn-row" id="pageActions">
-  <a class="mm-btn mm-btn-secondary" href="books.html" id="cancelBtn">
-    ← Back to Library
-  </a>
-
-  <button class="mm-btn" id="editBookBtn" type="button">
-    Edit Book
-  </button>
-</div>
-
-          <div id="submissionContent">
-            <div class="mm-card">
-              <p class="mm-muted">Loading submission...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/navigation.js"></script>
-<script src="js/components/book-form-options.js"></script>
-<script src="js/components/book-form-ui.js"></script>
-<script src="js/components/book-form-data.js"></script>
-<script src="js/components/contributor-picker.js"></script>
-<script src="js/components/series-picker.js"></script>
-
-  <script>
-    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
-
-    let editMode = false;
-let currentBook = null;
-let authorImageUrl = "";
-
-const {
-  GENRES,
-  SUBGENRES,
-  VIBES,
-  REPRESENTATION,
-  SPICE_LEVELS,
-  AGE_RANGES,
-  FORMATS,
-  KIDS_CATEGORIES
-} = window.BookFormOptions;
-
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function formatDate(value) {
-      if (!value) return "—";
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return "—";
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      });
-    }
-
-    function normalizeStatus(value) {
-      const status = String(value || "pending").toLowerCase().trim();
-      if (status === "needs_info") return "needs-info";
-      if (status === "approved") return "approved";
-      if (status === "denied") return "denied";
-      return "pending";
-    }
-
-    function displayStatus(value) {
-      const status = String(value || "pending").toLowerCase().trim();
-      if (status === "needs_info") return "Needs Info";
-      if (status === "approved") return "Approved";
-      if (status === "denied") return "Denied";
-      return "Pending Review";
-    }
-
-    function normalizeDriveImageUrl(url) {
-  if (!url) return "";
-
-  const value = String(url).trim();
-
-  const fileMatch = value.match(/\/file\/d\/([^/]+)/);
-  if (fileMatch && fileMatch[1]) {
-    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w900`;
-  }
-
-  const idMatch = value.match(/[?&]id=([^&]+)/);
-  if (idMatch && idMatch[1]) {
-    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w900`;
-  }
-
-  return value;
-}
-
-function slugify(value) {
-  return String(value || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 60);
-}
-
-async function uploadReplacementCover(file, book) {
-  if (!file) return null;
-
-  const extension = file.name.split(".").pop() || "jpg";
-  const baseName = slugify(book.Title || book.Book_ID || "book-cover");
-  const fileName = `${book.Book_ID}-${baseName}-${Date.now()}.${extension}`;
-  const filePath = fileName;
-
-  const { error } = await supabaseClient.storage
-    .from("covers")
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: false
-    });
-
-  if (error) throw error;
-
-  return filePath;
-}
-
-async function deleteOldCover(path) {
-  if (!path) return;
-
-  const { error } = await supabaseClient.storage
-    .from("covers")
-    .remove([path]);
-
-  if (error) {
-    console.warn("Old cover could not be deleted:", error.message);
-  }
-}
-
-function getCoverUrl(item) {
-  if (item.CoverImagePath) {
-    return `${STORAGE_BASE}/covers/${encodeURIComponent(item.CoverImagePath)}`;
-  }
-
-  if (item.cover_path) {
-    return `${STORAGE_BASE}/covers/${encodeURIComponent(item.cover_path)}`;
-  }
-
-  return "";
-}
-
-function getAuthorImageUrl(item) {
-  if (item.author_photo_path) {
-    return `${STORAGE_BASE}/author-submissions/${encodeURIComponent(item.author_photo_path)}`;
-  }
-
-  if (item.legacy_headshot_url) {
-    return normalizeDriveImageUrl(item.legacy_headshot_url);
-  }
-
-  if (item.author_image_path) {
-    return `${STORAGE_BASE}/authors/${encodeURIComponent(item.author_image_path)}`;
-  }
-
-  return "";
-}
-
-    function field(label, value, fieldName = null) {
-
-  if (editMode && fieldName) {
-    return `
-      <div class="detail-field">
-        <span class="detail-label">${escapeHtml(label)}</span>
-
-        <input
-  class="detail-input"
-  type="${fieldName === "Release/Expected_Release_Date" ? "date" : "text"}"
-  name="${escapeHtml(fieldName)}"
-  value="${
-    fieldName === "Release/Expected_Release_Date" && value
-      ? String(value).substring(0, 10)
-      : escapeHtml(value || "")
-  }"
->
-      </div>
-    `;
-  }
-
-  return `
-    <div class="detail-field">
-      <span class="detail-label">${escapeHtml(label)}</span>
-      <div class="detail-value">${value ? escapeHtml(value) : "—"}</div>
-    </div>
-  `;
-}
-
-function textareaField(label, value, fieldName) {
-  if (editMode && fieldName) {
-    return `
-      <div class="mm-card section-card">
-        <h2>${escapeHtml(label)}</h2>
-        <textarea
-          class="detail-textarea"
-          name="${escapeHtml(fieldName)}"
-        >${escapeHtml(value || "")}</textarea>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="mm-card section-card">
-      <h2>${escapeHtml(label)}</h2>
-      <p class="mm-muted compact-description">${escapeHtml(value || "No description provided.")}</p>
-    </div>
-  `;
-}
-
-function toArray(value) {
-  if (!value) return [];
-
-  if (Array.isArray(value)) {
-    return value
-      .map(item => String(item || "").trim())
-      .filter(Boolean);
-  }
-
-  const raw = String(value).trim();
-
-  if (!raw) return [];
 
   try {
-    const parsed = JSON.parse(raw);
-
-    if (Array.isArray(parsed)) {
-      return parsed
-        .map(item => String(item || "").trim())
-        .filter(Boolean);
-    }
-  } catch (_) {
-    // Continue with regular text parsing.
-  }
-
-  return raw
-    .split(/[,;|]/)
-    .map(item =>
-      item
-        .trim()
-        .replace(/^\[+/, "")
-        .replace(/\]+$/, "")
-        .replace(/^["']+|["']+$/g, "")
-        .trim()
-    )
-    .filter(Boolean);
-}
-
-    function tags(values) {
-  const list = toArray(values);
-
-  if (!list.length) {
-    return `<p class="mm-muted">None listed.</p>`;
-  }
-
-  return `
-    <div class="tag-row">
-      ${list
-        .map(value => `<span class="tag">${escapeHtml(value)}</span>`)
-        .join("")}
-    </div>
-  `;
-}
-
-    function linkList(links) {
-      const entries = Object.entries(links || {}).filter(([_, value]) => value);
-
-      if (!entries.length) return `<p class="mm-muted">No retailer links listed.</p>`;
-
-      return `
-        <div class="detail-grid">
-          ${entries.map(([key, value]) => `
-            <div class="detail-field">
-              <span class="detail-label">${escapeHtml(key.replaceAll("_", " "))}</span>
-              <a class="detail-value" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
-                ${escapeHtml(value)}
-              </a>
-            </div>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    async function initSubmissionPage() {
-      await loadMateMasieShell("library");
-
-      const target = document.getElementById("submissionContent");
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
-
-      if (!id) {
-        target.innerHTML = `<div class="mm-card"><h2>Missing submission ID</h2></div>`;
-        return;
+    const {
+      data,
+      error
+    } = await supabaseClient.functions.invoke(
+      "normalize-amazon-link",
+      {
+        body: {
+          url
+        }
       }
-
-      const auth = await requireAdmin();
-if (!auth) return;
-
-setTopbarUser(auth.user, auth.profile);
-
-      const { data: book, error: bookError } = await supabaseClient
-  .from("books")
-  .select("*")
-  .eq("Book_ID", id)
-  .limit(1);
-
-      if (bookError || !book?.length) {
-        target.innerHTML = `
-          <div class="mm-card">
-            <h2>Submission not found</h2>
-            <p class="mm-muted">${escapeHtml(bookError?.message || "This submission could not be loaded.")}</p>
-          </div>
-        `;
-        return;
-      }
-
-      const item = book[0];
-      currentBook = item;
-
-            authorImageUrl = "";
-
-if (item.Author_Name) {
-  const { data: authorMatch } = await supabaseClient
-    .from("authors")
-    .select("AUTHORIMAGEPATH")
-    .eq("AUTHOR_NAME", item.Author_Name)
-    .limit(1)
-    .maybeSingle();
-
-  if (authorMatch?.AUTHORIMAGEPATH) {
-    authorImageUrl = `${STORAGE_BASE}/authors/${encodeURIComponent(authorMatch.AUTHORIMAGEPATH)}`;
-  }
-}
-
-      document.getElementById("pageTitle").textContent = item.Title || "Book Details";
-
-document.getElementById("editBookBtn").onclick = startBookEdit;
-
-currentBook.editHistory = await loadBookEditHistory(item.Book_ID);
-renderBook(currentBook);
-    }
-
-function renderBook(item) {
-  const target = document.getElementById("submissionContent");
-  const coverUrl = getCoverUrl(item);
-
-  target.innerHTML = `
-        <div class="submission-layout compact-review">
-          <aside class="review-sidebar">
-            <div class="mm-card cover-card">
-
-        ${
-  coverUrl
-    ? `<img
-         src="${escapeHtml(coverUrl)}"
-         alt="${escapeHtml(item.Title)} cover"
-         onerror="this.outerHTML='<div class=&quot;mm-muted&quot;>Cover unavailable</div>'"
-       >`
-    : `<div class="mm-muted">No cover</div>`
-}
-
-${
-  editMode
-    ? `
-      <div class="cover-replace-field">
-        <label class="detail-label" for="replacementCover">Replace Cover</label>
-        <input
-          class="detail-input"
-          id="replacementCover"
-          name="replacementCover"
-          type="file"
-          accept="image/*"
-        >
-        <p class="mm-muted cover-help">Leave blank to keep current cover.</p>
-      </div>
-    `
-    : ""
-}
-
-  <div
-    style="
-      display:flex;
-      align-items:center;
-      gap:.75rem;
-      margin-top:1rem;
-      padding-top:1rem;
-      border-top:1px solid rgba(255,255,255,.12);
-    "
-  >
-
-    ${
-      authorImageUrl
-        ? `<img
-             src="${escapeHtml(authorImageUrl)}"
-             alt="${escapeHtml(item.author_name)}"
-             style="
-               width:64px;
-               height:64px;
-               border-radius:50%;
-               object-fit:cover;
-               border:2px solid rgba(255,255,255,.18);
-             "
-           >`
-        : `<div
-             style="
-               width:64px;
-               height:64px;
-               border-radius:50%;
-               background:rgba(255,255,255,.08);
-               display:flex;
-               align-items:center;
-               justify-content:center;
-               font-size:1.5rem;
-             ">
-             <i class="fa-solid fa-user"></i>
-           </div>`
-    }
-
-    <div style="min-width:0;">
-      <div
-        style="
-          color:var(--soft);
-          font-size:.72rem;
-          letter-spacing:.08em;
-          text-transform:uppercase;
-        "
-      >
-        Author
-      </div>
-
-      <div
-        style="
-          font-weight:600;
-          color:var(--text);
-        "
-      >
-        ${escapeHtml(item.Author_Name || "Unknown Author")}
-      </div>
-    </div>
-
-    </div>
-</div>
-
-<div class="mm-card section-card book-action-panel">
-  <h2>Book Actions</h2>
-
-  <div class="review-action-stack">
-    ${
-      editMode
-        ? `
-          <button class="mm-btn" type="button" onclick="saveBookChanges()">
-            Save Changes
-          </button>
-
-          <button class="mm-btn mm-btn-secondary" type="button" onclick="cancelBookEdit()">
-            Cancel
-          </button>
-
-          <button class="mm-btn mm-btn-secondary" type="button" onclick="resetBookEdit()">
-            Reset Changes
-          </button>
-        `
-        : `
-  <a class="mm-btn mm-btn-secondary" href="../book.html?id=${encodeURIComponent(item.Book_ID)}" target="_blank">
-    View Public Page
-  </a>
-`
-    }
-  </div>
-
-  <p class="mm-muted" id="saveNote"></p>
-</div>
-
-<div class="mm-card section-card book-status-panel">
-  <h2>Book Status</h2>
-
-  <div class="book-status-list">
-    <div class="book-status-item">
-  <span class="book-status-label">Status</span>
-
-  <span class="status-pill ${
-    item.Is_Live === "Yes" ? "approved" : "pending"
-  }">
-    ${item.Is_Live === "Yes" ? "Published" : "Hidden"}
-  </span>
-</div>
-
-    <div class="book-status-item">
-      <span class="book-status-label">Book ID</span>
-      <span class="book-status-value">${escapeHtml(item.Book_ID || "—")}</span>
-    </div>
-
-    <div class="book-status-item">
-      <span class="book-status-label">Added</span>
-      <span class="book-status-value">${escapeHtml(formatDate(item.Timestamp))}</span>
-    </div>
-
-    <div class="book-status-item">
-  <span class="book-status-label">Last Updated</span>
-  <span class="book-status-value">${escapeHtml(formatDate(item.Last_Updated || item.updated_at))}</span>
-</div>
-
-</div>
-
-    </aside>
-
-    <section>
-      <div class="mm-card">
-        <h2>Book Details</h2>
-
-        <div class="detail-grid compact-grid">
-          ${field("Title", item.Title, "Title")}
-          ${field("Author", item.Author_Name, "Author_Name")}
-          ${field("Added", formatDate(item.Timestamp))}
-          ${
-  editMode
-    ? field("Release", item["Release/Expected_Release_Date"], "Release/Expected_Release_Date")
-    : field("Release", formatDate(item["Release/Expected_Release_Date"]))
-}
-          ${
-  editMode
-    ? BookFormUI.select({ label: "Genre", name: "Genre", value: item.Genre, options: GENRES })
-    : field("Genre", item.Genre)
-}
-${
-  editMode
-    ? BookFormUI.select({ label: "Age", name: "Age_Range", value: item.Age_Range, options: AGE_RANGES })
-    : field("Age", item.Age_Range)
-}
-${
-  editMode
-    ? BookFormUI.select({ label: "Spice", name: "Spice_Level", value: item.Spice_Level, options: SPICE_LEVELS })
-    : field("Spice", item.Spice_Level)
-}
-          ${
-  editMode
-    ? `
-      <div class="detail-field">
-        <span class="detail-label">Series</span>
-        <input
-          class="detail-input"
-          id="seriesNameInput"
-          name="Series_Name"
-          type="text"
-          value="${escapeHtml(item.Series_Name || "")}"
-          autocomplete="off"
-          placeholder="Start typing a series..."
-        >
-      </div>
-    `
-    : field("Series", item.Series_Name)
-}
-${field("Series Number", item.Series_Number, "Series_Number")}
-          ${field("Words", item.Word_Count, "Word_Count")}
-          ${field("Pages", item.Page_Count, "Page_Count")}
-        </div>
-      </div>
-
-      ${textareaField("Description", item.Description, "Description")}
-
-      <details class="review-accordion section-card" open>
-        <summary>Classification Tags</summary>
-        <div class="accordion-body">
-          ${
-  editMode
-    ? BookFormUI.checkboxPanel({
-        label: "Subgenres",
-        name: "Subgenres",
-        values: toArray(
-  item.Subgenres ||
-  item.Sub_Genres ||
-  item.sub_genres
-),
-        options: SUBGENRES,
-        max: 3
-      })
-    : `<h3>Subgenres</h3>${tags(item.Subgenres || item.Sub_Genres || item.sub_genres)}`
-}
-
-${
-  editMode
-    ? BookFormUI.checkboxPanel({
-        label: "Vibes",
-        name: "Vibes",
-        values: toArray(
-  item.Vibes ||
-  item.vibes
-),
-        options: VIBES,
-        max: 3
-      })
-    : `<h3>Vibes</h3>${tags(item.Vibes || item.vibes)}`
-}
-
-${
-  editMode
-    ? BookFormUI.checkboxPanel({
-        label: "Representation",
-        name: "Representation",
-        values: toArray(
-  item.Representation ||
-  item.representation
-),
-        options: REPRESENTATION
-      })
-    : `<h3>Representation</h3>${tags(item.Representation || item.representation)}`
-}
-        </div>
-      </details>
-
-      <details class="review-accordion section-card">
-        <summary>Retailer Links</summary>
-        <div class="accordion-body">
-          ${
-  editMode
-    ? `
-      <div class="detail-grid">
-        ${field("Website", item.Website_Link, "Website_Link")}
-        ${field("Amazon", item.Amazon_Link, "Amazon_Link")}
-        ${field("Barnes & Noble", item.BN_Link, "BN_Link")}
-        ${field("BookFunnel", item.Bookfunnel_Link, "Bookfunnel_Link")}
-        ${field("Kobo", item.Kobo_Link, "Kobo_Link")}
-        ${field("Apple Books", item.Apple_Books_Link, "Apple_Books_Link")}
-        ${field("Other", item.Other_Link, "Other_Link")}
-      </div>
-    `
-    : linkList({
-        website: item.Website_Link,
-        amazon: item.Amazon_Link,
-        barnes_noble: item.BN_Link,
-        bookfunnel: item.Bookfunnel_Link,
-        other: item.Other_Link,
-        kobo: item.Kobo_Link,
-        apple_books: item.Apple_Books_Link
-      })
-}
-        </div>
-      </details>
-
-      <details class="review-accordion section-card">
-  <summary>Available Formats</summary>
-  <div class="accordion-body">
-    ${
-      editMode
-        ? BookFormUI.checkboxPanel({
-            label: "Formats",
-            name: "Available_Formats",
-            values: toArray(
-  item.Available_Formats ||
-  item.available_formats
-),
-            options: FORMATS
-          })
-        : tags(item.Available_Formats || item.available_formats)
-    }
-  </div>
-</details>
-
-      <details class="review-accordion section-card">
-        <summary>Audiobook</summary>
-        <div class="accordion-body detail-grid">
-          ${
-  editMode
-    ? `
-      ${BookFormUI.select({
-        label: "Has Audiobook",
-        name: "Has_Audiobook",
-        value: toArray(item.Available_Formats || item.available_formats).includes("Audiobook") || item.Has_Audiobook ? "Yes" : "No",
-        options: ["No", "Yes"]
-      })}
-      ${field("Narrator(s)", item.Audiobook_Narrators, "Audiobook_Narrators")}
-      ${field("Audiobook Link", item.Audiobook_Link, "Audiobook_Link")}
-    `
-    : `
-      ${field("Has Audiobook", toArray(item.Available_Formats || item.available_formats).includes("Audiobook") || item.Has_Audiobook ? "Yes" : "No")}
-      ${field("Narrator(s)", item.Audiobook_Narrators)}
-      ${item.Audiobook_Link ? linkList({ audiobook: item.Audiobook_Link }) : ""}
-    `
-}
-        </div>
-      </details>
-
-      <details class="review-accordion section-card">
-        <summary>BLK Shelf Kids</summary>
-        <div class="accordion-body">
-          ${
-  editMode
-    ? BookFormUI.select({
-        label: "Kids / Youth Category",
-        name: "Kids_Category",
-        value: item.Kids_Category,
-        options: KIDS_CATEGORIES
-      })
-    : field("Kids / Youth Category", item.Kids_Category)
-}
-        </div>
-      </details>
-
-      <details class="review-accordion section-card">
-  <summary>Contributors</summary>
-  <div class="accordion-body">
-    ${
-      editMode
-        ? `
-          <div class="tag-picker" id="coAuthorPicker">
-            <div class="tag-list" id="coAuthorTags"></div>
-
-            <input
-              id="coAuthorInput"
-              type="text"
-              placeholder="Start typing a contributor name..."
-              autocomplete="off"
-            >
-
-            <div class="tag-suggestions hidden" id="coAuthorSuggestions"></div>
-          </div>
-        `
-        : (
-          Array.isArray(item.Contributors) && item.Contributors.length
-            ? tags(item.Contributors.map(author => author.matched ? `✓ ${author.name}` : author.name))
-            : `<p class="mm-muted">No additional contributors listed.</p>`
-        )
-    }
-  </div>
-</details>
-
-      <details class="review-accordion section-card">
-  <summary>Reviewer Notes</summary>
-  <div class="accordion-body">
-    ${
-      editMode
-        ? `<textarea class="detail-textarea" name="admin_notes">${escapeHtml(item.admin_notes || "")}</textarea>`
-        : `<p class="mm-muted">${escapeHtml(item.admin_notes || "No reviewer notes yet.")}</p>`
-    }
-  </div>
-</details>
-
-<details class="review-accordion section-card">
-  <summary>Edit History</summary>
-  <div class="accordion-body">
-    ${renderEditHistory(item.editHistory || [])}
-  </div>
-</details>
-
-    </section>
-  </div>
-`;
-
-if (editMode) {
-  enforceCheckboxLimits();
-
-  console.log("ContributorPicker loaded?", window.ContributorPicker);
-
-if (window.ContributorPicker) {
-  ContributorPicker.setup();
-  ContributorPicker.setValues(item.Contributors || []);
-
-  if (window.SeriesPicker) {
-  SeriesPicker.setup("seriesNameInput");
-}
-
-}
-}
-}
-
-function enforceCheckboxLimits() {
-  document.querySelectorAll('input[type="checkbox"][data-max]').forEach(input => {
-    input.addEventListener("change", event => {
-      const max = Number(event.target.dataset.max || 0);
-      if (!max) return;
-
-      const name = event.target.name;
-      const checked = Array.from(document.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`));
-
-      if (checked.length > max) {
-        event.target.checked = false;
-        alert(`You can select up to ${max}.`);
-      }
-    });
-  });
-}
-
-function startBookEdit() {
-  editMode = true;
-  renderBook(currentBook);
-}
-
-function cancelBookEdit() {
-  editMode = false;
-  renderBook(currentBook);
-}
-
-function resetBookEdit() {
-  renderBook(currentBook);
-}
-
-function normalizeForCompare(value) {
-  if (value === null || value === undefined) return "";
-  if (Array.isArray(value)) return value.join(", ");
-  return String(value).trim();
-}
-
-function getChangedFields(oldBook, payload) {
-  const changes = {};
-
-  Object.entries(payload).forEach(([key, newValue]) => {
-    const oldValue = oldBook[key];
-
-    if (normalizeForCompare(oldValue) !== normalizeForCompare(newValue)) {
-      changes[key] = {
-        old: oldValue ?? "",
-        new: newValue ?? ""
+    );
+
+    if (error) {
+      console.warn(
+        "Amazon ASIN extraction failed:",
+        error
+      );
+
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The Amazon link was preserved."
       };
     }
-  });
 
-  return changes;
-}
+    if (
+      !data?.success ||
+      !data?.asin
+    ) {
+      console.warn(
+        "Amazon ASIN was not returned:",
+        data
+      );
 
-function normalizeForCompare(value) {
-  if (value === null || value === undefined) return "";
-  if (Array.isArray(value)) return value.join(", ");
-  return String(value).trim();
-}
-
-function getChangedFields(oldBook, payload) {
-  const changes = {};
-
-  Object.entries(payload).forEach(([key, newValue]) => {
-    const oldValue = oldBook[key];
-
-    if (normalizeForCompare(oldValue) !== normalizeForCompare(newValue)) {
-      changes[key] = {
-        old: oldValue ?? "",
-        new: newValue ?? ""
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The Amazon link was preserved."
       };
     }
-  });
 
-  return changes;
+    return {
+      asin: String(data.asin)
+        .trim()
+        .toUpperCase(),
+
+      warning: ""
+    };
+
+  } catch (error) {
+    console.warn(
+      "Amazon ASIN extraction failed:",
+      error
+    );
+
+    return {
+      asin: "",
+      warning:
+        "Amazon ASIN could not be identified. The Amazon link was preserved."
+    };
+  }
 }
 
 async function saveBookChanges() {
@@ -2924,6 +1459,77 @@ async function saveBookChanges() {
   const root = document.getElementById("submissionContent");
 
 const payload = BookFormData.readBook(root);
+
+let amazonWarning = "";
+
+const oldAmazonLink =
+  String(
+    currentBook.Amazon_Link || ""
+  ).trim();
+
+const newAmazonLink =
+  String(
+    payload.Amazon_Link || ""
+  ).trim();
+
+const amazonChanged =
+  oldAmazonLink !== newAmazonLink;
+
+let amazonAsin =
+  String(
+    currentBook.Amazon_ASIN || ""
+  ).trim();
+
+  /*
+ * Recalculate when:
+ * 1. the Amazon link changed, OR
+ * 2. this is a legacy book with an Amazon link
+ *    but no ASIN yet.
+ */
+if (
+  newAmazonLink &&
+  (
+    amazonChanged ||
+    !amazonAsin
+  )
+) {
+  saveBtn.textContent =
+    "Checking Amazon...";
+
+  const amazonResult =
+    await getAmazonAsin(
+      newAmazonLink
+    );
+
+  amazonAsin =
+    amazonResult.asin;
+
+  amazonWarning =
+    amazonResult.warning;
+}
+
+/*
+ * If Amazon was removed entirely,
+ * remove the ASIN too.
+ */
+if (!newAmazonLink) {
+  amazonAsin = "";
+}
+
+/*
+ * Never keep the old product ASIN when
+ * the Amazon link points somewhere new.
+ */
+if (
+  amazonChanged &&
+  newAmazonLink &&
+  !amazonAsin
+) {
+  amazonAsin = "";
+}
+
+payload.Amazon_ASIN =
+  amazonAsin || null;
 
 const replacementCover = root.querySelector("#replacementCover")?.files?.[0];
 
@@ -2999,17 +1605,22 @@ editMode = false;
 
 renderBook(currentBook);
 
-showSaveSuccess();
+showSaveSuccess(amazonWarning);
 
 }
 
-function showSaveSuccess() {
+function showSaveSuccess(warning = "") {
 
-  const note = document.createElement("div");
+  const note =
+    document.createElement("div");
 
-  note.className = "save-toast";
+  note.className =
+    "save-toast";
 
-  note.textContent = "✓ Changes saved successfully";
+  note.textContent =
+    warning
+      ? `✓ Changes saved. ${warning}`
+      : "✓ Changes saved successfully";
 
   document.body.appendChild(note);
 
