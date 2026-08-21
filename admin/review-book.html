@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Review Book – Mate Masie</title>
+  <title>View Book – Mate Masie</title>
 
   <link rel="stylesheet" href="css/mate-masie.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -25,14 +25,36 @@
       margin-top: 1rem;
     }
 
-    .cover-card img {
-      width: 100%;
-      aspect-ratio: 2 / 3;
-      object-fit: cover;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(0,0,0,0.25);
-    }
+    .cover-card {
+  text-align: center;
+}
+
+.cover-card img {
+  width: 78%;
+  max-width: 190px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.25);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.42);
+}
+
+.cover-replace-field {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  text-align: left;
+}
+
+.cover-replace-field input[type="file"] {
+  cursor: pointer;
+}
+
+.cover-help {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+}
 
     .status-pill {
       display: inline-block;
@@ -77,6 +99,137 @@
       word-break: break-word;
     }
 
+    .detail-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
+.detail-input:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.detail-select,
+.detail-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
+.detail-select:focus,
+.detail-textarea:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.detail-textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.check-card {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 58px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.check-card input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.check-card span {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.option-panel {
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(23,16,12,0.55);
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+
+.option-panel summary {
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  color: var(--accent-light);
+  font-weight: bold;
+}
+
+.option-panel-body {
+  padding: 0 1rem 1rem;
+}
+
+.option-help {
+  margin: 0 0 0.75rem;
+  color: var(--soft);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.6;
+}
+
+.detail-textarea:focus {
+  outline: 2px solid var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.tag-edit-input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+  color: var(--text);
+  font: inherit;
+}
+
     .section-card {
       margin-top: 1rem;
     }
@@ -102,12 +255,9 @@
 }
 
 .review-sidebar {
-  display: grid;
-  gap: 1rem;
-}
-
-.review-sidebar .section-card {
-  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .compact-grid {
@@ -123,14 +273,46 @@
 .review-action-stack {
   display: grid;
   gap: 0.65rem;
-  margin-top: 1rem;
+}
+
+.book-action-panel h2,
+.book-status-panel h2 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.book-status-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.book-status-item {
+  padding: 0.65rem;
+  border-radius: 12px;
+  background: rgba(23,16,12,0.65);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.book-status-label {
+  display: block;
+  color: var(--soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.book-status-value {
+  color: var(--text);
+  font-size: 0.9rem;
+  word-break: break-word;
 }
 
 .review-accordion {
   background: linear-gradient(180deg, var(--panel), var(--panel-2));
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: 18px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .review-accordion summary {
@@ -174,6 +356,44 @@
   border-color: rgba(255,209,203,0.35);
 }
 
+.save-toast {
+
+  position: fixed;
+
+  right: 24px;
+
+  bottom: 24px;
+
+  background: #2f6b3f;
+
+  color: white;
+
+  padding: .9rem 1.3rem;
+
+  border-radius: 14px;
+
+  font-weight: 600;
+
+  box-shadow: 0 14px 40px rgba(0,0,0,.35);
+
+  opacity: 0;
+
+  transform: translateY(20px);
+
+  transition: all .25s ease;
+
+  z-index: 9999;
+
+}
+
+.save-toast.show {
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+}
+
 @media (max-width: 900px) {
   .compact-review {
     grid-template-columns: 1fr;
@@ -197,6 +417,117 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .hidden {
+  display: none;
+}
+
+.tag-picker {
+  position: relative;
+  min-height: 58px;
+  padding: 0.65rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(12,9,7,0.85);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.5rem;
+}
+
+.author-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(230,176,106,0.12);
+  border: 1px solid rgba(230,176,106,0.28);
+  color: var(--accent-light);
+  font-size: 0.9rem;
+}
+
+.author-tag.unmatched {
+  background: rgba(255,255,255,0.08);
+  color: var(--muted);
+}
+
+.author-tag button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+#coAuthorInput {
+  border: none;
+  background: transparent;
+  padding: 0.4rem;
+  color: var(--text);
+  width: 100%;
+}
+
+#coAuthorInput:focus {
+  outline: none;
+}
+
+.tag-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 20;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 14px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.suggestion-item {
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: rgba(23,16,12,0.8);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.suggestion-item:hover {
+  background: rgba(230,176,106,0.12);
+}
+
+.suggestion-meta {
+  display: block;
+  color: var(--soft);
+  font-size: 0.82rem;
+}
+
+.global-autocomplete {
+  position: absolute;
+  z-index: 99999;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 14px;
+  background: #241d17;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.global-autocomplete.hidden {
+  display: none;
+}
+
   </style>
 </head>
 
@@ -209,16 +540,20 @@
 
       <section class="mm-content">
         <div class="content-column">
-          <span class="mm-eyebrow">Book Review</span>
-          <h1 class="mm-page-title" id="pageTitle">Book Submission</h1>
-          <p class="mm-page-subtitle">
-  Review this book submission before approving, denying, or requesting changes.
+          <span class="mm-eyebrow">Library</span>
+<h1 class="mm-page-title" id="pageTitle">Book Details</h1>
+<p class="mm-page-subtitle">
+  View information for this published book.
 </p>
 
-          <div class="mm-btn-row">
-  <button class="mm-btn mm-btn-secondary" id="prevSubmissionBtn" type="button">← Previous</button>
-  <a class="mm-btn mm-btn-secondary" href="review-queue.html">← Back to Review Queue</a>
-  <button class="mm-btn mm-btn-secondary" id="nextSubmissionBtn" type="button">Next →</button>
+          <div class="mm-btn-row" id="pageActions">
+  <a class="mm-btn mm-btn-secondary" href="books.html" id="cancelBtn">
+    ← Back to Library
+  </a>
+
+  <button class="mm-btn" id="editBookBtn" type="button">
+    Edit Book
+  </button>
 </div>
 
           <div id="submissionContent">
@@ -235,15 +570,29 @@
   <script src="js/supabase.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/navigation.js"></script>
+<script src="js/components/book-form-options.js"></script>
+<script src="js/components/book-form-ui.js"></script>
+<script src="js/components/book-form-data.js"></script>
+<script src="js/components/contributor-picker.js"></script>
+<script src="js/components/series-picker.js"></script>
 
   <script>
-    const STORAGE_BASE =
-  "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+    const STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
 
-let currentBookSubmission = null;
-let linkedAuthor = null;
-let linkedAuthorReviewUrl = "";
-let nextSubmissionUrl = "review-queue.html";
+    let editMode = false;
+let currentBook = null;
+let authorImageUrl = "";
+
+const {
+  GENRES,
+  SUBGENRES,
+  VIBES,
+  REPRESENTATION,
+  SPICE_LEVELS,
+  AGE_RANGES,
+  FORMATS,
+  KIDS_CATEGORIES
+} = window.BookFormOptions;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -281,26 +630,6 @@ let nextSubmissionUrl = "review-queue.html";
       return "Pending Review";
     }
 
-    function generateId(prefix) {
-  const now = new Date();
-
-  const stamp =
-    now.getFullYear().toString() +
-    String(now.getMonth() + 1).padStart(2, "0") +
-    String(now.getDate()).padStart(2, "0") +
-    String(now.getHours()).padStart(2, "0") +
-    String(now.getMinutes()).padStart(2, "0") +
-    String(now.getSeconds()).padStart(2, "0");
-
-  const random =
-    Math.random()
-      .toString(36)
-      .substring(2, 6)
-      .toUpperCase();
-
-  return `${prefix}${stamp}${random}`;
-}
-
     function normalizeDriveImageUrl(url) {
   if (!url) return "";
 
@@ -319,34 +648,56 @@ let nextSubmissionUrl = "review-queue.html";
   return value;
 }
 
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+}
+
+async function uploadReplacementCover(file, book) {
+  if (!file) return null;
+
+  const extension = file.name.split(".").pop() || "jpg";
+  const baseName = slugify(book.Title || book.Book_ID || "book-cover");
+  const fileName = `${book.Book_ID}-${baseName}-${Date.now()}.${extension}`;
+  const filePath = fileName;
+
+  const { error } = await supabaseClient.storage
+    .from("covers")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false
+    });
+
+  if (error) throw error;
+
+  return filePath;
+}
+
+async function deleteOldCover(path) {
+  if (!path) return;
+
+  const { error } = await supabaseClient.storage
+    .from("covers")
+    .remove([path]);
+
+  if (error) {
+    console.warn("Old cover could not be deleted:", error.message);
+  }
+}
+
 function getCoverUrl(item) {
-  if (item.cover_path) {
-    return `${STORAGE_BASE}/book-submissions/${encodeURIComponent(item.cover_path)}`;
+  if (item.CoverImagePath) {
+    return `${STORAGE_BASE}/covers/${encodeURIComponent(item.CoverImagePath)}`;
   }
 
-  if (item.legacy_cover_url) {
-    return normalizeDriveImageUrl(item.legacy_cover_url);
+  if (item.cover_path) {
+    return `${STORAGE_BASE}/covers/${encodeURIComponent(item.cover_path)}`;
   }
 
   return "";
-}
-
-function normalizeDriveImageUrl(url) {
-  if (!url) return "";
-
-  const value = String(url).trim();
-
-  const fileMatch = value.match(/\/file\/d\/([^/]+)/);
-  if (fileMatch && fileMatch[1]) {
-    return `https://drive.google.com/thumbnail?id=${fileMatch[1]}&sz=w700`;
-  }
-
-  const idMatch = value.match(/[?&]id=([^&]+)/);
-  if (idMatch && idMatch[1]) {
-    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w700`;
-  }
-
-  return value;
 }
 
 function getAuthorImageUrl(item) {
@@ -365,54 +716,96 @@ function getAuthorImageUrl(item) {
   return "";
 }
 
-    function field(label, value) {
-      return `
-        <div class="detail-field">
-          <span class="detail-label">${escapeHtml(label)}</span>
-          <div class="detail-value">${value ? escapeHtml(value) : "—"}</div>
-        </div>
-      `;
-    }
+    function field(label, value, fieldName = null) {
 
-    function normalizeList(values) {
-  if (Array.isArray(values)) {
-    return values
-      .map(value => String(value || "").trim())
+  if (editMode && fieldName) {
+    return `
+      <div class="detail-field">
+        <span class="detail-label">${escapeHtml(label)}</span>
+
+        <input
+  class="detail-input"
+  type="${fieldName === "Release/Expected_Release_Date" ? "date" : "text"}"
+  name="${escapeHtml(fieldName)}"
+  value="${
+    fieldName === "Release/Expected_Release_Date" && value
+      ? String(value).substring(0, 10)
+      : escapeHtml(value || "")
+  }"
+>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="detail-field">
+      <span class="detail-label">${escapeHtml(label)}</span>
+      <div class="detail-value">${value ? escapeHtml(value) : "—"}</div>
+    </div>
+  `;
+}
+
+function textareaField(label, value, fieldName) {
+  if (editMode && fieldName) {
+    return `
+      <div class="mm-card section-card">
+        <h2>${escapeHtml(label)}</h2>
+        <textarea
+          class="detail-textarea"
+          name="${escapeHtml(fieldName)}"
+        >${escapeHtml(value || "")}</textarea>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="mm-card section-card">
+      <h2>${escapeHtml(label)}</h2>
+      <p class="mm-muted compact-description">${escapeHtml(value || "No description provided.")}</p>
+    </div>
+  `;
+}
+
+function toArray(value) {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value
+      .map(item => String(item || "").trim())
       .filter(Boolean);
   }
 
-  if (values && typeof values === "object") {
-    return Object.values(values)
-      .map(value => String(value || "").trim())
-      .filter(Boolean);
-  }
+  const raw = String(value).trim();
 
-  const text = String(values || "").trim();
-
-  if (!text) {
-    return [];
-  }
+  if (!raw) return [];
 
   try {
-    const parsed = JSON.parse(text);
+    const parsed = JSON.parse(raw);
 
     if (Array.isArray(parsed)) {
       return parsed
-        .map(value => String(value || "").trim())
+        .map(item => String(item || "").trim())
         .filter(Boolean);
     }
-  } catch (error) {
-    // Legacy rows may contain comma-separated text.
+  } catch (_) {
+    // Continue with regular text parsing.
   }
 
-  return text
-    .split(/\s*[,;|]\s*/)
-    .map(value => value.trim())
+  return raw
+    .split(/[,;|]/)
+    .map(item =>
+      item
+        .trim()
+        .replace(/^\[+/, "")
+        .replace(/\]+$/, "")
+        .replace(/^["']+|["']+$/g, "")
+        .trim()
+    )
     .filter(Boolean);
 }
 
-function tags(values) {
-  const list = normalizeList(values);
+    function tags(values) {
+  const list = toArray(values);
 
   if (!list.length) {
     return `<p class="mm-muted">None listed.</p>`;
@@ -421,148 +814,39 @@ function tags(values) {
   return `
     <div class="tag-row">
       ${list
-        .map(value => `
-          <span class="tag">
-            ${escapeHtml(value)}
-          </span>
-        `)
+        .map(value => `<span class="tag">${escapeHtml(value)}</span>`)
         .join("")}
     </div>
   `;
 }
 
-    function normalizeObject(value) {
-  if (!value) {
-    return {};
-  }
+    function linkList(links) {
+      const entries = Object.entries(links || {}).filter(([_, value]) => value);
 
-  if (
-    typeof value === "object" &&
-    !Array.isArray(value)
-  ) {
-    return value;
-  }
+      if (!entries.length) return `<p class="mm-muted">No retailer links listed.</p>`;
 
-  try {
-    const parsed = JSON.parse(value);
-
-    return (
-      parsed &&
-      typeof parsed === "object" &&
-      !Array.isArray(parsed)
-    )
-      ? parsed
-      : {};
-  } catch (error) {
-    return {};
-  }
-}
-
-function linkList(links) {
-  const normalizedLinks =
-    normalizeObject(links);
-
-  const entries =
-    Object.entries(normalizedLinks)
-      .filter(([_, value]) =>
-        String(value || "").trim()
-      );
-
-  if (!entries.length) {
-    return `
-      <p class="mm-muted">
-        No retailer links listed.
-      </p>
-    `;
-  }
-
-  return `
-    <div class="detail-grid">
-      ${entries
-        .map(([key, value]) => `
-          <div class="detail-field">
-            <span class="detail-label">
-              ${escapeHtml(
-                key.replaceAll("_", " ")
-              )}
-            </span>
-
-            <a
-              class="detail-value"
-              href="${escapeHtml(value)}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              ${escapeHtml(value)}
-            </a>
-          </div>
-        `)
-        .join("")}
-    </div>
-  `;
-}
-
-    async function setupSubmissionNavigation(currentId) {
-  const prevBtn = document.getElementById("prevSubmissionBtn");
-  const nextBtn = document.getElementById("nextSubmissionBtn");
-
-  const { data, error } = await supabaseClient
-    .from("book_submissions")
-    .select("id, created_at")
-    .in("submission_status", ["pending", "needs_info"])
-    .order("created_at", { ascending: false });
-
-  if (error || !data?.length) {
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
-    return;
-  }
-
-  const currentIndex = data.findIndex(item => item.id === currentId);
-
-  const prevItem = currentIndex > 0 ? data[currentIndex - 1] : null;
-  const nextItem =
-  currentIndex >= 0 && currentIndex < data.length - 1
-    ? data[currentIndex + 1]
-    : null;
-
-nextSubmissionUrl = nextItem
-  ? `review-book.html?id=${encodeURIComponent(nextItem.id)}`
-  : "review-queue.html";
-
-  prevBtn.disabled = !prevItem;
-  nextBtn.disabled = !nextItem;
-
-  if (prevItem) {
-    prevBtn.onclick = () => {
-      window.location.href = `review-book.html?id=${encodeURIComponent(prevItem.id)}`;
-    };
-  }
-
-  if (nextItem) {
-    nextBtn.onclick = () => {
-      window.location.href = `review-book.html?id=${encodeURIComponent(nextItem.id)}`;
-    };
-  }
-}
+      return `
+        <div class="detail-grid">
+          ${entries.map(([key, value]) => `
+            <div class="detail-field">
+              <span class="detail-label">${escapeHtml(key.replaceAll("_", " "))}</span>
+              <a class="detail-value" href="${escapeHtml(value)}" target="_blank" rel="noopener noreferrer">
+                ${escapeHtml(value)}
+              </a>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    }
 
     async function initSubmissionPage() {
-      await loadMateMasieShell("review-queue");
+      await loadMateMasieShell("library");
 
-      const target =
-  document.getElementById(
-    "submissionContent"
-  );
+      const target = document.getElementById("submissionContent");
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-const id =
-  params.get("id");
-
-if (!id) {
+      if (!id) {
         target.innerHTML = `<div class="mm-card"><h2>Missing submission ID</h2></div>`;
         return;
       }
@@ -573,9 +857,9 @@ if (!auth) return;
 setTopbarUser(auth.user, auth.profile);
 
       const { data: book, error: bookError } = await supabaseClient
-  .from("book_submissions")
+  .from("books")
   .select("*")
-  .eq("id", id)
+  .eq("Book_ID", id)
   .limit(1);
 
       if (bookError || !book?.length) {
@@ -589,350 +873,67 @@ setTopbarUser(auth.user, auth.profile);
       }
 
       const item = book[0];
+      currentBook = item;
 
-currentBookSubmission = item;
-linkedAuthor = null;
-linkedAuthorReviewUrl = "";
+            authorImageUrl = "";
 
-await setupSubmissionNavigation(item.id);
-      const statusClass = normalizeStatus(item.submission_status);
-      const coverUrl = getCoverUrl(item);
-
-      let authorImageUrl = "";
-
-if (item.author_id) {
-  const cleanAuthorId =
-    String(item.author_id).trim();
-
-  const {
-    data: authorMatch,
-    error: authorError
-  } = await supabaseClient
+if (item.Author_Name) {
+  const { data: authorMatch } = await supabaseClient
     .from("authors")
-    .select(`
-  AUTHOR_ID,
-  SUBMISSION_ID,
-  AUTHOR_NAME,
-  EMAIL_ADDRESS,
-  AUTHORIMAGEPATH,
-  APPROVAL
-`)
-    .ilike(
-      "AUTHOR_ID",
-      cleanAuthorId
-    )
+    .select("AUTHORIMAGEPATH")
+    .eq("AUTHOR_NAME", item.Author_Name)
     .limit(1)
     .maybeSingle();
 
-  if (authorError) {
-    console.error(
-      "Unable to load linked author:",
-      authorError
-    );
+  if (authorMatch?.AUTHORIMAGEPATH) {
+    authorImageUrl = `${STORAGE_BASE}/authors/${encodeURIComponent(authorMatch.AUTHORIMAGEPATH)}`;
   }
+}
 
-  linkedAuthor =
-    authorMatch || null;
+      document.getElementById("pageTitle").textContent = item.Title || "Book Details";
 
-  if (linkedAuthor?.AUTHORIMAGEPATH) {
-    authorImageUrl =
-      `${STORAGE_BASE}/authors/` +
-      encodeURIComponent(
-        linkedAuthor.AUTHORIMAGEPATH
-      );
-  }
+document.getElementById("editBookBtn").onclick = startBookEdit;
 
-  const approvalStatus =
-  String(
-    linkedAuthor?.APPROVAL || ""
-  )
-    .trim()
-    .toLowerCase();
-
-if (
-  approvalStatus === "approved" &&
-  linkedAuthor?.AUTHOR_ID
-) {
-  linkedAuthorReviewUrl =
-    `admin-author.html?id=${encodeURIComponent(
-      linkedAuthor.AUTHOR_ID
-    )}`;
-
-} else if (
-  linkedAuthor?.AUTHOR_ID
-) {
-  const linkedAuthorId =
-    String(
-      linkedAuthor.AUTHOR_ID
-    ).trim();
-
-  let authorSubmission = null;
-
-  /*
-   * First use the permanent author relationship.
-   * Do not filter by status because legacy rows may
-   * have a status that does not match the author table.
-   */
-  const {
-    data: authorIdMatches,
-    error: authorIdError
-  } = await supabaseClient
-    .from("author_submissions")
-    .select(`
-      id,
-      submission_id,
-      submission_status,
-      submitted_at,
-      created_at
-    `)
-    .eq(
-      "approved_author_id",
-      linkedAuthorId
-    )
-    .order(
-      "submitted_at",
-      {
-        ascending: false,
-        nullsFirst: false
-      }
-    )
-    .limit(10);
-
-  if (authorIdError) {
-    console.error(
-      "Unable to find author review by Author ID:",
-      authorIdError
-    );
-  }
-
-  if (authorIdMatches?.length) {
-    authorSubmission =
-      authorIdMatches.find(row =>
-        ["pending", "needs_info"].includes(
-          String(
-            row.submission_status || ""
-          )
-            .trim()
-            .toLowerCase()
-        )
-      ) ||
-      authorIdMatches.find(row =>
-        String(
-          row.submission_status || ""
-        )
-          .trim()
-          .toLowerCase() !==
-        "archived_duplicate"
-      ) ||
-      authorIdMatches[0];
-  }
-
-  /*
-   * Legacy fallback using the original submission ID.
-   */
-  if (
-    !authorSubmission &&
-    linkedAuthor?.SUBMISSION_ID
-  ) {
-    const {
-      data: submissionMatches,
-      error: submissionError
-    } = await supabaseClient
-      .from("author_submissions")
-      .select(`
-        id,
-        submission_id,
-        submission_status,
-        submitted_at,
-        created_at
-      `)
-      .eq(
-        "submission_id",
-        String(
-          linkedAuthor.SUBMISSION_ID
-        ).trim()
-      )
-      .order(
-        "submitted_at",
-        {
-          ascending: false,
-          nullsFirst: false
-        }
-      )
-      .limit(10);
-
-    if (submissionError) {
-      console.error(
-        "Unable to find author review by Submission ID:",
-        submissionError
-      );
+currentBook.editHistory = await loadBookEditHistory(item.Book_ID);
+renderBook(currentBook);
     }
 
-    if (submissionMatches?.length) {
-      authorSubmission =
-        submissionMatches.find(row =>
-          ["pending", "needs_info"].includes(
-            String(
-              row.submission_status || ""
-            )
-              .trim()
-              .toLowerCase()
-          )
-        ) ||
-        submissionMatches.find(row =>
-          String(
-            row.submission_status || ""
-          )
-            .trim()
-            .toLowerCase() !==
-          "archived_duplicate"
-        ) ||
-        submissionMatches[0];
-    }
-  }
+function renderBook(item) {
+  const target = document.getElementById("submissionContent");
+  const coverUrl = getCoverUrl(item);
 
-  if (authorSubmission?.id) {
-    linkedAuthorReviewUrl =
-      `review-author.html?id=${encodeURIComponent(
-        authorSubmission.id
-      )}`;
-  }
-}
+  target.innerHTML = `
+        <div class="submission-layout compact-review">
+          <aside class="review-sidebar">
+            <div class="mm-card cover-card">
+
+        ${
+  coverUrl
+    ? `<img
+         src="${escapeHtml(coverUrl)}"
+         alt="${escapeHtml(item.Title)} cover"
+         onerror="this.outerHTML='<div class=&quot;mm-muted&quot;>Cover unavailable</div>'"
+       >`
+    : `<div class="mm-muted">No cover</div>`
 }
 
-const hasLinkedAuthor =
-  Boolean(
-    linkedAuthor?.AUTHOR_ID
-  );
-
-const authorApprovalStatus =
-  String(
-    linkedAuthor?.APPROVAL || ""
-  )
-    .trim()
-    .toLowerCase();
-
-const authorIsApproved =
-  hasLinkedAuthor &&
-  authorApprovalStatus ===
-    "approved";
-
-let authorWarningHtml = "";
-
-if (authorIsApproved) {
-  authorWarningHtml = `
-    <div
-      style="
-        margin-bottom:1rem;
-        padding:.85rem 1rem;
-        border-radius:14px;
-        background:rgba(53,86,61,.3);
-        border:1px solid rgba(123,188,138,.3);
-        color:#c8f2ce;
-      "
-    >
-      Linked to approved author:
-      <strong>
-        ${escapeHtml(
-          linkedAuthor.AUTHOR_NAME
-        )}
-      </strong>
-
-      <span
-        style="
-          display:block;
-          margin-top:.25rem;
-          font-size:.88rem;
-        "
-      >
-        Author ID:
-        ${escapeHtml(
-          linkedAuthor.AUTHOR_ID
-        )}
-      </span>
-    </div>
-  `;
-
-} else if (hasLinkedAuthor) {
-  authorWarningHtml = `
-    <div
-      style="
-        margin-bottom:1rem;
-        padding:.85rem 1rem;
-        border-radius:14px;
-        background:rgba(111,83,36,.35);
-        border:1px solid rgba(245,216,157,.3);
-        color:#f5d89d;
-      "
-    >
-      Connected to author:
-      <strong>
-        ${escapeHtml(
-          linkedAuthor.AUTHOR_NAME
-        )}
-      </strong>
-
-      <span
-        style="
-          display:block;
-          margin-top:.25rem;
-          font-size:.88rem;
-        "
-      >
-        Author ID:
-        ${escapeHtml(
-          linkedAuthor.AUTHOR_ID
-        )}
-      </span>
-
-      <span
-        style="
-          display:block;
-          margin-top:.25rem;
-        "
-      >
-        This author profile is still pending approval.
-        Approve the author before publishing this book.
-      </span>
-    </div>
-  `;
-
-} else {
-  authorWarningHtml = `
-    <div
-      style="
-        margin-bottom:1rem;
-        padding:.85rem 1rem;
-        border-radius:14px;
-        background:rgba(107,48,44,.35);
-        border:1px solid rgba(255,209,203,.3);
-        color:#ffd1cb;
-      "
-    >
-      This book is not connected to an author profile.
-      Link or approve the author before publishing this book.
-    </div>
-  `;
+${
+  editMode
+    ? `
+      <div class="cover-replace-field">
+        <label class="detail-label" for="replacementCover">Replace Cover</label>
+        <input
+          class="detail-input"
+          id="replacementCover"
+          name="replacementCover"
+          type="file"
+          accept="image/*"
+        >
+        <p class="mm-muted cover-help">Leave blank to keep current cover.</p>
+      </div>
+    `
+    : ""
 }
-
-      document.getElementById("pageTitle").textContent = item.title || "Book Submission";
-
-      target.innerHTML = `
-  ${authorWarningHtml}
-
-  <div class="submission-layout compact-review">
-    <aside class="review-sidebar">
-      <div class="mm-card cover-card">
-
-  ${
-    coverUrl
-      ? `<img
-           src="${escapeHtml(coverUrl)}"
-           alt="${escapeHtml(item.title)} cover"
-           onerror="this.outerHTML='<div class=&quot;mm-muted&quot;>Cover unavailable</div>'"
-         >`
-      : `<div class="mm-muted">No cover</div>`
-  }
 
   <div
     style="
@@ -986,90 +987,79 @@ if (authorIsApproved) {
       </div>
 
       <div
-  style="
-    font-weight:600;
-    color:var(--text);
-  "
->
-  ${escapeHtml(
-    linkedAuthor?.AUTHOR_NAME ||
-    item.author_name ||
-    "Unknown Author"
-  )}
-</div>
-
-${
-  linkedAuthorReviewUrl
-    ? `
-      <a
-        class="mm-btn mm-btn-secondary"
-        href="${escapeHtml(
-          linkedAuthorReviewUrl
-        )}"
         style="
-          display:inline-block;
-          margin-top:.55rem;
-          padding:.45rem .7rem;
-          font-size:.82rem;
+          font-weight:600;
+          color:var(--text);
         "
       >
-        <i class="fa-solid fa-user-check"></i>
-        Review Author
-      </a>
-    `
-    : `
-      <span
-        class="mm-muted"
-        style="
-          display:block;
-          margin-top:.45rem;
-          font-size:.82rem;
-        "
-      >
-        Author review page unavailable
-      </span>
-    `
-}
+        ${escapeHtml(item.Author_Name || "Unknown Author")}
+      </div>
     </div>
 
+    </div>
+</div>
+
+<div class="mm-card section-card book-action-panel">
+  <h2>Book Actions</h2>
+
+  <div class="review-action-stack">
+    ${
+      editMode
+        ? `
+          <button class="mm-btn" type="button" onclick="saveBookChanges()">
+            Save Changes
+          </button>
+
+          <button class="mm-btn mm-btn-secondary" type="button" onclick="cancelBookEdit()">
+            Cancel
+          </button>
+
+          <button class="mm-btn mm-btn-secondary" type="button" onclick="resetBookEdit()">
+            Reset Changes
+          </button>
+        `
+        : `
+  <a class="mm-btn mm-btn-secondary" href="../book.html?id=${encodeURIComponent(item.Book_ID)}" target="_blank">
+    View Public Page
+  </a>
+`
+    }
   </div>
 
-  <span class="status-pill ${statusClass}">
-    ${displayStatus(item.submission_status)}
+  <p class="mm-muted" id="saveNote"></p>
+</div>
+
+<div class="mm-card section-card book-status-panel">
+  <h2>Book Status</h2>
+
+  <div class="book-status-list">
+    <div class="book-status-item">
+  <span class="book-status-label">Status</span>
+
+  <span class="status-pill ${
+    item.Is_Live === "Yes" ? "approved" : "pending"
+  }">
+    ${item.Is_Live === "Yes" ? "Published" : "Hidden"}
   </span>
+</div>
+
+    <div class="book-status-item">
+      <span class="book-status-label">Book ID</span>
+      <span class="book-status-value">${escapeHtml(item.Book_ID || "—")}</span>
+    </div>
+
+    <div class="book-status-item">
+      <span class="book-status-label">Added</span>
+      <span class="book-status-value">${escapeHtml(formatDate(item.Timestamp))}</span>
+    </div>
+
+    <div class="book-status-item">
+  <span class="book-status-label">Last Updated</span>
+  <span class="book-status-value">${escapeHtml(formatDate(item.Last_Updated || item.updated_at))}</span>
+</div>
 
 </div>
 
-      <div class="mm-card section-card">
-        <h2>Reviewer Notes</h2>
-        <p>(Author can see reviewer notes)</p>
-
-        <textarea
-          class="admin-notes"
-          id="adminNotes"
-          placeholder="Add internal review notes..."
-        >${escapeHtml(item.admin_notes || "")}</textarea>
-
-        <div class="review-action-stack">
-          <button
-  class="mm-btn approve-btn"
-  onclick="approveBookSubmission('${escapeHtml(item.id)}')"
-  ${authorIsApproved ? "" : "disabled"}
->
-  Approve
-</button>
-
-<button class="mm-btn needs-info-btn" onclick="saveBookStatus('${escapeHtml(item.id)}', 'needs_info')">
-  Needs Info
-</button>
-
-<button class="mm-btn deny-btn" onclick="saveBookStatus('${escapeHtml(item.id)}', 'denied')">
-  Deny
-</button>
-        </div>
-
-        <p class="mm-muted" id="actionNote"></p>
-      </div>
     </aside>
 
     <section>
@@ -1077,591 +1067,611 @@ ${
         <h2>Book Details</h2>
 
         <div class="detail-grid compact-grid">
-          ${field("Title", item.title)}
-          ${field("Author", item.author_name)}
-          ${field(
-  "Submitted",
-  formatDate(
-    item.submitted_at ||
-    item.created_at
-  )
-)}
-          ${field("Release", formatDate(item.release_date))}
-          ${field("Genre", item.primary_genre)}
-          ${field("Age", item.age_range)}
-          ${field("Spice", item.spice_level)}
-
-${field(
-  "Formats",
-  normalizeList(item.available_formats).join(", ")
-)}
-
-${field(
-  "Series",
-  item.series_name
-    ? `${item.series_name}${item.series_number ? ` #${item.series_number}` : ""}`
-    : ""
-)}
-          ${field("Words", item.word_count)}
-          ${field("Pages", item.page_count)}
+          ${field("Title", item.Title, "Title")}
+          ${field("Author", item.Author_Name, "Author_Name")}
+          ${field("Added", formatDate(item.Timestamp))}
+          ${
+  editMode
+    ? field("Release", item["Release/Expected_Release_Date"], "Release/Expected_Release_Date")
+    : field("Release", formatDate(item["Release/Expected_Release_Date"]))
+}
+          ${
+  editMode
+    ? BookFormUI.select({ label: "Genre", name: "Genre", value: item.Genre, options: GENRES })
+    : field("Genre", item.Genre)
+}
+${
+  editMode
+    ? BookFormUI.select({ label: "Age", name: "Age_Range", value: item.Age_Range, options: AGE_RANGES })
+    : field("Age", item.Age_Range)
+}
+${
+  editMode
+    ? BookFormUI.select({ label: "Spice", name: "Spice_Level", value: item.Spice_Level, options: SPICE_LEVELS })
+    : field("Spice", item.Spice_Level)
+}
+          ${
+  editMode
+    ? `
+      <div class="detail-field">
+        <span class="detail-label">Series</span>
+        <input
+          class="detail-input"
+          id="seriesNameInput"
+          name="Series_Name"
+          type="text"
+          value="${escapeHtml(item.Series_Name || "")}"
+          autocomplete="off"
+          placeholder="Start typing a series..."
+        >
+      </div>
+    `
+    : field("Series", item.Series_Name)
+}
+${field("Series Number", item.Series_Number, "Series_Number")}
+          ${field("Words", item.Word_Count, "Word_Count")}
+          ${field("Pages", item.Page_Count, "Page_Count")}
         </div>
       </div>
 
-      <div class="mm-card section-card">
-        <h2>Description</h2>
-        <p class="mm-muted compact-description">${escapeHtml(item.description || "No description provided.")}</p>
-      </div>
+      ${textareaField("Description", item.Description, "Description")}
 
       <details class="review-accordion section-card" open>
         <summary>Classification Tags</summary>
         <div class="accordion-body">
-          <h3>Subgenres</h3>
-          ${tags(item.sub_genres)}
+          ${
+  editMode
+    ? BookFormUI.checkboxPanel({
+        label: "Subgenres",
+        name: "Subgenres",
+        values: toArray(
+  item.Subgenres ||
+  item.Sub_Genres ||
+  item.sub_genres
+),
+        options: SUBGENRES,
+        max: 3
+      })
+    : `<h3>Subgenres</h3>${tags(item.Subgenres || item.Sub_Genres || item.sub_genres)}`
+}
 
-          <h3>Vibes</h3>
-          ${tags(item.vibes)}
+${
+  editMode
+    ? BookFormUI.checkboxPanel({
+        label: "Vibes",
+        name: "Vibes",
+        values: toArray(
+  item.Vibes ||
+  item.vibes
+),
+        options: VIBES,
+        max: 3
+      })
+    : `<h3>Vibes</h3>${tags(item.Vibes || item.vibes)}`
+}
 
-          <h3>Representation</h3>
-          ${tags(item.representation)}
+${
+  editMode
+    ? BookFormUI.checkboxPanel({
+        label: "Representation",
+        name: "Representation",
+        values: toArray(
+  item.Representation ||
+  item.representation
+),
+        options: REPRESENTATION
+      })
+    : `<h3>Representation</h3>${tags(item.Representation || item.representation)}`
+}
         </div>
       </details>
 
       <details class="review-accordion section-card">
         <summary>Retailer Links</summary>
         <div class="accordion-body">
-          ${linkList(item.retailer_links)}
+          ${
+  editMode
+    ? `
+      <div class="detail-grid">
+        ${field("Website", item.Website_Link, "Website_Link")}
+        ${field("Amazon", item.Amazon_Link, "Amazon_Link")}
+        ${field("Barnes & Noble", item.BN_Link, "BN_Link")}
+        ${field("BookFunnel", item.Bookfunnel_Link, "Bookfunnel_Link")}
+        ${field("Kobo", item.Kobo_Link, "Kobo_Link")}
+        ${field("Apple Books", item.Apple_Books_Link, "Apple_Books_Link")}
+        ${field("Other", item.Other_Link, "Other_Link")}
+      </div>
+    `
+    : linkList({
+        website: item.Website_Link,
+        amazon: item.Amazon_Link,
+        barnes_noble: item.BN_Link,
+        bookfunnel: item.Bookfunnel_Link,
+        other: item.Other_Link,
+        kobo: item.Kobo_Link,
+        apple_books: item.Apple_Books_Link
+      })
+}
         </div>
       </details>
 
       <details class="review-accordion section-card">
+  <summary>Available Formats</summary>
+  <div class="accordion-body">
+    ${
+      editMode
+        ? BookFormUI.checkboxPanel({
+            label: "Formats",
+            name: "Available_Formats",
+            values: toArray(
+  item.Available_Formats ||
+  item.available_formats
+),
+            options: FORMATS
+          })
+        : tags(item.Available_Formats || item.available_formats)
+    }
+  </div>
+</details>
+
+      <details class="review-accordion section-card">
         <summary>Audiobook</summary>
         <div class="accordion-body detail-grid">
-          ${field("Has Audiobook", item.audio?.has_audiobook ? "Yes" : "No")}
-          ${field("Narrator(s)", item.audio?.narrators)}
-          ${item.audio?.link ? linkList({ audiobook: item.audio.link }) : ""}
+          ${
+  editMode
+    ? `
+      ${BookFormUI.select({
+        label: "Has Audiobook",
+        name: "Has_Audiobook",
+        value: toArray(item.Available_Formats || item.available_formats).includes("Audiobook") || item.Has_Audiobook ? "Yes" : "No",
+        options: ["No", "Yes"]
+      })}
+      ${field("Narrator(s)", item.Audiobook_Narrators, "Audiobook_Narrators")}
+      ${field("Audiobook Link", item.Audiobook_Link, "Audiobook_Link")}
+    `
+    : `
+      ${field("Has Audiobook", toArray(item.Available_Formats || item.available_formats).includes("Audiobook") || item.Has_Audiobook ? "Yes" : "No")}
+      ${field("Narrator(s)", item.Audiobook_Narrators)}
+      ${item.Audiobook_Link ? linkList({ audiobook: item.Audiobook_Link }) : ""}
+    `
+}
         </div>
       </details>
 
       <details class="review-accordion section-card">
         <summary>BLK Shelf Kids</summary>
         <div class="accordion-body">
-          ${field("Kids / Youth Category", item.kids?.category)}
-        </div>
-      </details>
-
-      <details class="review-accordion section-card">
-        <summary>Contributors</summary>
-        <div class="accordion-body">
           ${
-            Array.isArray(item.co_authors) && item.co_authors.length
-              ? tags(item.co_authors.map(author => author.matched ? `✓ ${author.name}` : author.name))
-              : `<p class="mm-muted">No additional contributors listed.</p>`
-          }
+  editMode
+    ? BookFormUI.select({
+        label: "Kids / Youth Category",
+        name: "Kids_Category",
+        value: item.Kids_Category,
+        options: KIDS_CATEGORIES
+      })
+    : field("Kids / Youth Category", item.Kids_Category)
+}
         </div>
       </details>
 
       <details class="review-accordion section-card">
-        <summary>Reviewer Notes</summary>
-        <div class="accordion-body">
-          <p class="mm-muted">${escapeHtml(item.admin_notes || "No reviewer notes yet.")}</p>
-        </div>
-      </details>
+  <summary>Contributors</summary>
+  <div class="accordion-body">
+    ${
+      editMode
+        ? `
+          <div class="tag-picker" id="coAuthorPicker">
+            <div class="tag-list" id="coAuthorTags"></div>
+
+            <input
+              id="coAuthorInput"
+              type="text"
+              placeholder="Start typing a contributor name..."
+              autocomplete="off"
+            >
+
+            <div class="tag-suggestions hidden" id="coAuthorSuggestions"></div>
+          </div>
+        `
+        : (
+          Array.isArray(item.Contributors) && item.Contributors.length
+            ? tags(item.Contributors.map(author => author.matched ? `✓ ${author.name}` : author.name))
+            : `<p class="mm-muted">No additional contributors listed.</p>`
+        )
+    }
+  </div>
+</details>
+
+      <details class="review-accordion section-card">
+  <summary>Reviewer Notes</summary>
+  <div class="accordion-body">
+    ${
+      editMode
+        ? `<textarea class="detail-textarea" name="admin_notes">${escapeHtml(item.admin_notes || "")}</textarea>`
+        : `<p class="mm-muted">${escapeHtml(item.admin_notes || "No reviewer notes yet.")}</p>`
+    }
+  </div>
+</details>
+
+<details class="review-accordion section-card">
+  <summary>Edit History</summary>
+  <div class="accordion-body">
+    ${renderEditHistory(item.editHistory || [])}
+  </div>
+</details>
+
     </section>
   </div>
 `;
-    }
 
-    async function saveBookStatus(id, status) {
-  const note = document.getElementById("actionNote");
-  const adminNotes = document.getElementById("adminNotes").value;
+if (editMode) {
+  enforceCheckboxLimits();
 
-  note.textContent = "Saving...";
+  console.log("ContributorPicker loaded?", window.ContributorPicker);
 
-  const { error } = await supabaseClient
-    .from("book_submissions")
-    .update({
-      submission_status: status,
-      admin_notes: adminNotes,
-      reviewed_at: new Date().toISOString()
-    })
-    .eq("id", id);
+if (window.ContributorPicker) {
+  ContributorPicker.setup();
+  ContributorPicker.setValues(item.Contributors || []);
 
-  if (error) {
-    console.error(error);
-    note.textContent = error.message || "Unable to update status.";
-    return;
-  }
-
-  note.textContent = `Saved as ${status}. Refreshing...`;
-
-setTimeout(() => {
-  window.location.href = nextSubmissionUrl;
-}, 500);
+  if (window.SeriesPicker) {
+  SeriesPicker.setup("seriesNameInput");
 }
 
-async function moveBookCoverToLive(
-  item,
-  bookId
-) {
-  if (!item.cover_path) {
-    return null;
-  }
+}
+}
+}
 
-  const pendingPath =
-    String(item.cover_path).trim();
+function enforceCheckboxLimits() {
+  document.querySelectorAll('input[type="checkbox"][data-max]').forEach(input => {
+    input.addEventListener("change", event => {
+      const max = Number(event.target.dataset.max || 0);
+      if (!max) return;
 
-  const extension =
-    pendingPath.includes(".")
-      ? pendingPath
-          .split(".")
-          .pop()
-          .toLowerCase()
-      : "jpg";
+      const name = event.target.name;
+      const checked = Array.from(document.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`));
 
-  const livePath =
-    `${bookId}.${extension}`;
-
-  const {
-    data: coverBlob,
-    error: downloadError
-  } = await supabaseClient.storage
-    .from("book-submissions")
-    .download(pendingPath);
-
-  if (downloadError) {
-    throw downloadError;
-  }
-
-  const {
-    error: uploadError
-  } = await supabaseClient.storage
-    .from("covers")
-    .upload(
-      livePath,
-      coverBlob,
-      {
-        cacheControl: "3600",
-        upsert: true,
-        contentType:
-          coverBlob.type ||
-          "image/jpeg"
+      if (checked.length > max) {
+        event.target.checked = false;
+        alert(`You can select up to ${max}.`);
       }
-    );
-
-  if (uploadError) {
-    throw uploadError;
-  }
-
-  return {
-    pendingPath,
-    livePath
-  };
+    });
+  });
 }
 
-function arrayToText(value) {
-  if (Array.isArray(value)) {
-    return value
-      .map(item =>
-        String(item || "").trim()
-      )
-      .filter(Boolean)
-      .join(", ");
-  }
-
-  return String(value || "").trim();
+function startBookEdit() {
+  editMode = true;
+  renderBook(currentBook);
 }
 
-function buildLiveBookPayload(
-  item,
-  bookId,
-  coverPath
-) {
-  const retailerLinks =
-    item.retailer_links || {};
-
-  const audio =
-    item.audio || {};
-
-  const kids =
-    item.kids || {};
-
-  return {
-    "Timestamp":
-      item.submitted_at ||
-      item.created_at ||
-      new Date().toISOString(),
-
-    "SUBMISSION_ID":
-      item.submission_id,
-
-    "Book_ID":
-      bookId,
-
-    "Author_ID":
-      item.author_id,
-
-    "Author_Name":
-      linkedAuthor?.AUTHOR_NAME ||
-      item.author_name,
-
-    "Email_Address":
-      item.email ||
-      linkedAuthor?.EMAIL_ADDRESS ||
-      "",
-
-    "Title":
-      item.title,
-
-    "Description":
-      item.description || "",
-
-    "Release/Expected_Release_Date":
-      item.release_date || null,
-
-    "Genre":
-      item.primary_genre || "",
-
-    "Sub_Genres":
-      arrayToText(
-        item.sub_genres
-      ),
-
-    "Vibes":
-      arrayToText(
-        item.vibes
-      ),
-
-    "Spice_Level":
-      item.spice_level || "",
-
-    "Age_Range":
-      item.age_range || "",
-
-    "Representation":
-      arrayToText(
-        item.representation
-      ),
-
-    "Available_Formats":
-      arrayToText(
-        item.available_formats
-      ),
-
-    "Website_Link":
-      retailerLinks.website || "",
-
-    "Amazon_Link":
-      retailerLinks.amazon || "",
-
-    "BN_Link":
-      retailerLinks.barnes_noble || "",
-
-    "Bookfunnel_Link":
-      retailerLinks.bookfunnel || "",
-
-    "Kobo_Link":
-      retailerLinks.kobo || "",
-
-    "Apple_Books_Link":
-      retailerLinks.apple_books || "",
-
-    "Other_Link":
-      retailerLinks.other || "",
-
-    "Word_Count":
-      item.word_count || null,
-
-    "Page_Count":
-      item.page_count || null,
-
-    "Has_Audiobook":
-      Boolean(
-        audio.has_audiobook
-      ),
-
-    "Audiobook_Narrators":
-      audio.narrators || "",
-
-    "Audiobook_Link":
-      audio.link || "",
-
-    "Kids_Category":
-      kids.category || "",
-
-    "Contributors":
-      Array.isArray(
-        item.co_authors
-      )
-        ? item.co_authors
-        : [],
-
-    "Series_Name":
-      item.series_name || "",
-
-    "Series_Number":
-      item.series_number || null,
-
-    "Book_Cover":
-      item.legacy_cover_url || "",
-
-    "CoverImagePath":
-      coverPath || null,
-
-    "CoverImageStatus":
-      coverPath
-        ? "Complete"
-        : "",
-
-    "CoverImageLastUpdated":
-      coverPath
-        ? new Date().toISOString()
-        : null,
-
-    "CoverImageError":
-      "",
-
-    "Author_Status":
-      "Approved",
-
-    "Book_Approval":
-      "Approved",
-
-    "Is_Live":
-      "Yes",
-
-    "admin_notes":
-      document
-        .getElementById(
-          "adminNotes"
-        )
-        .value,
-
-    "Last_Updated":
-      new Date().toISOString()
-  };
+function cancelBookEdit() {
+  editMode = false;
+  renderBook(currentBook);
 }
 
-async function approveBookSubmission(id) {
-  if (!currentBookSubmission) {
-    return;
-  }
-
-  if (
-    !linkedAuthor ||
-    String(
-      linkedAuthor.APPROVAL || ""
-    )
-      .trim()
-      .toLowerCase() !==
-      "approved"
-  ) {
-    alert(
-      "This book must be connected to an approved author before it can be approved."
-    );
-
-    return;
-  }
-
-  if (
-    !currentBookSubmission.author_id
-  ) {
-    alert(
-      "This submission is missing its Author ID."
-    );
-
-    return;
-  }
-
-  if (
-    !confirm(
-      "Approve this book and publish it to the live library?"
-    )
-  ) {
-    return;
-  }
-
-  const note =
-    document.getElementById(
-      "actionNote"
-    );
-
-    const approveButton =
-  document.querySelector(
-    ".approve-btn"
-  );
-
-if (approveButton) {
-  approveButton.disabled = true;
-  approveButton.textContent =
-    "Approving...";
+function resetBookEdit() {
+  renderBook(currentBook);
 }
 
-  const adminNotes =
-    document.getElementById(
-      "adminNotes"
-    ).value;
+function normalizeForCompare(value) {
+  if (value === null || value === undefined) return "";
+  if (Array.isArray(value)) return value.join(", ");
+  return String(value).trim();
+}
 
-  let coverMove = null;
+function getChangedFields(oldBook, payload) {
+  const changes = {};
+
+  Object.entries(payload).forEach(([key, newValue]) => {
+    const oldValue = oldBook[key];
+
+    if (normalizeForCompare(oldValue) !== normalizeForCompare(newValue)) {
+      changes[key] = {
+        old: oldValue ?? "",
+        new: newValue ?? ""
+      };
+    }
+  });
+
+  return changes;
+}
+
+async function getAmazonAsin(amazonUrl) {
+  const url = String(amazonUrl || "").trim();
+
+  if (!url) {
+    return {
+      asin: "",
+      warning: ""
+    };
+  }
 
   try {
-    note.textContent =
-      "Checking for an existing book...";
-
     const {
-      data: existingBooks,
-      error: existingError
-    } = await supabaseClient
-      .from("books")
-      .select(`
-        id,
-        Book_ID,
-        CoverImagePath
-      `)
-      .eq(
-        "SUBMISSION_ID",
-        currentBookSubmission
-          .submission_id
-      )
-      .limit(1);
+      data,
+      error
+    } = await supabaseClient.functions.invoke(
+      "normalize-amazon-link",
+      {
+        body: {
+          url
+        }
+      }
+    );
 
-    if (existingError) {
-      throw existingError;
+    if (error) {
+      console.warn(
+        "Amazon ASIN extraction failed:",
+        error
+      );
+
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The Amazon link was preserved."
+      };
     }
-
-    const existingBook =
-      existingBooks?.[0] || null;
-
-    const bookId =
-      existingBook?.Book_ID ||
-      currentBookSubmission
-        .approved_book_id ||
-      generateId("BLKB");
-
-    let liveCoverPath =
-      existingBook?.CoverImagePath ||
-      null;
 
     if (
-      currentBookSubmission.cover_path
+      !data?.success ||
+      !data?.asin
     ) {
-      note.textContent =
-        "Moving cover to the live library...";
-
-      coverMove =
-        await moveBookCoverToLive(
-          currentBookSubmission,
-          bookId
-        );
-
-      liveCoverPath =
-        coverMove.livePath;
-    }
-
-    note.textContent =
-      "Creating live book record...";
-
-    const payload =
-      buildLiveBookPayload(
-        currentBookSubmission,
-        bookId,
-        liveCoverPath
+      console.warn(
+        "Amazon ASIN was not returned:",
+        data
       );
 
-    if (existingBook) {
-      const {
-        error: updateError
-      } = await supabaseClient
-        .from("books")
-        .update(payload)
-        .eq(
-          "id",
-          existingBook.id
-        );
-
-      if (updateError) {
-        throw updateError;
-      }
-
-    } else {
-      const {
-        error: insertError
-      } = await supabaseClient
-        .from("books")
-        .insert(payload);
-
-      if (insertError) {
-        throw insertError;
-      }
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The Amazon link was preserved."
+      };
     }
 
-    note.textContent =
-      "Updating submission status...";
+    return {
+      asin: String(data.asin)
+        .trim()
+        .toUpperCase(),
 
-    const {
-      error: submissionError
-    } = await supabaseClient
-      .from("book_submissions")
-      .update({
-        submission_status:
-          "approved",
-
-        admin_notes:
-          adminNotes,
-
-        reviewed_at:
-          new Date().toISOString(),
-
-        approved_book_id:
-          bookId
-      })
-      .eq(
-        "id",
-        id
-      );
-
-    if (submissionError) {
-      throw submissionError;
-    }
-
-    if (coverMove?.pendingPath) {
-      const {
-        error: cleanupError
-      } = await supabaseClient.storage
-        .from("book-submissions")
-        .remove([
-          coverMove.pendingPath
-        ]);
-
-      if (cleanupError) {
-        console.warn(
-          "Book approved, but pending cover cleanup failed:",
-          cleanupError
-        );
-      }
-    }
-
-    note.textContent =
-      `Book approved and published as ${bookId}.`;
-
-    setTimeout(() => {
-  window.location.href = nextSubmissionUrl;
-}, 500);
+      warning: ""
+    };
 
   } catch (error) {
-    console.error(error);
+    console.warn(
+      "Amazon ASIN extraction failed:",
+      error
+    );
 
-    note.textContent =
-      error.message ||
-      "Unable to approve and publish this book.";
-
-      if (approveButton) {
-  approveButton.disabled = false;
-  approveButton.textContent =
-    "Approve";
-
+    return {
+      asin: "",
+      warning:
+        "Amazon ASIN could not be identified. The Amazon link was preserved."
+    };
   }
 }
-  
+
+async function saveBookChanges() {
+
+  const saveBtn = document.querySelector('.book-action-panel .mm-btn');
+
+  saveBtn.disabled = true;
+  saveBtn.textContent = "Saving...";
+
+  const root = document.getElementById("submissionContent");
+
+const payload = BookFormData.readBook(root);
+
+let amazonWarning = "";
+
+const oldAmazonLink =
+  String(
+    currentBook.Amazon_Link || ""
+  ).trim();
+
+const newAmazonLink =
+  String(
+    payload.Amazon_Link || ""
+  ).trim();
+
+const amazonChanged =
+  oldAmazonLink !== newAmazonLink;
+
+let amazonAsin =
+  String(
+    currentBook.Amazon_ASIN || ""
+  ).trim();
+
+  /*
+ * Recalculate when:
+ * 1. the Amazon link changed, OR
+ * 2. this is a legacy book with an Amazon link
+ *    but no ASIN yet.
+ */
+if (
+  newAmazonLink &&
+  (
+    amazonChanged ||
+    !amazonAsin
+  )
+) {
+  saveBtn.textContent =
+    "Checking Amazon...";
+
+  const amazonResult =
+    await getAmazonAsin(
+      newAmazonLink
+    );
+
+  amazonAsin =
+    amazonResult.asin;
+
+  amazonWarning =
+    amazonResult.warning;
+}
+
+/*
+ * If Amazon was removed entirely,
+ * remove the ASIN too.
+ */
+if (!newAmazonLink) {
+  amazonAsin = "";
+}
+
+/*
+ * Never keep the old product ASIN when
+ * the Amazon link points somewhere new.
+ */
+if (
+  amazonChanged &&
+  newAmazonLink &&
+  !amazonAsin
+) {
+  amazonAsin = "";
+}
+
+payload.Amazon_ASIN =
+  amazonAsin || null;
+
+const replacementCover = root.querySelector("#replacementCover")?.files?.[0];
+
+let oldCoverPath = null;
+
+if (replacementCover) {
+  oldCoverPath = currentBook.CoverImagePath || null;
+
+  const newCoverPath = await uploadReplacementCover(replacementCover, currentBook);
+  payload.CoverImagePath = newCoverPath;
+}
+
+  payload.Last_Updated = new Date().toISOString();
+
+  Object.keys(payload).forEach(key => {
+  if (payload[key] === undefined) {
+    delete payload[key];
+  }
+});
+
+const changes = getChangedFields(currentBook, payload);
+
+  const { error } = await supabaseClient
+    .from("books")
+    .update(payload)
+    .eq("Book_ID", currentBook.Book_ID);
+
+  if (error) {
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Save Changes";
+
+    alert(error.message);
+
+    return;
+  }
+
+  if (oldCoverPath && payload.CoverImagePath && oldCoverPath !== payload.CoverImagePath) {
+  await deleteOldCover(oldCoverPath);
+}
+
+const { data: userData } = await supabaseClient.auth.getUser();
+const user = userData?.user;
+
+const { error: historyError } = await supabaseClient
+  .from("book_edit_history")
+  .insert({
+    book_id: currentBook.Book_ID,
+    edited_by: user?.id || null,
+    edited_by_email: user?.email || "",
+    change_type: replacementCover ? "book_update_with_cover" : "book_update",
+    changes
+  });
+
+if (historyError) {
+  console.error("Audit log failed:", historyError);
+}
+
+  const { data: updatedBook, error: fetchError } = await supabaseClient
+  .from("books")
+  .select("*")
+  .eq("Book_ID", currentBook.Book_ID)
+  .single();
+
+if (fetchError) {
+  alert(fetchError.message);
+  return;
+}
+
+currentBook = updatedBook;
+
+editMode = false;
+
+renderBook(currentBook);
+
+showSaveSuccess(amazonWarning);
+
+}
+
+function showSaveSuccess(warning = "") {
+
+  const note =
+    document.createElement("div");
+
+  note.className =
+    "save-toast";
+
+  note.textContent =
+    warning
+      ? `✓ Changes saved. ${warning}`
+      : "✓ Changes saved successfully";
+
+  document.body.appendChild(note);
+
+  requestAnimationFrame(() => note.classList.add("show"));
+
+  setTimeout(() => {
+
+    note.classList.remove("show");
+
+    setTimeout(() => note.remove(), 250);
+
+  }, 2200);
+
+}
+
+async function loadBookEditHistory(bookId) {
+  const { data, error } = await supabaseClient
+    .from("book_edit_history")
+    .select("*")
+    .eq("book_id", bookId)
+    .order("edited_at", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Unable to load edit history:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
+function renderEditHistory(history = []) {
+  if (!history.length) {
+    return `<p class="mm-muted">No edit history yet.</p>`;
+  }
+
+  return history.map(entry => `
+    <div class="book-status-item" style="margin-bottom:.75rem;">
+      <span class="book-status-label">
+        ${escapeHtml(formatDate(entry.edited_at))} · ${escapeHtml(entry.edited_by_email || "Unknown editor")}
+      </span>
+
+      ${Object.entries(entry.changes || {}).map(([field, change]) => `
+        <div class="detail-value" style="margin-top:.45rem;">
+          <strong>${escapeHtml(field)}</strong><br>
+          <span class="mm-muted">Old:</span> ${escapeHtml(change.old || "—")}<br>
+          <span class="mm-muted">New:</span> ${escapeHtml(change.new || "—")}
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
 }
 
     initSubmissionPage();
