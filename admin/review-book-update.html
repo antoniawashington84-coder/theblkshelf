@@ -1376,6 +1376,119 @@ async function saveBookUpdateStatus(status) {
   }, 700);
 }
 
+async function getAmazonAsin(amazonUrl) {
+  const url = String(amazonUrl || "").trim();
+
+  if (!url) {
+    return {
+      asin: "",
+      warning: ""
+    };
+  }
+
+  try {
+    const {
+      data,
+      error
+    } = await supabaseClient.functions.invoke(
+      "normalize-amazon-link",
+      {
+        body: {
+          url
+        }
+      }
+    );
+
+    if (error) {
+      console.warn(
+        "Amazon ASIN extraction failed:",
+        error
+      );
+
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The submitted retailer link was preserved."
+      };
+    }
+
+    if (
+      !data?.success ||
+      !data?.asin
+    ) {
+      console.warn(
+        "Amazon ASIN was not returned:",
+        data
+      );
+
+      return {
+        asin: "",
+        warning:
+          "Amazon ASIN could not be identified. The submitted retailer link was preserved."
+      };
+    }
+
+    return {
+      asin: String(data.asin)
+        .trim()
+        .toUpperCase(),
+
+      warning: ""
+    };
+
+  } catch (error) {
+    console.warn(
+      "Amazon ASIN extraction failed:",
+      error
+    );
+
+    return {
+      asin: "",
+      warning:
+        "Amazon ASIN could not be identified. The submitted retailer link was preserved."
+    };
+  }
+}
+
+function getRequestedAmazonLink() {
+  const proposed =
+    currentUpdateRequest?.proposed_data || {};
+
+  const proposedRetailers =
+    proposed.retailer_links || {};
+
+  /*
+   * If the update request contains an Amazon value,
+   * use it. Otherwise retain the live book's link.
+   */
+  if (
+    Object.prototype.hasOwnProperty.call(
+      proposedRetailers,
+      "amazon"
+    )
+  ) {
+    return String(
+      proposedRetailers.amazon || ""
+    ).trim();
+  }
+
+  return String(
+    currentLiveBook?.Amazon_Link || ""
+  ).trim();
+}
+
+function amazonLinkChanged() {
+  const current =
+    String(
+      currentLiveBook?.Amazon_Link || ""
+    ).trim();
+
+  const requested =
+    getRequestedAmazonLink();
+
+  return current !== requested;
+}
+
 async function approveBookUpdate() {
   if (
     !currentUpdateRequest ||
@@ -1425,6 +1538,68 @@ async function approveBookUpdate() {
     "Applying approved changes...";
 
   try {
+
+    let amazonAsin =
+  String(
+    currentLiveBook.Amazon_ASIN || ""
+  ).trim();
+
+let amazonWarning = "";
+
+const requestedAmazonUrl =
+  getRequestedAmazonLink();
+
+const amazonChanged =
+  amazonLinkChanged();
+
+/*
+ * Recalculate the ASIN when:
+ * 1. the Amazon link changed, OR
+ * 2. this legacy book has an Amazon link but no ASIN yet.
+ */
+if (
+  requestedAmazonUrl &&
+  (
+    amazonChanged ||
+    !amazonAsin
+  )
+) {
+  note.textContent =
+    "Identifying Amazon product...";
+
+  const amazonResult =
+    await getAmazonAsin(
+      requestedAmazonUrl
+    );
+
+  amazonAsin =
+    amazonResult.asin;
+
+  amazonWarning =
+    amazonResult.warning;
+}
+
+/*
+ * If the Amazon link was removed entirely,
+ * the ASIN must also be removed.
+ */
+if (!requestedAmazonUrl) {
+  amazonAsin = "";
+}
+
+/*
+ * If the Amazon link changed but extraction failed,
+ * NEVER retain the old ASIN.
+ */
+if (
+  amazonChanged &&
+  requestedAmazonUrl &&
+  !amazonAsin
+) {
+  amazonAsin = "";
+}
+
+
     const coverResult =
       await moveRequestedCoverToLiveStorage(
         currentUpdateRequest,
@@ -1463,6 +1638,29 @@ async function approveBookUpdate() {
       throw approvalError;
     }
 
+    const {
+  error: asinUpdateError
+} = await supabaseClient
+  .from("books")
+  .update({
+    Amazon_ASIN:
+      amazonAsin || null
+  })
+  .eq(
+    "Book_ID",
+    currentLiveBook.Book_ID
+  );
+
+if (asinUpdateError) {
+  console.error(
+    "Book update succeeded, but Amazon ASIN update failed:",
+    asinUpdateError
+  );
+
+  amazonWarning =
+    "The book update was applied, but the Amazon ASIN could not be updated.";
+}
+
     /*
       The database is now pointing to the new cover.
       Only now is it safe to delete the old cover.
@@ -1485,13 +1683,18 @@ async function approveBookUpdate() {
       );
     }
 
-    note.textContent =
-      "Book update approved and applied.";
+    if (amazonWarning) {
+  note.textContent =
+    `Book update approved and applied. ${amazonWarning}`;
+} else {
+  note.textContent =
+    "Book update approved and applied.";
+}
 
-    setTimeout(() => {
-      window.location.href =
-        "review-queue.html";
-    }, 800);
+setTimeout(() => {
+  window.location.href =
+    "review-queue.html";
+}, amazonWarning ? 1600 : 800);
 
   } catch (error) {
     console.error(error);
