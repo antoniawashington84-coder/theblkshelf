@@ -317,6 +317,7 @@
 
     let currentUpdateRequest = null;
 let currentLiveBook = null;
+let nextUpdateRequestId = null;
 
   function escapeHtml(value) {
     return String(value ?? "")
@@ -742,6 +743,9 @@ function valuesMatch(
         ? data[index + 1]
         : null;
 
+        nextUpdateRequestId =
+  next?.id || null;
+
     prevBtn.disabled =
       !previous;
 
@@ -766,6 +770,20 @@ function valuesMatch(
       };
     }
   }
+
+  function goToNextUpdateRequest() {
+  if (nextUpdateRequestId) {
+    window.location.href =
+      `review-book-update.html?id=${encodeURIComponent(
+        nextUpdateRequestId
+      )}`;
+
+    return;
+  }
+
+  window.location.href =
+    "review-queue.html";
+}
 
   async function initBookUpdateReview() {
     await loadMateMasieShell(
@@ -1371,9 +1389,8 @@ async function saveBookUpdateStatus(status) {
       : "Update request denied.";
 
   setTimeout(() => {
-    window.location.href =
-      "review-queue.html";
-  }, 700);
+  goToNextUpdateRequest();
+}, 700);
 }
 
 async function getAmazonAsin(amazonUrl) {
@@ -1692,8 +1709,7 @@ if (asinUpdateError) {
 }
 
 setTimeout(() => {
-  window.location.href =
-    "review-queue.html";
+  goToNextUpdateRequest();
 }, amazonWarning ? 1600 : 800);
 
   } catch (error) {
