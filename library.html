@@ -742,6 +742,13 @@
     </div>
   </details>
 
+  <details class="filter-group" id="format-filter-group">
+  <summary>Format</summary>
+  <div class="filter-content">
+    <div class="chip-row" id="format-filters"></div>
+  </div>
+</details>
+
   <details class="filter-group" id="length-filter-group">
   <summary>Length</summary>
   <div class="filter-content">
@@ -858,8 +865,9 @@ searchType: "author",
   ageRanges: new Set(),
   spiceLevels: new Set(),
   representations: new Set(),
-lengths: new Set(),
-rankingFilter: new Set(),
+  formats: new Set(),
+  lengths: new Set(),
+  rankingFilter: new Set(),
   sortBy: "default"
 };
 
@@ -868,6 +876,9 @@ rankingFilter: new Set(),
     const booksRows = await supabaseFetch(
   'public_library_books?select=*'
 );
+
+console.log("First library row:", booksRows[0]);
+console.log("Available_Formats:", booksRows[0]?.Available_Formats);
 
     const rankingRows = await supabaseFetch(
       'public_weekly_rankings?select=*&order=Week_Key.desc,Rank.asc'
@@ -986,6 +997,13 @@ if (!featuredAuthors.length) {
   getUniqueFlattenedValues(allBooks, "representation"),
   "representation"
 );
+
+buildChipGroup(
+  "format-filters",
+  getUniqueFlattenedValues(allBooks, "availableFormats"),
+  "format"
+);
+
     buildChipGroup(
     "length-filters",
     getUniqueValues(allBooks, "lengthCategory"),
@@ -1242,6 +1260,13 @@ function applyInitialUrlFilters() {
 
   applyUrlFilter("representation", state.representations, "representation-filters", "representation-filter-group");
 
+  applyUrlFilter(
+  "format",
+  state.formats,
+  "format-filters",
+  "format-filter-group"
+);
+
   applyRankingUrlFilter();
 }
 
@@ -1286,8 +1311,8 @@ document.querySelectorAll('input[name="search-type"]').forEach(radio => {
       if (type === "age") toggleSetValue(state.ageRanges, value);
       if (type === "spice") toggleSetValue(state.spiceLevels, value);
       if (type === "representation") toggleSetValue(state.representations, value);
-      if (type === "length")
-    toggleSetValue(state.lengths, value);
+      if (type === "format") toggleSetValue(state.formats, value);
+      if (type === "length") toggleSetValue(state.lengths, value);
     }
 
     const rankingFilterChip = e.target.closest(".ranking-filter-chip");
@@ -1314,6 +1339,7 @@ state.vibes.clear();
 state.ageRanges.clear();
 state.spiceLevels.clear();
 state.representations.clear();
+state.formats.clear();
 state.rankingFilter.clear();
 state.sortBy = "default";
 state.searchType = "author";
@@ -1337,9 +1363,13 @@ applyFilters();
     const subGenres = Array.isArray(book.subGenres) ? book.subGenres.map(normalizeText) : [];
     const ageRange = normalizeText(book.ageRange);
     const spiceLevel = normalizeText(book.spiceLevel);
-    const representations = Array.isArray(book.representation)
-  ? book.representation.map(normalizeText).filter(Boolean)
-  : splitCommaList(book.representation).map(normalizeText);
+    const formats = Array.isArray(book.availableFormats)
+  ? book.availableFormats.map(normalizeText).filter(Boolean)
+  : splitCommaList(book.availableFormats).map(normalizeText);
+
+const matchesFormat =
+  state.formats.size === 0 ||
+  formats.some(format => state.formats.has(format));
 
 const lengthCategory = normalizeText(book.lengthCategory);
 
@@ -1402,14 +1432,15 @@ const matchesRankingFilter =
   (state.rankingFilter.has("featured-authors") && isFeaturedAuthor);
 
     return matchesSearch &&
-       matchesGenre &&
-       matchesSubGenre &&
-       matchesVibe &&
-       matchesAge &&
-       matchesSpice &&
-       matchesRepresentation &&
-       matchesLength &&
-       matchesRankingFilter;
+   matchesGenre &&
+   matchesSubGenre &&
+   matchesVibe &&
+   matchesAge &&
+   matchesSpice &&
+   matchesRepresentation &&
+   matchesFormat &&
+   matchesLength &&
+   matchesRankingFilter;
   });
 
   if (state.authorQuery && state.sortBy === "default") {
