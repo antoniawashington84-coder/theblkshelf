@@ -4293,14 +4293,25 @@ preferencesToggle
   );
 
 
-blkSearch.scrollIntoView({
+await sleep(
+  100
+);
+
+
+const randomizerStage =
+  document.querySelector(
+    ".randomizer-stage"
+  );
+
+
+randomizerStage.scrollIntoView({
   behavior: "smooth",
-  block: "center"
+  block: "start"
 });
 
 
 await sleep(
-  450
+  500
 );
 
 
