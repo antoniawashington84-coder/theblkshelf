@@ -264,6 +264,8 @@
 
   <script>
     const SUPABASE_STORAGE_BASE = "https://njgprucvnayyiooiftaw.supabase.co/storage/v1/object/public";
+    const BLK_SHELF_API_URL =
+  "https://script.google.com/macros/s/AKfycbym5D02u8oDcYYchQ40wWQLSGrx1FTuqJcjElJnf7AaD7c3CyQS3C2Xy5qMQjxby6v1hQ/exec";
     let currentSubmission = null;
 let reviewList = [];
 let currentIndex = -1;
@@ -1082,6 +1084,53 @@ function getSelectedLegacyBookIds() {
   ).map(input => input.value);
 }
 
+async function addApprovedAuthorToMailerLite(
+  authorId
+) {
+
+  const response =
+    await fetch(
+      BLK_SHELF_API_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
+
+        body:
+          JSON.stringify({
+            action:
+              "add-approved-author-to-mailerlite",
+
+            authorId:
+              authorId
+          })
+      }
+    );
+
+
+  const result =
+    await response.json();
+
+
+  if (
+    !response.ok ||
+    !result.success
+  ) {
+
+    throw new Error(
+      result.error ||
+      "Unable to add author to MailerLite."
+    );
+
+  }
+
+
+  return result;
+}
+
 async function approveAuthorSubmission() {
   if (!currentSubmission) return;
 
@@ -1116,14 +1165,45 @@ await linkLegacyBooks(
 
 note.textContent = "Updating submission status...";
 
-await updateApprovedSubmission(authorId, adminNotes);
+await updateApprovedSubmission(
+  authorId,
+  adminNotes
+);
 
-    currentSubmission.submission_status = "approved";
-    currentSubmission.admin_notes = adminNotes;
-    currentSubmission.approved_author_id = authorId;
+note.textContent =
+  "Adding author to mailing list...";
 
-    note.textContent = `Author approved and linked to ${authorId}.`;
-    renderSubmission(currentSubmission);
+let mailerLiteWarning = "";
+
+try {
+  await addApprovedAuthorToMailerLite(
+    authorId
+  );
+} catch (mailerLiteError) {
+  console.warn(
+    "Author approved, but MailerLite signup failed:",
+    mailerLiteError
+  );
+
+  mailerLiteWarning =
+    " MailerLite signup failed and should be checked.";
+}
+
+currentSubmission.submission_status =
+  "approved";
+
+currentSubmission.admin_notes =
+  adminNotes;
+
+currentSubmission.approved_author_id =
+  authorId;
+
+note.textContent =
+  `Author approved and linked to ${authorId}.${mailerLiteWarning}`;
+
+renderSubmission(
+  currentSubmission
+);
 
   } catch (error) {
     console.error(error);
