@@ -13,7 +13,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   gap: 1.25rem;
-  margin-bottom: 2.25rem;
+  margin-bottom: 1rem;
   flex-wrap: nowrap;
 }
 
@@ -496,7 +496,7 @@ header {
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    margin-bottom: 1.4rem;
+    margin-bottom: 0.75rem;
   }
 
   .brand {
@@ -561,4 +561,49 @@ header {
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
+}
+
+/* Header promotional banner */
+
+.header-promo-banner {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.header-promo-link {
+  display: block;
+  width: 100%;
+}
+
+.header-promo-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.header-promo-desktop {
+  display: block;
+}
+
+.header-promo-mobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .header-promo-desktop {
+    display: none;
+  }
+
+  .header-promo-mobile {
+    display: block;
+  }
+
+  .header-promo-banner {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
 }
