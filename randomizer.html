@@ -966,6 +966,45 @@
         .18s ease;
     }
 
+    .randomizer-status.loading {
+  color: var(--accent-light);
+  font-size: clamp(1rem, 2.5vw, 1.35rem);
+  font-weight: bold;
+  font-style: normal;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.loading-dots {
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+}
+
+.loading-dots::after {
+  content: "";
+  animation: diggingDots 1.1s steps(4, end) infinite;
+}
+
+@keyframes diggingDots {
+  0% {
+    content: "";
+  }
+
+  25% {
+    content: ".";
+  }
+
+  50% {
+    content: "..";
+  }
+
+  75%,
+  100% {
+    content: "...";
+  }
+}
+
 
     @keyframes statusFlash {
 
@@ -2680,6 +2719,148 @@ function sleep(milliseconds) {
 
 }
 
+function preloadImage(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+
+    img.onload = async () => {
+      /*
+        decode() makes sure the browser has
+        actually decoded the image and can
+        paint it immediately.
+      */
+      try {
+        if (img.decode) {
+          await img.decode();
+        }
+      } catch (_) {}
+
+      resolve(true);
+    };
+
+    img.onerror = () => {
+      resolve(false);
+    };
+
+    img.src = url;
+  });
+}
+
+
+async function prepareAnimationBooks(
+  eligibleBooks,
+  winningBook
+) {
+  const candidates =
+    shuffleArray(
+      eligibleBooks.filter(
+        book =>
+          book.bookId !==
+          winningBook.bookId
+      )
+    )
+    .slice(
+      0,
+      ANIMATION_POOL_SIZE - 1
+    );
+
+  const pool = [
+    winningBook,
+    ...candidates
+  ];
+
+  animationBooks = [];
+
+  /*
+    Start loading all selected covers,
+    but add each book to the usable pool
+    as soon as its image is ready.
+  */
+  pool.forEach(book => {
+
+    const img =
+      new Image();
+
+    img.onload =
+      async () => {
+
+        try {
+
+          if (img.decode) {
+            await img.decode();
+          }
+
+        } catch (_) {}
+
+        if (
+          !animationBooks.some(
+            item =>
+              item.bookId ===
+              book.bookId
+          )
+        ) {
+
+          animationBooks.push(
+            book
+          );
+
+        }
+
+      };
+
+    img.src =
+      book.cover;
+
+  });
+
+
+  /*
+    Don't hold up the show waiting
+    for every single cover.
+  */
+  const startedAt =
+    Date.now();
+
+  const MAX_WAIT =
+    850;
+
+  const MIN_READY =
+    6;
+
+
+  while (
+    animationBooks.length <
+      MIN_READY &&
+    Date.now() -
+      startedAt <
+      MAX_WAIT
+  ) {
+
+    await sleep(
+      50
+    );
+
+  }
+
+
+  /*
+    Fall back gracefully if the
+    connection is especially slow.
+  */
+  if (!animationBooks.length) {
+
+    animationBooks =
+      pool.slice(
+        0,
+        Math.min(
+          4,
+          pool.length
+        )
+      );
+
+  }
+}
+
 
 
 const shuffleMessages = [
@@ -2723,8 +2904,15 @@ const finalVerdicts = [
 
 
 let books = [];
-
 let lastBookId = null;
+
+/*
+  Covers that are fully loaded and decoded
+  before the animation begins.
+*/
+let animationBooks = [];
+
+const ANIMATION_POOL_SIZE = 16;
 
 const preferences = {
 
@@ -3536,16 +3724,12 @@ function buildRestingSearch() {
 
 function throwBook() {
 
-  const eligibleBooks =
-  getEligibleBooks();
-
-
-const book =
-  randomItem(
-    eligibleBooks.length
-      ? eligibleBooks
-      : books
-  );
+  const book =
+    randomItem(
+      animationBooks.length
+        ? animationBooks
+        : books
+    );
 
 
   const direction =
@@ -3622,16 +3806,12 @@ function rejectBook(
   message
 ) {
 
-  const eligibleBooks =
-  getEligibleBooks();
-
-
-const book =
-  randomItem(
-    eligibleBooks.length
-      ? eligibleBooks
-      : books
-  );
+  const book =
+    randomItem(
+      animationBooks.length
+        ? animationBooks
+        : books
+    );
 
 
   const card =
@@ -3818,6 +3998,22 @@ function updateStatus(message) {
     "flash"
   );
 
+}
+
+function showDiggingStatus() {
+  statusEl.classList.add(
+    "loading"
+  );
+
+  statusEl.innerHTML =
+    `Digging through the shelf<span class="loading-dots"></span>`;
+}
+
+
+function clearDiggingStatus() {
+  statusEl.classList.remove(
+    "loading"
+  );
 }
 
 
@@ -4339,6 +4535,26 @@ const winningBook =
 
 }
 
+const eligibleBooks =
+  getEligibleBooks();
+
+/*
+  Make the preload feel like part
+  of The Shelf's search.
+*/
+showDiggingStatus();
+
+await prepareAnimationBooks(
+  eligibleBooks,
+  winningBook
+);
+
+clearDiggingStatus();
+
+updateStatus(
+  getPreferenceReaction()
+);
+
     const prefersReducedMotion =
   window.matchMedia(
     "(prefers-reduced-motion: reduce)"
@@ -4440,7 +4656,7 @@ if (
           throwBook();
 
           if (
-            Math.random() > .55
+            Math.random() > .72
           ) {
 
             setTimeout(
@@ -4453,7 +4669,7 @@ if (
         }
 
       },
-      145
+      190
     );
 
 
