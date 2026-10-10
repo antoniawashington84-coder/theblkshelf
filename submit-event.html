@@ -873,15 +873,16 @@ if (flyerFile) {
         payload
       );
 
-      const {
-  data: submittedEvent,
-  error: insertError
-} =
+      
+const submissionId = crypto.randomUUID();
+
+const { error: insertError } =
   await supabaseClient
     .from("event_submissions")
-    .insert(payload)
-    .select("id")
-    .single();
+    .insert({
+      ...payload,
+      id: submissionId
+    });
 
 if (insertError) {
   throw insertError;
@@ -889,10 +890,9 @@ if (insertError) {
 
 window.location.href =
   `submission-received.html` +
-  `?id=${encodeURIComponent(
-    submittedEvent.id
-  )}` +
+  `?id=${encodeURIComponent(submissionId)}` +
   `&type=event`;
+
 
     } catch (error) {
 
