@@ -793,24 +793,20 @@ const additionalPenNameCheckbox =
     "confirmAdditionalPenName"
   );
 
-const { data: existingSubmission, error: duplicateError } =
-  await supabaseClient
-    .from("author_submissions")
-    .select(
-      "submission_id, author_name, pen_name, submission_status"
-    )
-    .eq("email", email)
-    .in("submission_status", [
-      "pending",
-      "needs_info",
-      "approved"
-    ])
-    .limit(1);
+
+const {
+  data: hasExistingSubmission,
+  error: duplicateError
+} = await supabaseClient
+  .rpc("check_existing_author_submission", {
+    p_email: email
+  });
 
 if (duplicateError) throw duplicateError;
 
+
 if (
-  existingSubmission.length &&
+  hasExistingSubmission &&
   !additionalPenNameCheckbox.checked
 ) {
   additionalPenNameBox.style.display =
@@ -849,7 +845,7 @@ submission_source:
   "blk_shelf_author_form",
 
 is_additional_pen_name:
-  existingSubmission.length > 0 &&
+  hasExistingSubmission &&
   additionalPenNameCheckbox.checked,
 
 has_previous_books:
