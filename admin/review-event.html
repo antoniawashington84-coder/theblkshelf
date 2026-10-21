@@ -358,7 +358,13 @@ Review the submission, compare it against The BLK Shelf standards, then approve,
   </a>
 </div>
 
-      <div id="reviewEventContent">
+      <div class="form-actions" id="editEventToolbar" style="margin:0 0 1rem;">
+    <button class="mm-btn mm-btn-secondary" id="editEventButton" type="button">Edit Event Information</button>
+    <button class="mm-btn" id="saveEventButton" type="button" hidden>Save Changes</button>
+    <button class="mm-btn mm-btn-secondary" id="cancelEditButton" type="button" hidden>Cancel Editing</button>
+    <span class="form-note" id="editEventNote" role="status"></span>
+  </div>
+  <div id="reviewEventContent">
 
   <section class="form-section">
     <h2>Event Basics</h2>
@@ -654,6 +660,24 @@ Review the submission, compare it against The BLK Shelf standards, then approve,
     </main>
   </div>
 
+
+<!-- Manual geocoding fallback: displayed only when automatic geocoding fails. -->
+<div id="manualGeocodeModal" role="dialog" aria-modal="true" aria-labelledby="manualGeocodeTitle" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.82);padding:20px;overflow-y:auto;align-items:center;justify-content:center;">
+  <div style="background:#241d17;color:#fff8f0;border:1px solid #d8a35d;border-radius:20px;padding:24px;width:min(100%,580px);margin:auto;box-shadow:0 18px 55px #000;">
+    <h2 id="manualGeocodeTitle" style="color:#f2c994;margin-top:0;">Manual Event Geocoding</h2>
+    <p>Automatic geocoding failed. Find the event location on Google Maps, then paste the copied coordinates below to continue approval.</p>
+    <p id="manualGeocodeAddress" style="overflow-wrap:anywhere;color:#e3d2c0;"></p>
+    <a id="manualGeocodeMapLink" class="mm-btn mm-btn-secondary" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-bottom:14px;">Find Coordinates on Google Maps ↗</a>
+    <p style="font-size:.9rem;">Search for the event address in Google Maps. Right-click the exact location on the map, then click the coordinates at the top of the menu to copy them. Paste both numbers below, including any negative signs. Verify the location before continuing.</p>
+    <div class="form-field" style="margin-bottom:16px;">
+      <label for="manualCoordinates">Latitude, Longitude</label>
+      <input class="field" id="manualCoordinates" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="28.5383, -81.3792" aria-describedby="manualGeocodeError">
+    </div>
+    <p id="manualGeocodeError" role="alert" style="color:#ffb4a8;min-height:1.3em;"></p>
+    <div class="form-actions"><button type="button" class="mm-btn" id="manualGeocodeContinue">Use Coordinates & Continue Approval</button><button type="button" class="mm-btn mm-btn-secondary" id="manualGeocodeCancel">Cancel Approval</button></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
 <script src="js/auth.js"></script>
@@ -662,6 +686,8 @@ Review the submission, compare it against The BLK Shelf standards, then approve,
 <script>
 
   let currentEvent = null;
+  let eventEditMode = false;
+  let eventEditBusy = false;
 
 const params = new URLSearchParams(location.search);
 let eventId = params.get("id");
@@ -890,6 +916,156 @@ function renderEventReview(event) {
     `
     : `<span class="form-note">No flyer</span>`;
 }
+
+// Only submitted event fields are editable; approval metadata and IDs are excluded.
+const editableEventFields = {
+  reviewEventName: "event_name", reviewEventTypes: "event_types",
+  reviewShortDescription: "short_description", reviewDescription: "description",
+  reviewStartDate: "start_date", reviewEndDate: "end_date",
+  reviewTimezone: "timezone", reviewStartTime: "start_time",
+  reviewEndTime: "end_time", reviewRepeatFrequency: "repeat_frequency",
+  reviewEventFormat: "event_format", reviewVenueName: "venue_name",
+  reviewStreetAddress: "street_address", reviewCity: "city",
+  reviewState: "state", reviewZipCode: "zip_code",
+  reviewCountry: "country", reviewVirtualLink: "virtual_link",
+  reviewFreeEvent: "free_event", reviewTicketPrice: "ticket_price",
+  reviewRegistrationLink: "registration_link", reviewEventWebsite: "event_website",
+  reviewVendorAvailable: "vendor_available", reviewVendorFee: "vendor_fee",
+  reviewVendorDeadline: "vendor_deadline", reviewVendorApplicationLink: "vendor_application_link",
+  reviewAudiences: "audiences", reviewGenres: "genres",
+  reviewEventFocus: "event_focus", reviewFeaturedAuthors: "featured_authors",
+  reviewFamilyFriendly: "family_friendly",
+  reviewAccessibilityNotes: "accessibility_notes", reviewParkingNotes: "parking_notes",
+  reviewOrganizerName: "organizer_name", reviewOrganizerEmail: "organizer_email",
+  reviewOrganizerWebsite: "organizer_website", reviewOrganizerSocial: "organizer_social"
+};
+const editBooleanFields = new Set(["free_event", "vendor_available", "family_friendly"]);
+const editDateFields = new Set(["start_date", "end_date", "vendor_deadline"]);
+const editTimeFields = new Set(["start_time", "end_time"]);
+const editLongFields = new Set(["description", "short_description", "accessibility_notes", "parking_notes"]);
+const editUrlFields = new Set(["virtual_link", "registration_link", "event_website", "vendor_application_link", "organizer_website"]);
+const editArrayFields = new Set(["event_types", "audiences", "genres", "event_focus"]);
+const editNumericFields = new Set(["ticket_price", "vendor_fee"]);
+
+function syncEventEditToolbar() {
+  const allowed = currentEvent && currentEvent.submission_status === "pending";
+  document.getElementById("editEventButton").hidden = !allowed || eventEditMode;
+  document.getElementById("saveEventButton").hidden = !eventEditMode;
+  document.getElementById("cancelEditButton").hidden = !eventEditMode;
+  for (const id of ["approveButton", "needsInfoButton", "denyButton"]) {
+    document.getElementById(id).disabled = eventEditMode || eventEditBusy;
+  }
+}
+
+function beginEventEdit() {
+  if (!currentEvent || currentEvent.submission_status !== "pending" || eventEditBusy) return;
+  eventEditMode = true;
+  document.getElementById("editEventNote").textContent = "Edit the fields below, then save before approving.";
+  for (const [id, field] of Object.entries(editableEventFields)) {
+    const host = document.getElementById(id);
+    const value = currentEvent[field];
+    let control;
+    if (editBooleanFields.has(field)) {
+      control = document.createElement("select");
+      for (const [label, v] of [["Yes", "true"], ["No", "false"]]) {
+        const option = new Option(label, v);
+        control.add(option);
+      }
+      control.value = String(value === true);
+    } else if (editLongFields.has(field) || editArrayFields.has(field)) {
+      control = document.createElement("textarea");
+      control.rows = editLongFields.has(field) ? 5 : 2;
+      control.value = Array.isArray(value) ? value.join(", ") : (value ?? "");
+    } else {
+      control = document.createElement("input");
+      control.type = editDateFields.has(field) ? "date" : editTimeFields.has(field) ? "time" : editUrlFields.has(field) ? "url" : editNumericFields.has(field) ? "number" : "text";
+      if (editNumericFields.has(field)) { control.step = "any"; control.min = "0"; }
+      control.value = value == null ? "" : String(value).slice(0, editDateFields.has(field) ? 10 : editTimeFields.has(field) ? 5 : undefined);
+    }
+    control.className = "field";
+    control.dataset.editField = field;
+    control.setAttribute("aria-label", host.closest(".review-field")?.querySelector(".review-label")?.textContent || field);
+    if (editArrayFields.has(field)) control.placeholder = "Separate multiple values with commas";
+    host.replaceChildren(control);
+  }
+  syncEventEditToolbar();
+}
+
+function cancelEventEdit() {
+  if (eventEditBusy) return;
+  eventEditMode = false;
+  renderEventReview(currentEvent);
+  document.getElementById("editEventNote").textContent = "Changes discarded.";
+  syncEventEditToolbar();
+}
+
+async function saveEventEdits() {
+  if (!eventEditMode || eventEditBusy) return;
+  const changes = {};
+  const history = {};
+  for (const [id, field] of Object.entries(editableEventFields)) {
+    const input = document.getElementById(id).querySelector("[data-edit-field]");
+    if (!input.checkValidity()) {
+      input.reportValidity();
+      return;
+    }
+    let value = input.value.trim();
+    if (editBooleanFields.has(field)) value = value === "true";
+    else if (editArrayFields.has(field)) {
+      // Preserve the existing array shape and prevent accidental scalar overwrites.
+      if (!Array.isArray(currentEvent[field]) && currentEvent[field] != null) {
+        document.getElementById("editEventNote").textContent = `Cannot edit ${field}: unexpected data type.`;
+        return;
+      }
+      value = value ? value.split(",").map(x => x.trim()).filter(Boolean) : [];
+    } else if (editNumericFields.has(field)) value = value === "" ? null : Number(value);
+    else value = value === "" ? null : value;
+    if (JSON.stringify(value) !== JSON.stringify(currentEvent[field] ?? (editArrayFields.has(field) ? [] : null))) {
+      changes[field] = value;
+      history[field] = { old: currentEvent[field] ?? null, new: value };
+    }
+  }
+  if (!Object.keys(changes).length) { cancelEventEdit(); return; }
+  if (!String(changes.event_name ?? currentEvent.event_name ?? "").trim()) {
+    document.getElementById("editEventNote").textContent = "Event name cannot be blank.";
+    return;
+  }
+  const start = changes.start_date ?? currentEvent.start_date;
+  const end = changes.end_date ?? currentEvent.end_date;
+  if (start && end && end < start) {
+    document.getElementById("editEventNote").textContent = "End date cannot precede start date.";
+    return;
+  }
+  eventEditBusy = true;
+  syncEventEditToolbar();
+  document.getElementById("saveEventButton").disabled = true;
+  const note = document.getElementById("editEventNote");
+  note.textContent = "Saving event changes…";
+  try {
+    const { data, error } = await supabaseClient.from("event_submissions")
+      .update(changes).eq("id", currentEvent.id).eq("submission_status", "pending")
+      .select("*").single();
+    if (error) throw error;
+    currentEvent = data;
+    eventEditMode = false;
+    renderEventReview(currentEvent);
+    document.getElementById("pageTitle").textContent = currentEvent.event_name || "Event Details";
+    await logEventHistory("edited", history);
+    await loadEventHistory();
+    note.textContent = "Event information saved.";
+  } catch (error) {
+    console.error("Event edit failed:", error);
+    note.textContent = `Save failed: ${error.message}`;
+  } finally {
+    eventEditBusy = false;
+    document.getElementById("saveEventButton").disabled = false;
+    syncEventEditToolbar();
+  }
+}
+
+document.getElementById("editEventButton").addEventListener("click", beginEventEdit);
+document.getElementById("saveEventButton").addEventListener("click", saveEventEdits);
+document.getElementById("cancelEditButton").addEventListener("click", cancelEventEdit);
 
 async function updateSubmissionStatus(status) {
 
@@ -1157,6 +1333,70 @@ const { data, error } =
   };
 }
 
+function requestManualCoordinates(event) {
+  return new Promise((resolve, reject) => {
+    const modal = document.getElementById("manualGeocodeModal");
+    const address = [event.street_address, event.city, event.state, event.zip_code, event.country]
+      .filter(v => String(v ?? "").trim()).join(", ");
+    document.getElementById("manualGeocodeAddress").textContent = address;
+    document.getElementById("manualGeocodeMapLink").href =
+      "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(address);
+    const coordinatesInput = document.getElementById("manualCoordinates");
+    const errorText = document.getElementById("manualGeocodeError");
+    coordinatesInput.value = "";
+    errorText.textContent = "";
+    modal.style.display = "flex";
+    const continueBtn = document.getElementById("manualGeocodeContinue");
+    const cancelBtn = document.getElementById("manualGeocodeCancel");
+    const cleanup = () => {
+      modal.style.display = "none";
+      continueBtn.removeEventListener("click", onContinue);
+      cancelBtn.removeEventListener("click", onCancel);
+      document.removeEventListener("keydown", onKeydown);
+    };
+    const onCancel = () => {
+      cleanup();
+      reject(new Error("Approval cancelled. No event was approved."));
+    };
+    const onKeydown = e => { if (e.key === "Escape") onCancel(); };
+    const onContinue = () => {
+      const raw = coordinatesInput.value.trim();
+      // Google Maps copies decimal latitude followed by decimal longitude.
+      const match = raw.match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*[,\s]\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+))$/);
+      if (!match) {
+        errorText.textContent = "Paste two decimal coordinates in latitude, longitude order (example: 28.5383, -81.3792).";
+        return;
+      }
+      const latitude = Number(match[1]);
+      const longitude = Number(match[2]);
+      if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+          latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+        errorText.textContent = "Latitude must be between -90 and 90; longitude must be between -180 and 180.";
+        return;
+      }
+      cleanup();
+      resolve({ latitude, longitude });
+    };
+    continueBtn.addEventListener("click", onContinue);
+    cancelBtn.addEventListener("click", onCancel);
+    document.addEventListener("keydown", onKeydown);
+    coordinatesInput.focus();
+  });
+}
+
+async function geocodeWithManualFallback(event) {
+  try {
+    return await geocodeEventAddress(event);
+  } catch (error) {
+    // Authentication and authorization failures must not be bypassed with manual entry.
+    if (/admin session|sign in again|administrator access|access could not be verified/i.test(error.message)) {
+      throw error;
+    }
+    console.warn("Automatic event geocoding failed; requesting manual coordinates:", error);
+    return await requestManualCoordinates(event);
+  }
+}
+
 async function approveSubmission() {
 
   if (!currentEvent) {
@@ -1166,9 +1406,6 @@ async function approveSubmission() {
   if (currentEvent.submission_status !== "pending") {
     throw new Error("This submission has already been reviewed.");
   }
-
-    const flyerResult =
-    await moveEventFlyerToApproved();
 
   const {
     data: { user },
@@ -1186,7 +1423,10 @@ async function approveSubmission() {
   const approvedAt = new Date().toISOString();
 
 const coordinates =
-  await geocodeEventAddress(currentEvent);
+  await geocodeWithManualFallback(currentEvent);
+
+const flyerResult =
+  await moveEventFlyerToApproved();
 
 const liveEvent = {
     event_name: currentEvent.event_name,
