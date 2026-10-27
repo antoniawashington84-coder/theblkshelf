@@ -50,6 +50,20 @@
     .status-pill.needs-info { background: rgba(36,69,111,.75); color: #b7d8ff; }
     .status-pill.denied { background: rgba(107,48,44,.75); color: #ffd1cb; }
 
+    .edit-input {width:100%;padding:.7rem;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(12,9,7,.85);color:var(--text);font:inherit;}
+    .edit-input:focus {outline:2px solid var(--accent-light);}
+    .edit-panel {margin-top:1rem;}
+    .edit-panel[hidden], .edit-actions[hidden] {display:none!important;}
+    .edit-panel .detail-field {min-width:0;}
+    .edit-panel .detail-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+    .edit-panel textarea {min-height:120px;resize:vertical;}
+    .edit-actions {display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;}
+    .edit-checkboxes {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;}
+    .edit-checkboxes label {display:flex;align-items:center;gap:.45rem;font-size:.9rem;}
+    .edit-panel details {margin-top:.8rem;}
+    .edit-panel details summary {cursor:pointer;color:var(--accent-light);padding:.7rem;}
+    @media(max-width:700px) {.edit-panel .detail-grid,.edit-checkboxes {grid-template-columns:1fr;}}
+
     .detail-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -235,6 +249,7 @@
   <script src="js/supabase.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/navigation.js"></script>
+<script src="js/components/book-form-options.js"></script>
 
   <script>
     const STORAGE_BASE =
@@ -244,6 +259,7 @@ let currentBookSubmission = null;
 let linkedAuthor = null;
 let linkedAuthorReviewUrl = "";
 let nextSubmissionUrl = "review-queue.html";
+let submissionEditBusy = false;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -1074,9 +1090,12 @@ ${
 
     <section>
       <div class="mm-card">
-        <h2>Book Details</h2>
-
-        <div class="detail-grid compact-grid">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;">
+          <h2>Book Details</h2>
+          ${["pending","needs_info"].includes(String(item.submission_status||"").toLowerCase()) ? '<button class="mm-btn mm-btn-secondary" type="button" id="editSubmissionBtn" onclick="startSubmissionEdit()"><i class="fa-solid fa-pen"></i> Edit Submission</button>' : ''}
+        </div>
+        <div id="submissionEditPanel" class="edit-panel" hidden></div>
+        <div class="detail-grid compact-grid" id="readonlyBookDetails">
           ${field("Title", item.title)}
           ${field("Author", item.author_name)}
           ${field(
@@ -1169,6 +1188,133 @@ ${field(
     </section>
   </div>
 `;
+    }
+
+    // Editor is intentionally contained INSIDE the original Book Details card.
+    // The two-column review layout, sidebar, and review buttons are untouched.
+    const EDIT_FIELDS = [
+      ['title','Title','text'],['author_name','Author','text'],['release_date','Release','date'],
+      ['primary_genre','Genre','GENRES'],['age_range','Age','AGE_RANGES'],['spice_level','Spice','SPICE_LEVELS'],
+      ['series_name','Series','text'],['series_number','Series Number','number'],
+      ['word_count','Words','number'],['page_count','Pages','number'],
+      ['description','Description','textarea'],['sub_genres','Subgenres','SUBGENRES'],
+      ['vibes','Vibes','VIBES'],['representation','Representation','REPRESENTATION'],
+      ['available_formats','Formats','FORMATS'],['retailer_links.website','Website','url'],
+      ['retailer_links.amazon','Amazon','url'],['retailer_links.barnes_noble','Barnes & Noble','url'],
+      ['retailer_links.bookfunnel','BookFunnel','url'],['retailer_links.kobo','Kobo','url'],
+      ['retailer_links.apple_books','Apple Books','url'],['retailer_links.other','Other','url'],
+      ['audio.has_audiobook','Has Audiobook','boolean'],['audio.narrators','Narrators','text'],
+      ['audio.link','Audiobook Link','url'],['kids.category','Kids Category','KIDS_CATEGORIES'],
+      ['co_authors','Contributors','contributors']
+    ];
+    const EDIT_GROUPS = [
+      ['Book Details',0,10],['Description',10,11],['Classification Tags',11,14],
+      ['Available Formats',14,15],['Retailer Links',15,22],['Audiobook',22,25],
+      ['BLK Shelf Kids',25,26],['Contributors',26,27]
+    ];
+    function editValue(key) {
+      const [parent,child] = key.split('.');
+      return child ? normalizeObject(currentBookSubmission[parent])[child] : currentBookSubmission[parent];
+    }
+    function editControl(field) {
+      const [key,label,type] = field;
+      const id = 'se_'+key.replaceAll('.','_');
+      const value = editValue(key);
+      const listTypes = ['SUBGENRES','VIBES','REPRESENTATION','FORMATS'];
+      if (listTypes.includes(type)) {
+        const selected = normalizeList(value);
+        const opts = (window.BookFormOptions?.[type]||[]).map(x=>typeof x==='string'?x:String(x.value??x.label??''));
+        const all = [...new Set([...opts,...selected])];
+        return `<div class="detail-field" style="grid-column:1/-1"><span class="detail-label">${escapeHtml(label)}</span><div class="edit-checkboxes" data-list="${id}" data-max="${['SUBGENRES','VIBES'].includes(type)?3:0}">${all.map(x=>`<label><input type="checkbox" name="${id}" value="${escapeHtml(x)}" ${selected.includes(x)?'checked':''}> ${escapeHtml(x)}</label>`).join('')}</div></div>`;
+      }
+      if (['GENRES','AGE_RANGES','SPICE_LEVELS','KIDS_CATEGORIES','boolean'].includes(type)) {
+        const selected=type==='boolean'?(value?'Yes':'No'):String(value??'');
+        const options=type==='boolean'?['No','Yes']:(window.BookFormOptions?.[type]||[]).map(x=>typeof x==='string'?x:String(x.value??x.label??''));
+        const all=[...new Set([...options,selected].filter(Boolean))];
+        return `<div class="detail-field"><label class="detail-label" for="${id}">${escapeHtml(label)}</label><select class="edit-input" id="${id}">${type==='boolean'?'':'<option value="">— Select —</option>'}${all.map(x=>`<option value="${escapeHtml(x)}" ${selected===x?'selected':''}>${escapeHtml(x)}</option>`).join('')}</select></div>`;
+      }
+      if(type==='contributors') {
+        const names=Array.isArray(value)?value.map(x=>typeof x==='string'?x:x?.name).filter(Boolean):[];
+        return `<div class="detail-field" style="grid-column:1/-1"><label class="detail-label" for="${id}">${escapeHtml(label)} (comma-separated)</label><input class="edit-input" id="${id}" value="${escapeHtml(names.join(', '))}"></div>`;
+      }
+      const val=String(value??'');
+      const control=type==='textarea'?`<textarea class="edit-input" id="${id}">${escapeHtml(val)}</textarea>`:`<input class="edit-input" id="${id}" type="${type}" ${type==='number'?'min="0" step="any"':''} value="${escapeHtml(type==='date'?val.slice(0,10):val)}">`;
+      return `<div class="detail-field" ${type==='textarea'?'style="grid-column:1/-1"':''}><label class="detail-label" for="${id}">${escapeHtml(label)}</label>${control}</div>`;
+    }
+    function startSubmissionEdit() {
+      if (!currentBookSubmission || !['pending','needs_info'].includes(String(currentBookSubmission.submission_status).toLowerCase())) return;
+      const panel=document.getElementById('submissionEditPanel');
+      if(!panel)return;
+      panel.innerHTML=`<form id="submissionEditForm" onsubmit="saveSubmissionEdits(event)">
+        ${EDIT_GROUPS.map(([title,start,end],i)=>`<details class="review-accordion" ${i===0?'open':''}><summary>${escapeHtml(title)}</summary><div class="accordion-body"><div class="detail-grid">${EDIT_FIELDS.slice(start,end).map(editControl).join('')}</div></div></details>`).join('')}
+        <details class="review-accordion"><summary>Replace Cover</summary><div class="accordion-body"><input class="edit-input" id="se_cover" type="file" accept="image/jpeg,image/png,image/webp"><p class="mm-muted">Optional. JPG, PNG, or WebP; maximum 10 MB.</p></div></details>
+        <p id="submissionEditNote" class="mm-muted" role="status"></p>
+        <div class="edit-actions"><button class="mm-btn" id="submissionSaveBtn" type="submit">Save Changes</button><button class="mm-btn mm-btn-secondary" type="button" onclick="cancelSubmissionEdit()">Cancel</button><button class="mm-btn mm-btn-secondary" type="button" onclick="startSubmissionEdit()">Reset Changes</button></div>
+      </form>`;
+      panel.hidden=false;
+      document.getElementById('readonlyBookDetails').hidden=true;
+      document.getElementById('editSubmissionBtn').hidden=true;
+      panel.querySelectorAll('[data-max]').forEach(group=>group.addEventListener('change',e=>{const max=Number(group.dataset.max);if(max&&group.querySelectorAll('input:checked').length>max){e.target.checked=false;alert(`Select no more than ${max}.`);}}));
+    }
+    function cancelSubmissionEdit() {
+      if(submissionEditBusy)return;
+      const panel=document.getElementById('submissionEditPanel');
+      if(panel){panel.hidden=true;panel.innerHTML='';}
+      const readonly=document.getElementById('readonlyBookDetails');if(readonly)readonly.hidden=false;
+      const btn=document.getElementById('editSubmissionBtn');if(btn)btn.hidden=false;
+    }
+    async function saveSubmissionEdits(event) {
+      event.preventDefault();
+      if(submissionEditBusy)return;
+      const panel=document.getElementById('submissionEditPanel');
+      const note=document.getElementById('submissionEditNote');
+      const saveBtn=document.getElementById('submissionSaveBtn');
+      const old=currentBookSubmission;
+      const patch={};
+      const get=(key)=>document.getElementById('se_'+key.replaceAll('.','_'));
+      for(const [key,label,type] of EDIT_FIELDS){
+        let value;
+        if(['SUBGENRES','VIBES','REPRESENTATION','FORMATS'].includes(type))value=[...panel.querySelectorAll(`input[name="se_${key.replaceAll('.','_')}"]:checked`)].map(x=>x.value);
+        else if(type==='boolean')value=get(key).value==='Yes';
+        else if(type==='contributors'){
+          const previous=Array.isArray(old.co_authors)?old.co_authors:[];
+          value=get(key).value.split(',').map(x=>x.trim()).filter(Boolean).map(name=>{
+            const found=previous.find(x=>(typeof x==='string'?x:x?.name)?.toLowerCase()===name.toLowerCase());
+            return found&&typeof found==='object'?found:{name,matched:false};
+          });
+        }else if(type==='number')value=get(key).value.trim()?Number(get(key).value):null;
+        else value=get(key).value.trim();
+        if(key.includes('.')){const [parent,child]=key.split('.');if(!patch[parent])patch[parent]={...normalizeObject(old[parent])};patch[parent][child]=value;}
+        else patch[key]=value;
+      }
+      if(!patch.title){note.textContent='A book title is required.';return;}
+      const file=get('cover').files?.[0];
+      if(file && (!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>10*1024*1024)){note.textContent='Cover must be JPG, PNG, or WebP and under 10 MB.';return;}
+      submissionEditBusy=true;saveBtn.disabled=true;note.textContent='Saving changes...';
+      let uploadedPath=null;
+      try{
+        const {data:latest,error:checkError}=await supabaseClient.from('book_submissions').select('submission_status,cover_path').eq('id',old.id).single();
+        if(checkError)throw checkError;
+        if(!['pending','needs_info'].includes(String(latest.submission_status).toLowerCase()))throw Error('This submission is no longer editable.');
+        if(file){
+          const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+          uploadedPath=`admin-edits/${old.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+          const {error:uploadError}=await supabaseClient.storage.from('book-submissions').upload(uploadedPath,file,{contentType:file.type,upsert:false});
+          if(uploadError)throw uploadError;
+          patch.cover_path=uploadedPath;
+        }
+        const {data:updated,error}=await supabaseClient.from('book_submissions').update(patch).eq('id',old.id).in('submission_status',['pending','needs_info']).select('*').maybeSingle();
+        if(error)throw error;
+        if(!updated)throw Error('The submission changed status before saving. Refresh and try again.');
+        currentBookSubmission=updated;
+        // Refresh the original review layout so all read-only sections reflect the saved values.
+        note.textContent='Changes saved. Refreshing...';
+        window.location.reload();
+      }catch(error){
+        console.error('Submission edit failed:',error);
+        note.textContent=error.message||'Unable to save changes.';
+        if(uploadedPath)await supabaseClient.storage.from('book-submissions').remove([uploadedPath]).catch(()=>{});
+      }finally{submissionEditBusy=false;saveBtn.disabled=false;}
     }
 
     async function saveBookStatus(id, status) {
