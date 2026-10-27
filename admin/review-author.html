@@ -226,6 +226,14 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .author-edit-field {display:block;margin:.75rem 0;color:var(--text)}
+    .author-edit-field .review-label {margin-bottom:.4rem}
+    .author-edit-input {width:100%;padding:.75rem;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(12,9,7,.85);color:var(--text);font:inherit;box-sizing:border-box}
+    textarea.author-edit-input {min-height:160px;resize:vertical;line-height:1.5}
+    .author-edit-help {font-size:.82rem;color:var(--soft);margin:.35rem 0 .8rem}
+    .author-edit-actions {display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1rem}
+    .author-edit-actions button:disabled {opacity:.55;cursor:wait}
   </style>
 </head>
 
@@ -270,6 +278,7 @@
 let reviewList = [];
 let currentIndex = -1;
 let possibleLegacyBooks = [];
+let authorSubmissionEditMode = false;
 
     function escapeHtml(value) {
       return String(value ?? "")
@@ -926,6 +935,127 @@ function legacyBooksSection() {
   `;
 }
 
+    const AUTHOR_EDIT_FIELDS = [
+      ["pen_name", "Pen Name", "text"],
+      ["author_name", "Author Name", "text"],
+      ["email", "Email Address", "email"],
+      ["genres", "Genres", "text"],
+      ["bio", "Biography", "textarea"],
+      ["website", "Website", "url"],
+      ["amazon", "Amazon", "url"],
+      ["instagram", "Instagram", "url"],
+      ["tiktok", "TikTok", "url"],
+      ["facebook", "Facebook", "url"],
+      ["goodreads", "Goodreads", "url"]
+    ];
+
+    function canEditAuthorSubmission(item) {
+      return ["pending", "needs_info"].includes(String(item?.submission_status || "pending").toLowerCase());
+    }
+
+    function authorEditControl(key, label, type, item) {
+      const raw = item[key];
+      const value = Array.isArray(raw) ? raw.join(", ") : String(raw ?? "");
+      const required = key === "email" || (key === "pen_name" && !item.author_name);
+      return `<label class="author-edit-field"><span class="review-label">${escapeHtml(label)}</span>
+        ${type === "textarea"
+          ? `<textarea class="author-edit-input" name="${key}">${escapeHtml(value)}</textarea>`
+          : `<input class="author-edit-input" name="${key}" type="${type}" value="${escapeHtml(value)}" ${required ? "required" : ""}>`}
+      </label>`;
+    }
+
+    function authorEditPanel(item) {
+      return `<form id="authorSubmissionEditForm" onsubmit="saveAuthorSubmissionEdits(event)">
+        <p class="mm-muted">Changes are saved to this submission only. Approval status and live author profiles are not changed.</p>
+        <div class="review-detail-grid">
+          ${AUTHOR_EDIT_FIELDS.filter(f => f[2] !== "textarea").map(f => authorEditControl(...f, item)).join("")}
+        </div>
+        ${authorEditControl("bio", "Biography", "textarea", item)}
+        <label class="author-edit-field"><span class="review-label">Replace Author Photo</span>
+          <input id="editAuthorSubmissionPhoto" class="author-edit-input" type="file" accept="image/jpeg,image/png,image/webp">
+        </label>
+        <p class="author-edit-help">Optional. JPG, PNG or WebP, maximum 10 MB. Leave blank to retain the existing image.</p>
+        <div class="author-edit-actions">
+          <button class="mm-btn btn-success" type="submit" id="saveAuthorSubmissionEditBtn">Save Changes</button>
+          <button class="mm-btn btn-secondary" type="button" onclick="cancelAuthorSubmissionEdit()">Cancel</button>
+        </div>
+        <p class="mm-muted" id="authorEditMessage" role="status"></p>
+      </form>`;
+    }
+
+    function startAuthorSubmissionEdit() {
+      if (!currentSubmission || !canEditAuthorSubmission(currentSubmission)) return;
+      authorSubmissionEditMode = true;
+      renderSubmission(currentSubmission);
+    }
+
+    function cancelAuthorSubmissionEdit() {
+      authorSubmissionEditMode = false;
+      renderSubmission(currentSubmission);
+    }
+
+    async function saveAuthorSubmissionEdits(event) {
+      event.preventDefault();
+      if (!currentSubmission || !canEditAuthorSubmission(currentSubmission)) return;
+      const form = document.getElementById("authorSubmissionEditForm");
+      if (!form.reportValidity()) return;
+      const btn = document.getElementById("saveAuthorSubmissionEditBtn");
+      const message = document.getElementById("authorEditMessage");
+      const payload = {};
+      for (const [key] of AUTHOR_EDIT_FIELDS) {
+        const input = form.elements.namedItem(key);
+        if (input) payload[key] = input.value.trim();
+      }
+      if (!payload.pen_name && !payload.author_name) {
+        message.textContent = "Please provide a pen name or author name.";
+        return;
+      }
+      const file = document.getElementById("editAuthorSubmissionPhoto")?.files?.[0];
+      if (file && (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) {
+        message.textContent = "Photo must be JPG, PNG, or WebP and no larger than 10 MB.";
+        return;
+      }
+      btn.disabled = true;
+      message.textContent = "Saving submission changes...";
+      let uploadedPath = null;
+      try {
+        // Verify the record is still editable before changing its data.
+        const { data: latest, error: readError } = await supabaseClient
+          .from("author_submissions").select("submission_status").eq("id", currentSubmission.id).single();
+        if (readError) throw readError;
+        if (!canEditAuthorSubmission(latest)) throw new Error("This submission is no longer editable. Refresh the page.");
+        if (file) {
+          const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+          uploadedPath = `${currentSubmission.id}/admin-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+          message.textContent = "Uploading author photo...";
+          const { error: uploadError } = await supabaseClient.storage
+            .from("author-submissions").upload(uploadedPath, file, { contentType:file.type, upsert:false });
+          if (uploadError) throw uploadError;
+          payload.author_photo_path = uploadedPath;
+        }
+        message.textContent = "Updating author submission...";
+        const { data: updated, error: updateError } = await supabaseClient
+          .from("author_submissions").update(payload).eq("id", currentSubmission.id)
+          .in("submission_status", ["pending", "needs_info"]).select("*").single();
+        if (updateError) throw updateError;
+        if (!updated) throw new Error("No editable submission was updated.");
+        currentSubmission = updated;
+        authorSubmissionEditMode = false;
+        renderSubmission(currentSubmission);
+        const note = document.getElementById("actionNote");
+        if (note) note.textContent = "Author submission changes saved successfully.";
+      } catch (error) {
+        console.error("Author submission edit failed:", error);
+        message.textContent = error.message || "Unable to save changes.";
+        if (uploadedPath) {
+          const { error: cleanupError } = await supabaseClient.storage.from("author-submissions").remove([uploadedPath]);
+          if (cleanupError) console.warn("Unused photo cleanup failed:", cleanupError);
+        }
+      } finally {
+        if (btn.isConnected) btn.disabled = false;
+      }
+    }
+
     function renderSubmission(item) {
       const target = document.getElementById("reviewContent");
       const name = item.pen_name || item.author_name || "Unnamed Author";
@@ -979,7 +1109,11 @@ function legacyBooksSection() {
 
           <section>
             <div class="mm-card">
-              <h2>Submission Details</h2>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap">
+                <h2>Submission Details</h2>
+                ${canEditAuthorSubmission(item) && !authorSubmissionEditMode ? `<button type="button" class="mm-btn btn-secondary" onclick="startAuthorSubmissionEdit()">Edit Submission</button>` : ""}
+              </div>
+              ${authorSubmissionEditMode ? authorEditPanel(item) : `
 
               <div class="review-detail-grid">
                 ${copyableField(
@@ -994,9 +1128,10 @@ function legacyBooksSection() {
     "submissionEmail"
 )}
                 ${field("Pen Name", name)}
-              </div>
+              </div>`}
             </div>
 
+            ${authorSubmissionEditMode ? "" : `
             <div class="mm-card review-section">
   <h2>Author Bio</h2>
   <div class="bio-scroll-box">
@@ -1015,7 +1150,7 @@ function legacyBooksSection() {
                 ${linkField("Facebook", item.facebook)}
                 ${linkField("Goodreads", item.goodreads)}
               </div>
-                        </div>
+                        </div>`}
 
             ${legacyBooksSection()}
 
